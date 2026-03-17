@@ -9,7 +9,9 @@
 @theme {
   --font-sans: "font", sans-serif;
   --font-mono: "monospace", monospace;
+  /* --font-changeone: "", */
 
   /* colors  */
   --color-primary: #ed1d3e;
+  --color-primary-50: #fcf7f6;
 }
