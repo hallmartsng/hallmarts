@@ -160,7 +160,7 @@ const Hero = () => {
               <p className="text-gray-600">Transactions</p>
             </div>
             <div>
-              <p className="font-semibold text-primary">87%</p>
+              <p className="font-semibold text-primary">+87%</p>
               <p className="text-gray-600">Growth</p>
             </div>
           </motion.div>

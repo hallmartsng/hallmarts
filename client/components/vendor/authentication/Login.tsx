@@ -86,6 +86,11 @@ const Login = () => {
           value={password}
           onValueChange={setPassword}
         />{" "}
+        <div className="flex justify-end ">
+          <Link href="/authentication/forgot-password" className="text-sm">
+            Forgot password?{" "}
+          </Link>
+        </div>
         <div className="flex gap-4">
           <Button
             className="w-full flex items-center bg-[#ed1d3e] text-white"

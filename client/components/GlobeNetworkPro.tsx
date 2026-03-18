@@ -263,7 +263,7 @@ export default function GlobeNetworkPro() {
       {transactions.map((tx) => (
         <motion.div
           key={`label-${tx.id}`}
-          className="absolute text-[15px] text-green-400"
+          className="absolute text-[15px] text-green-400 "
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0], y: -15 }}
           transition={{ duration: 2 }}

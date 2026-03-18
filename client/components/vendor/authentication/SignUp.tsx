@@ -8,8 +8,13 @@ import {
   addToast,
   Spinner,
 } from "@heroui/react";
+import PhoneInput, {
+  Country,
+  isValidPhoneNumber,
+} from "react-phone-number-input";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import FilterCampuses from "@/components/FilterCampus";
 
 interface FormErrors {
   name?: string;
@@ -29,6 +34,8 @@ interface FormData {
 }
 
 const SignUp = () => {
+  const allowedCountries: Country[] = ["NG", "GH", "ZA"];
+
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
@@ -38,6 +45,10 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [retryPassword, setRetryPassword] = React.useState("");
   const [term, setTerm] = React.useState<boolean>(false);
+
+  const [countryCode, setCountryCode] = React.useState<Country>("NG");
+  const [phone, setPhone] = React.useState<string>("");
+  const [phoneValid, setPhoneValid] = React.useState(true);
 
   const [errors, setErrors] = React.useState<FormErrors>({});
 
@@ -63,6 +74,19 @@ const SignUp = () => {
     return null;
   };
 
+  const handlePhoneChange = (value?: string) => {
+    setPhone(value ?? "");
+
+    if (value && isValidPhoneNumber(value)) {
+      return setPhoneValid(true);
+    } else {
+      return setPhoneValid(false);
+    }
+  };
+  const handleCountryChange = (value?: Country) => {
+    if (!value || !allowedCountries.includes(value)) return;
+    setCountryCode(value);
+  };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(
@@ -126,7 +150,7 @@ const SignUp = () => {
 
   return (
     <Form
-      className="w-full justify-center items-center space-y-4 bg-white p-6 rounded-2xl shadow"
+      className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white p-6 rounded-2xl shadow"
       validationErrors={errors.name ? { name: errors.name } : {}}
       onReset={() => console.log("Form reset")}
       onSubmit={onSubmit}
@@ -172,6 +196,37 @@ const SignUp = () => {
           placeholder="Enter your email"
           type="email"
         />
+
+        <div className="flex flex-col gap-1">
+          <div className="">
+            <label htmlFor="phone" className="text-sm text-black">
+              Country & Phone No
+            </label>
+            <PhoneInput
+              international
+              countries={allowedCountries}
+              countryCallingCodeEditable={false}
+              placeholder="Enter phone number"
+              defaultCountry={countryCode}
+              value={phone}
+              onChange={handlePhoneChange}
+              onCountryChange={handleCountryChange}
+              name="phone"
+              className="mt-1"
+            />
+
+            {!phoneValid ? (
+              <p className="text-danger text-xs mt-1 mb-3 ">
+                Please enter a valid phone number
+              </p>
+            ) : (
+              <p className="text-xs mb-3 mt-1">
+                Only campuses available in your country will be displayed.
+              </p>
+            )}
+          </div>
+          <FilterCampuses code={countryCode} name={"campus"} />
+        </div>
 
         <Input
           isRequired
