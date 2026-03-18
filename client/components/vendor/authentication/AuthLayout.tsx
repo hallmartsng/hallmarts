@@ -17,7 +17,7 @@ const AuthLayout = () => {
   return (
     <section className="flex justify-center min-h-screen">
       <div>
-        <div className="w-1/2 bg-primary fixed sm:flex hidden flex-col justify-center gap-10 items-end pr-40 h-screen">
+        <div className="w-1/2 bg-red-900 fixed sm:flex hidden flex-col justify-center gap-10 items-end pr-40 h-screen">
           <div className="flex items-center gap-16">
             <div className="flex flex-col gap-16">
               <div className="flex flex-col gap-2 bg-white z-20 items-center justify-center shadow-md rounded-md lg:h-[90px] lg:w-[90px] p-2">
@@ -120,11 +120,11 @@ const AuthLayout = () => {
           <div className="w-full flex justify-end text-primary-50 font-medium">
             <div>
               <h1
-                className="text-2xl mb-2 w-[400px] text-red-300 font-extrabold
+                className="text-2xl mb-2 w-[340px] text-white font-extrabold
         "
               >
-                Grow your <span className="text-white"> campus business</span>{" "}
-                online today!
+                A marketplace to <span className="text-primary">learn </span> &{" "}
+                <span className="text-primary"> earn </span> is hallmarts.
               </h1>
               <p className="text-sm w-[300px] flex justify-end">
                 Get your products in front of 240,000+ students across campus.
