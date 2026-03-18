@@ -10,6 +10,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.8.10",
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.31",

@@ -1,15 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@heroui/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/react";
 
 import GlobeNetworkPro from "@/components/GlobeNetworkPro";
 
 const Hero = () => {
   return (
-    <section className="flex pt-16 sm:flex-row flex-col items-center justify-center gap-4 ">
+    <section className="flex sm:pt-0 pt-16 sm:flex-row flex-col items-center justify-center gap-4 ">
       <div className="mx-auto max-w-7xl sm:px-0 px-4 flex sm:flex-row flex-col items-center">
-        <div className="space-y-6">
+        <div className="sm:space-y-6">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -52,31 +58,101 @@ const Hero = () => {
             vendors, students, and transactions in one seamless network.
           </motion.p>
 
+          <div className="w-full sm:hidden flex flex-col items-center justify-center -mt-20">
+            {/* Trust / Stats */}
+            <motion.div
+              initial={{ opacity: 0, x: 70 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.5, ease: "linear" }}
+              className="flex sm:flex-row flex-col gap-8 text-sm text-gray-400"
+            >
+              <GlobeNetworkPro />
+            </motion.div>
+          </div>
+
           {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-wrap gap-4 pt-2"
+            className="flex flex-wrap gap-4 sm:pt-2"
           >
-            <Button className="px-3 py-2 bg-primary hover:bg-primary/90 text-white transition rounded-lg font-medium">
+            <Button
+              as={"a"}
+              href="/vendor/auth?tab=signup"
+              className="px-3 py-2 bg-primary hover:bg-primary/90 text-white transition rounded-lg font-medium"
+            >
               Start selling
             </Button>
 
-            <button className="px-6 py-3 border border-white/15 hover:bg-white/5 transition rounded-lg font-medium">
-              Explore marketplace
-            </button>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="bordered"> Explore marketplace</Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem key="whatsapp">
+                  <span className="flex gap-2 items-center">
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                      />
+                    </svg>
+                    <span> WhatsApp Channel</span>
+                  </span>
+                </DropdownItem>
+                <DropdownItem key="store">
+                  <span className="flex gap-2 items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                      />
+                    </svg>
+
+                    <span>Store</span>
+                  </span>
+                </DropdownItem>
+
+                {/* <DropdownItem
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                >
+                  Delete file
+                </DropdownItem> */}
+              </DropdownMenu>
+            </Dropdown>
           </motion.div>
         </div>
-        <div className="w-full flex flex-col items-center justify-center -mt-10">
-          <GlobeNetworkPro />
+        <div className="w-full flex flex-col items-center sm:justify-center">
+          <div className="w-full sm:flex hidden">
+            <GlobeNetworkPro />
+          </div>
           {/* Trust / Stats */}
           <motion.div
             initial={{ opacity: 0, x: 70 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex sm:flex-row flex-col gap-8 pt-6 text-sm text-gray-400"
+            className="flex w-full sm:w-auto mb-20 gap-8 pt-6 text-sm text-gray-400"
           >
             <div>
-              <p className="font-semibold text-primary">5+ Campuses</p>
+              <p className="font-semibold text-primary">13+ Campuses</p>
               <p className="text-gray-600">Active network</p>
             </div>
             <div>
@@ -84,8 +160,8 @@ const Hero = () => {
               <p className="text-gray-600">Transactions</p>
             </div>
             <div>
-              <p className="font-semibold text-primary">Fast</p>
-              <p className="text-gray-600">Real-time system</p>
+              <p className="font-semibold text-primary">87%</p>
+              <p className="text-gray-600">Growth</p>
             </div>
           </motion.div>
         </div>

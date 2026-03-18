@@ -55,11 +55,19 @@ const nodes: Node[] = [
     weight: 5,
   },
   {
-    id: "oau",
+    id: "adamawa",
     logo: "adamawa.png",
-    name: "OAU",
+    name: "ADAMAWA",
     lat: 7.5227,
     lon: 13.522,
+    weight: 4,
+  },
+  {
+    id: "cu",
+    logo: "cu.jpg",
+    name: "cu",
+    lat: 4.5227,
+    lon: 16.4,
     weight: 4,
   },
 ];
@@ -68,8 +76,10 @@ const connections = [
   ["uniabuja", "unilag"],
   ["unilag", "lmu"],
   ["enugu", "lmu"],
-  ["enugu", "oau"],
+  ["enugu", "adamawa"],
   ["uniport", "lmu"],
+  ["uniport", "cu"],
+  ["cu", "adamawa"],
 ];
 
 // 🌍 Projection
@@ -210,8 +220,8 @@ export default function GlobeNetworkPro() {
               r={2.5}
               // fill="#05df72"
               fill="#24ae24"
-              initial={{ offsetDistance: "0%" }}
-              animate={{ offsetDistance: "100%" }}
+              // initial={{ offsetDistance: "0%" }}
+              // animate={{ offsetDistance: "100%" }}
               transition={{ duration: 2, ease: "linear" }}
               style={{ offsetPath: `path("${path}")` }}
             />
