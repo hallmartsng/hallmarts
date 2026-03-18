@@ -1,13 +1,32 @@
-import Navbar from "@/components/Navbar";
+import "@/styles/globals.css";
+import { Metadata } from "next";
 
-export default function WebLayout({ children }: { children: React.ReactNode }) {
+import { siteConfig } from "@/config/site";
+import { Navbar } from "@/components/navbar";
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export default function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-      <Navbar />
-      <main className="flex min-h-screen w-full text-black max-w-7xl flex-col items-center justify-between py-32 px-16  sm:items-start">
-        {children}
-      </main>
-      <footer>Footer</footer>
-    </>
+    <section>
+      {" "}
+      <div className="relative flex flex-col h-screen">
+        <Navbar />
+        <main className=" flex-grow">{children}</main>
+      </div>
+    </section>
   );
 }
