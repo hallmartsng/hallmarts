@@ -1,49 +1,23 @@
 "use client";
+import React from "react";
 import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Navbar as HeroUINavbar,
+  NavbarBrand,
   NavbarContent,
+  NavbarItem,
   NavbarMenu,
   NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@heroui/navbar";
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
-// import { link as linkStyles } from "@heroui/theme";
-import NextLink from "next/link";
-// import clsx from "clsx";
-
-import { siteConfig } from "@/config/site";
-import {
-  DropdownItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
 } from "@heroui/react";
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
+import SearchBar from "./SearchBar";
 
-export const Navbar = () => {
-  // const searchInput = (
-  //   <Input
-  //     aria-label="Search"
-  //     classNames={{
-  //       inputWrapper: "bg-default-100",
-  //       input: "text-sm",
-  //     }}
-  //     endContent={
-  //       <Kbd className="hidden lg:inline-block" keys={["command"]}>
-  //         K
-  //       </Kbd>
-  //     }
-  //     labelPlacement="outside"
-  //     placeholder="Search..."
-  //     startContent={
-  //       <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-  //     }
-  //     type="search"
-  //   />
-  // );
-
+const StoreNavbar = () => {
   const icons = {
     delivery: (
       <svg
@@ -99,74 +73,34 @@ export const Navbar = () => {
       </svg>
     ),
   };
-
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" shouldHideOnScroll>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <Link className="flex justify-start items-center gap-1" href="/store">
             {/* <Logo /> */}
             <span className="font-extrabold">
               Hall<span className="font-extrabold text-primary">Marts</span>
             </span>
-          </NextLink>
+          </Link>
         </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full">
+        <SearchBar />
       </NavbarContent>
 
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <ul className="hidden items-center lg:flex gap-4 justify-start ml-2">
-          <NavbarContent>
-            <Link href="/store">Online Store</Link>
-          </NavbarContent>
-          <Dropdown>
-            <NavbarItem>
-              <DropdownTrigger>
-                <Button
-                  disableRipple
-                  className="p-0 bg-transparent text-gray-600 data-[hover=true]:bg-transparent"
-                  // endContent={icons.chevron}
-                  radius="sm"
-                  variant="light"
-                >
-                  Campus Solution
-                </Button>
-              </DropdownTrigger>
-            </NavbarItem>
-            <DropdownMenu
-              aria-label="ACME features"
-              itemClasses={{
-                base: "gap-4",
-              }}
-            >
-              <DropdownItem
-                key="marketing"
-                description="Campus digital marketing hub"
-                startContent={icons.marketing}
-              >
-                Martet place
-              </DropdownItem>
-              <DropdownItem
-                key="delivery"
-                description="Package transfer through all campus"
-                startContent={icons.delivery}
-              >
-                Campus Logistics
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+        <ul className="flex gap-4 justify-start">
+          <NavbarItem className="flex gap-5">
+            <Link href={""}>Cart</Link>
+            <Link href={"/products"}>Account</Link>
+          </NavbarItem>
         </ul>
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link
-            aria-label="blog"
-            className="flex gap-1"
-            href={siteConfig.links.blog}
-          >
-            {icons.blogs} <span>Blog</span>
-          </Link>
-        </NavbarItem>
+
         {/* <NavbarItem className="hidden sm:flex gap-2">
           <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
             <TwitterIcon className="text-default-500" />
@@ -205,55 +139,22 @@ export const Navbar = () => {
       <NavbarMenu>
         {/* {searchInput} */}
         <div className=" mt-2 flex flex-col gap-2">
-          <ul className="flex gap-4 justify-start ml-2">
-            <Dropdown>
-              <NavbarItem>
-                <DropdownTrigger>
-                  <Button
-                    disableRipple
-                    className="p-0 bg-transparent text-gray-600 data-[hover=true]:bg-transparent"
-                    // endContent={icons.chevron}
-                    radius="sm"
-                    variant="light"
-                  >
-                    Campus Solution
-                  </Button>
-                </DropdownTrigger>
-              </NavbarItem>
-              <DropdownMenu
-                aria-label="ACME features"
-                itemClasses={{
-                  base: "gap-4",
-                }}
-              >
-                <DropdownItem
-                  key="marketing"
-                  description="Campus digital marketing hub"
-                  startContent={icons.marketing}
-                >
-                  Martet place
-                </DropdownItem>
-                <DropdownItem
-                  key="delivery"
-                  description="Package transfer through all campus"
-                  startContent={icons.delivery}
-                >
-                  Campus Logistics
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <ul className="flex gap-4 justify-start">
+            <NavbarItem className="flex flex-col gap-5">
+              <Link href={""}>Cart</Link>
+              <Link href={"/"}>Account</Link>
+            </NavbarItem>
           </ul>
-          <NavbarItem className="">
-            <Link
-              aria-label="blog"
-              className="flex gap-1"
-              href={siteConfig.links.blog}
-            >
-              {icons.blogs} <span>Blog</span>
-            </Link>
-          </NavbarItem>
         </div>
       </NavbarMenu>
+
+      <NavbarContent className="flex sm:hidden w-full absolute text-center top-14  left-0">
+        <div className="w-full mx-auto px-2">
+          <SearchBar />
+        </div>
+      </NavbarContent>
     </HeroUINavbar>
   );
 };
+
+export default StoreNavbar;

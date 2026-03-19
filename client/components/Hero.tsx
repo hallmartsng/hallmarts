@@ -109,7 +109,7 @@ const Hero = () => {
                     <span> WhatsApp Channel</span>
                   </span>
                 </DropdownItem>
-                <DropdownItem key="store">
+                <DropdownItem key="store" href="/store">
                   <span className="flex gap-2 items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +126,7 @@ const Hero = () => {
                       />
                     </svg>
 
-                    <span>Store</span>
+                    <span>Online Store</span>
                   </span>
                 </DropdownItem>
 

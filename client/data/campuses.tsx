@@ -1306,13 +1306,13 @@ export const campuses = [
         type: "private",
         website: "https://www.cug.edu.gh/",
       },
-      {
-        id: 15,
-        name: "Catholic University of Ghana",
-        address: "PO Box 363 Sunyani Brong-Ahafo Ghana",
-        type: "private",
-        website: "https://www.cug.edu.gh/",
-      },
+      // {
+      //   id: 15,
+      //   name: "Catholic University of Ghana",
+      //   address: "PO Box 363 Sunyani Brong-Ahafo Ghana",
+      //   type: "private",
+      //   website: "https://www.cug.edu.gh/",
+      // },
       {
         id: 16,
         name: "Central University",

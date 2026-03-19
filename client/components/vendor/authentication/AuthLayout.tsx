@@ -6,6 +6,7 @@ import Login from "./Login";
 import { Tab, Tabs } from "@heroui/react";
 import Image from "next/image";
 import Logo from "@/components/Logo";
+import Link from "next/link";
 
 const AuthLayout = () => {
   const params = useSearchParams();
@@ -136,8 +137,11 @@ const AuthLayout = () => {
 
       <div className=" w-full flex flex-col items-end justify-center py-10 min-h-screen">
         <div className="sm:w-1/2 flex flex-col items-center justify-center">
-          <div className="sm:hidden flex mb-3 items-center justify-center">
-            <Logo />
+          <div className=" flex mb-3 items-center justify-center">
+            <Link href={"/"}>
+              {" "}
+              <Logo />
+            </Link>
           </div>{" "}
           <Tabs
             aria-label="Options"

@@ -9,7 +9,7 @@
 @theme {
   --font-sans: "font", sans-serif;
   --font-mono: "monospace", monospace;
-  /* --font-changeone: "", */
+  --font-honk: "Honk", system-ui;
 
   /* colors  */
   --color-primary: #ed1d3e;
