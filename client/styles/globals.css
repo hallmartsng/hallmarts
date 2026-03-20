@@ -16,6 +16,10 @@
   --color-primary-50: #fcf7f6;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 /* Phone Input  */
 .PhoneInput {
   width: 100%;

@@ -225,7 +225,11 @@ const SignUp = () => {
               </p>
             )}
           </div>
-          <FilterCampuses code={countryCode} name={"campus"} />
+          <FilterCampuses
+            code={countryCode}
+            name={"campus"}
+            isRequired={true}
+          />
         </div>
 
         <Input

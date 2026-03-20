@@ -5,7 +5,6 @@ import {
   StoreCategoryIconsTypes,
 } from "./StoreCategoryIcons";
 import Link from "next/link";
-import { Chip } from "@heroui/react";
 
 type CategoriesType = {
   title: string;

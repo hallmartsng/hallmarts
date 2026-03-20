@@ -1,11 +1,6 @@
 "use client";
 import React from "react";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Navbar as HeroUINavbar,
   NavbarBrand,
   NavbarContent,
@@ -14,9 +9,18 @@ import {
   NavbarMenuToggle,
 } from "@heroui/react";
 import Link from "next/link";
-import { siteConfig } from "@/config/site";
 import SearchBar from "./SearchBar";
+import { ShoppingCartIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  StoreCategoryIcons,
+  StoreCategoryIconsTypes,
+} from "./StoreCategoryIcons";
 
+type CategoriesType = {
+  title: string;
+  title_id: StoreCategoryIconsTypes;
+  id: string;
+};
 const StoreNavbar = () => {
   const icons = {
     delivery: (
@@ -73,6 +77,38 @@ const StoreNavbar = () => {
       </svg>
     ),
   };
+  const CATEGORIES: CategoriesType[] = [
+    {
+      title: "phones & tablets",
+      title_id: "phones",
+      id: "77486554849933773",
+    },
+    {
+      title: "Health & beauty",
+      title_id: "health",
+      id: "77555554849933773",
+    },
+    {
+      title: "electronics",
+      title_id: "electronics",
+      id: "775599854849933773",
+    },
+    {
+      title: "fashion",
+      title_id: "fashion",
+      id: "775599854800933773",
+    },
+    {
+      title: "gaming",
+      title_id: "gaming",
+      id: "775539354800933773",
+    },
+    {
+      title: "academics",
+      title_id: "academics",
+      id: "775590954800933773",
+    },
+  ];
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" shouldHideOnScroll>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -96,53 +132,45 @@ const StoreNavbar = () => {
       >
         <ul className="flex gap-4 justify-start">
           <NavbarItem className="flex gap-5">
-            <Link href={""}>Cart</Link>
-            <Link href={"/products"}>Account</Link>
+            <Link href={"/store/cart"} className="flex gap-1 items-center">
+              <ShoppingCartIcon className="size-4" /> Cart
+            </Link>
+            <Link href={"/"} className="flex gap-1 items-center">
+              <UserIcon className="size-4" /> Account
+            </Link>
           </NavbarItem>
         </ul>
-
-        {/* <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem> */}
-        {/* <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem> */}
-        {/* <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
-        </NavbarItem> */}
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        {/* <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch /> */}
+      <NavbarContent className="sm:hidden basis-1" justify="end">
         <NavbarMenuToggle />
       </NavbarContent>
 
       <NavbarMenu>
-        {/* {searchInput} */}
-        <div className=" mt-2 flex flex-col gap-2">
-          <ul className="flex gap-4 justify-start">
-            <NavbarItem className="flex flex-col gap-5">
-              <Link href={""}>Cart</Link>
-              <Link href={"/"}>Account</Link>
+        <div className="mt-16 flex flex-col gap-2">
+          <ul className="flex flex-col text-sm gap-4">
+            {CATEGORIES.map((category) => {
+              return (
+                <li key={category.id}>
+                  <Link
+                    href={category.id}
+                    className="flex hover:text-primary items-center gap-1"
+                  >
+                    <StoreCategoryIcons value={category.title_id} />
+                    {category.title}{" "}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <ul className="flex gap-4 justify-start mt-10">
+            <NavbarItem className="flex flex-col gap-2">
+              <Link href={"/store/cart"} className="flex gap-1 items-center">
+                <ShoppingCartIcon className="size-4" /> Cart
+              </Link>
+              <Link href={"/"} className="flex gap-1 items-center">
+                <UserIcon className="size-4" /> Account
+              </Link>
             </NavbarItem>
           </ul>
         </div>

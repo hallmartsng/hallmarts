@@ -4,26 +4,16 @@ import StoreHero from "@/components/store/StoreLandingPage/StoreHero";
 import StoreProductLists from "@/components/store/StoreProductLists";
 import StoreTrends from "@/components/store/StoreTrends";
 import {
-  ArrowLeftCircleIcon,
   ArrowRightIcon,
+  BookmarkIcon,
   CalendarDaysIcon,
-  HeartIcon,
-  PauseCircleIcon,
   ShoppingBagIcon,
   TicketIcon,
 } from "@heroicons/react/24/outline";
-import {
-  Button,
-  Calendar,
-  Card,
-  CardBody,
-  CardFooter,
-  Slider,
-} from "@heroui/react";
+import { Calendar } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { today, getLocalTimeZone } from "@internationalized/date";
-import { IoRepeat, IoShuffle } from "react-icons/io5";
 
 export default function StorePage() {
   return (
@@ -236,7 +226,7 @@ export default function StorePage() {
           />
           <Link
             href={"/"}
-            className="rounded-md text-sm sm:flex hidden items-center gap-1 px-4 py-2 text-white font-semibold bg-primary "
+            className="rounded-md text-sm sm:flex hidden items-center gap-1 px-4 py-2  font-semibold bg-primary-50"
           >
             <span>
               <TicketIcon className="size-5" />
@@ -244,11 +234,201 @@ export default function StorePage() {
             <span>Get tickets</span>
           </Link>
         </div>
-        <div className="w-[200px]">
-          List some events and dates and artist: campus artist and top artist
+        <div className="w-full flex flex-col items-start">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-7">
+            <div className="flex flex-col gap-2">
+              <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">
+                <button
+                  className={`group relative h-full  w-full overflow-hidden rounded-lg transition`}
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0 bg-cover bg-center " />
+                  <Image
+                    alt="Card example background"
+                    className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    fill
+                  />
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" />
+
+                  {/* Content */}
+                  <div className="relative z-10 flex h-full flex-col items-start p-4 justify-between  text-white transition-all duration-500 ease-in-out ">
+                    {/* Title */}
+                    <h3 className="text-xl text-left leading-tight font-bold capitalize transition-transform duration-500 ease-in-out group-hover:translate-y-2">
+                      Summer Body
+                    </h3>
+
+                    {/* Tagline */}
+                    <p className=" text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100">
+                      Gold stone
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1 text-white">
+                <span className="flex items-center gap-1">
+                  <CalendarDaysIcon className="size-4" />
+                  <span className="text-xs font-semibold">Nov 20, 2026</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <BookmarkIcon className="size-4" />
+                  <span className="text-xs font-semibold">
+                    University of Abuja
+                  </span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <TicketIcon className="size-4" />
+                  <span className="text-xs font-semibold">#3,500</span>
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">
+                <button
+                  className={`group relative h-full  w-full overflow-hidden rounded-lg transition`}
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0 bg-cover bg-center " />
+                  <Image
+                    alt="Card example background"
+                    className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    fill
+                  />
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" />
+
+                  {/* Content */}
+                  <div className="relative z-10 flex h-full flex-col items-start p-4 justify-between  text-white transition-all duration-500 ease-in-out ">
+                    {/* Title */}
+                    <h3 className="text-xl text-left leading-tight font-bold capitalize transition-transform duration-500 ease-in-out group-hover:translate-y-2">
+                      Summer Body
+                    </h3>
+
+                    {/* Tagline */}
+                    <p className=" text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100">
+                      Gold stone
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1 text-white">
+                <span className="flex items-center gap-1">
+                  <CalendarDaysIcon className="size-4" />
+                  <span className="text-xs font-semibold">Nov 20, 2026</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <BookmarkIcon className="size-4" />
+                  <span className="text-xs font-semibold">
+                    University of Abuja
+                  </span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <TicketIcon className="size-4" />
+                  <span className="text-xs font-semibold">#3,500</span>
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">
+                <button
+                  className={`group relative h-full  w-full overflow-hidden rounded-lg transition`}
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0 bg-cover bg-center " />
+                  <Image
+                    alt="Card example background"
+                    className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    fill
+                  />
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" />
+
+                  {/* Content */}
+                  <div className="relative z-10 flex h-full flex-col items-start p-4 justify-between  text-white transition-all duration-500 ease-in-out ">
+                    {/* Title */}
+                    <h3 className="text-xl text-left leading-tight font-bold capitalize transition-transform duration-500 ease-in-out group-hover:translate-y-2">
+                      Summer Body
+                    </h3>
+
+                    {/* Tagline */}
+                    <p className=" text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100">
+                      Gold stone
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1 text-white">
+                <span className="flex items-center gap-1">
+                  <CalendarDaysIcon className="size-4" />
+                  <span className="text-xs font-semibold">Nov 20, 2026</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <BookmarkIcon className="size-4" />
+                  <span className="text-xs font-semibold">
+                    University of Abuja
+                  </span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <TicketIcon className="size-4" />
+                  <span className="text-xs font-semibold">#3,500</span>
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">
+                <button
+                  className={`group relative h-full  w-full overflow-hidden rounded-lg transition`}
+                >
+                  {/* Background Image */}
+                  <div className="absolute inset-0 bg-cover bg-center " />
+                  <Image
+                    alt="Card example background"
+                    className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    fill
+                  />
+                  {/* Dark Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" />
+
+                  {/* Content */}
+                  <div className="relative z-10 flex h-full flex-col items-start p-4 justify-between  text-white transition-all duration-500 ease-in-out ">
+                    {/* Title */}
+                    <h3 className="text-xl text-left leading-tight font-bold capitalize transition-transform duration-500 ease-in-out group-hover:translate-y-2">
+                      Summer Body
+                    </h3>
+
+                    {/* Tagline */}
+                    <p className=" text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:-translate-y-2 group-hover:opacity-100">
+                      Gold stone
+                    </p>
+                  </div>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1 text-white">
+                <span className="flex items-center gap-1">
+                  <CalendarDaysIcon className="size-4" />
+                  <span className="text-xs font-semibold">Nov 20, 2026</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <BookmarkIcon className="size-4" />
+                  <span className="text-xs font-semibold">
+                    University of Abuja
+                  </span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <TicketIcon className="size-4" />
+                  <span className="text-xs font-semibold">#3,500</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
           <Link
             href={"/"}
-            className="rounded-md text-sm mt-4 flex sm:hidden items-center gap-1 px-4 py-2 text-white font-semibold bg-primary "
+            className="rounded-md text-sm mt-4 flex sm:hidden items-center gap-1 px-4 py-2 text-black font-semibold bg-primary-50 "
           >
             <span>
               <TicketIcon className="size-5" />
@@ -278,110 +458,6 @@ export default function StorePage() {
           </CardFooter>
         </Card> */}
       </div>
-      <Card
-        isBlurred
-        className="border-none bg-background/60 dark:bg-default-100/50 max-w-[610px]"
-        shadow="sm"
-      >
-        <CardBody>
-          <div className="grid grid-cols-6 md:grid-cols-12 bg-green-300 gap-6 md:gap-4 items-center justify-center">
-            <div className="relative col-span-6 md:col-span-4">
-              <Image
-                alt="Album cover"
-                className="object-cover"
-                height={200}
-                width={500}
-                // shadow="md"
-                src="https://heroui.com/images/album-cover.png"
-                // width="100%"
-              />
-            </div>
-
-            <div className="flex flex-col col-span-6 md:col-span-8">
-              <div className="flex justify-between items-start">
-                <div className="flex flex-col gap-0">
-                  <h3 className="font-semibold text-foreground/90">
-                    Daily Mix
-                  </h3>
-                  <p className="text-small text-foreground/80">12 Tracks</p>
-                  <h1 className="text-large font-medium mt-2">
-                    Frontend Radio
-                  </h1>
-                </div>
-                <Button
-                  isIconOnly
-                  className="text-default-900/60 data-hover:bg-foreground/10! -translate-y-2 translate-x-2"
-                  radius="full"
-                  variant="light"
-                  // onPress={() => setLiked((v) => !v)}
-                >
-                  <HeartIcon />
-                </Button>
-              </div>
-
-              <div className="flex flex-col mt-3 gap-1">
-                <Slider
-                  aria-label="Music progress"
-                  classNames={{
-                    track: "bg-default-500/30",
-                    thumb: "w-2 h-2 after:w-2 after:h-2 after:bg-foreground",
-                  }}
-                  color="foreground"
-                  defaultValue={33}
-                  size="sm"
-                />
-                <div className="flex justify-between">
-                  <p className="text-small">1:23</p>
-                  <p className="text-small text-foreground/50">4:32</p>
-                </div>
-              </div>
-
-              <div className="flex w-full items-center justify-center">
-                <Button
-                  isIconOnly
-                  className="data-hover:bg-foreground/10!"
-                  radius="full"
-                  variant="light"
-                >
-                  <IoRepeat className="text-foreground/80" />
-                </Button>
-                <Button
-                  isIconOnly
-                  className="data-hover:bg-foreground/10!"
-                  radius="full"
-                  variant="light"
-                >
-                  <ArrowLeftCircleIcon />
-                </Button>
-                <Button
-                  isIconOnly
-                  className="w-auto h-auto data-hover:bg-foreground/10!"
-                  radius="full"
-                  variant="light"
-                >
-                  <PauseCircleIcon className="size-5" />
-                </Button>
-                <Button
-                  isIconOnly
-                  className="data-hover:bg-foreground/10!"
-                  radius="full"
-                  variant="light"
-                >
-                  <ArrowRightIcon className="size-5" />
-                </Button>
-                <Button
-                  isIconOnly
-                  className="data-hover:bg-foreground/10!"
-                  radius="full"
-                  variant="light"
-                >
-                  <IoShuffle className="text-foreground/80" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
     </section>
   );
 }
