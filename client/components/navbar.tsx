@@ -130,6 +130,7 @@ export const Navbar = () => {
                   // endContent={icons.chevron}
                   radius="sm"
                   variant="light"
+                  aria-label="Campus store"
                 >
                   Campus Solution
                 </Button>

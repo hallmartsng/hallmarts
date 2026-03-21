@@ -21,7 +21,7 @@ export default function StorePage() {
       <StoreHero />
 
       {/* Uniport Merch  */}
-      <div className="flex w-full sm:flex-row flex-col justify-between items-center gap-4 mb-10 sm:mb-0">
+      <div className="flex w-full max-w-[1230px] sm:flex-row flex-col justify-between items-center gap-4 mb-10 sm:mb-0">
         <div className="flex font-honk flex-col sm:w-[32rem] gap-4 items-start sm:px-0 px-4">
           <SectionHeader
             props={{
@@ -32,7 +32,7 @@ export default function StorePage() {
           />
           <Link
             href={"/"}
-            className="rounded-md sm:flex hidden text-sm  items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
+            className="rounded-lg sm:flex hidden text-sm  items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
           >
             <span>
               <ShoppingBagIcon className="size-5" />
@@ -43,7 +43,7 @@ export default function StorePage() {
         <StoreProductLists gridColsDesktop="sm:grid-cols-4" />
         <Link
           href={"/"}
-          className="rounded-md sm:hidden  text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
+          className="rounded-lg sm:hidden  text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
         >
           <span>
             <ShoppingBagIcon className="size-5" />
@@ -128,7 +128,7 @@ export default function StorePage() {
       </div>
 
       {/* Unilag week  */}
-      <div className="flex sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
+      <div className="flex max-w-[1230px] sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
         <div
           className={`group relative flex  sm:h-[350px] h-[380px] sm:w-full w-[20rem] overflow-hidden rounded-lg transition`}
         >
@@ -143,7 +143,7 @@ export default function StorePage() {
             </p>
             <Link
               href={"/"}
-              className="rounded-md text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
+              className="rounded-lg text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
             >
               <span>
                 <CalendarDaysIcon className="size-5" />
@@ -170,7 +170,7 @@ export default function StorePage() {
           />
           <Link
             href={"/"}
-            className="rounded-md text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
+            className="rounded-lg text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
           >
             <span>
               <ShoppingBagIcon className="size-5" />
@@ -198,7 +198,7 @@ export default function StorePage() {
       </div>
 
       {/* Calendar  */}
-      <div className="flex w-full rounded-md shadow sm:p-8 p-4 sm:flex-row flex-col gap-4 items-center bg-fuchsia-800">
+      <div className="flex w-full max-w-[1230px] rounded-md shadow sm:p-8 p-4 sm:flex-row flex-col gap-10 justify-between  items-center bg-fuchsia-800">
         <div className="sm:w-[800px] w-full flex flex-col sm:items-start items-center gap-4">
           <div className="flex font-honk text-white flex-col gap-4 items-start sm:px-0 px-4">
             <SectionHeader
@@ -226,7 +226,7 @@ export default function StorePage() {
           />
           <Link
             href={"/"}
-            className="rounded-md text-sm sm:flex hidden items-center gap-1 px-4 py-2  font-semibold bg-primary-50"
+            className="rounded-lg text-sm sm:flex hidden items-center gap-1 px-4 py-2  font-semibold bg-primary-50"
           >
             <span>
               <TicketIcon className="size-5" />
@@ -234,7 +234,7 @@ export default function StorePage() {
             <span>Get tickets</span>
           </Link>
         </div>
-        <div className="w-full flex flex-col items-start">
+        <div className="w-full flex  flex-col items-end">
           <div className="grid grid-cols-2 gap-x-2 gap-y-7">
             <div className="flex flex-col gap-2">
               <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">

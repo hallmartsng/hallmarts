@@ -11,42 +11,42 @@ export default function StoreProductLists({
   const list = [
     {
       title: "Orange",
-      img: "/images/fruit-1.jpeg",
+      img: "/sample_image.jfif",
       price: "$5.50",
     },
     {
       title: "Tangerine",
-      img: "/images/fruit-2.jpeg",
+      img: "/max-payne.jpg",
       price: "$3.00",
     },
     {
       title: "Raspberry",
-      img: "/images/fruit-3.jpeg",
+      img: "/sample_image.jfif",
       price: "$10.00",
     },
     {
       title: "Lemon",
-      img: "/images/fruit-4.jpeg",
+      img: "/sample_image.jfif",
       price: "$5.30",
     },
     {
       title: "Avocado",
-      img: "/images/fruit-5.jpeg",
+      img: "/sample_image.jfif",
       price: "$15.70",
     },
     {
       title: "Lemon 2",
-      img: "/images/fruit-6.jpeg",
+      img: "/max-payne.jpg",
       price: "$8.00",
     },
     {
       title: "Banana",
-      img: "/images/fruit-7.jpeg",
+      img: "/sample_image.jfif",
       price: "$7.50",
     },
     {
       title: "Watermelon",
-      img: "/images/fruit-8.jpeg",
+      img: "/sample_image.jfif",
       price: "$12.20",
     },
   ];
@@ -77,14 +77,14 @@ export default function StoreProductLists({
               <b>{item.title}</b>
               <p className="text-default-500">{item.price}</p>
             </div>
-            <button
+            {/* <button
               onClick={() => {
                 return console.log("add to cart");
               }}
               className="bg-primary text-xs font-semibold rounded-md px-4 py-2 text-white"
             >
               Add to cart
-            </button>
+            </button> */}
           </CardFooter>
         </Card>
       ))}

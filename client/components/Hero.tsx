@@ -79,7 +79,7 @@ const Hero = () => {
             <Button
               as={"a"}
               href="/vendor/auth?tab=signup"
-              className="px-3 py-2 bg-primary hover:bg-primary/90 text-white transition rounded-lg font-medium"
+              className=" bg-primary  text-white transition font-medium"
             >
               Start selling
             </Button>

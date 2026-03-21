@@ -133,10 +133,10 @@ const StoreNavbar = () => {
         <ul className="flex gap-4 justify-start">
           <NavbarItem className="flex gap-5">
             <Link href={"/store/cart"} className="flex gap-1 items-center">
-              <ShoppingCartIcon className="size-4" /> Cart
+              <ShoppingCartIcon className="size-5" /> Cart
             </Link>
             <Link href={"/"} className="flex gap-1 items-center">
-              <UserIcon className="size-4" /> Account
+              <UserIcon className="size-5" /> Account
             </Link>
           </NavbarItem>
         </ul>

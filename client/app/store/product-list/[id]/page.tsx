@@ -63,7 +63,7 @@ export default function StoreSearchPage() {
             <StoreProductLists gridColsDesktop="sm:grid-cols-6" />
           </div>
           <div className="my-5 flex justify-center">
-            <button className="bg-white px-4 py-2 rounded-md shadow text-xs font-semibold">
+            <button className="bg-white px-4 py-2 rounded-lg shadow text-xs font-semibold">
               Load more products
             </button>
           </div>

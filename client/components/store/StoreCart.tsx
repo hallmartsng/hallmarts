@@ -13,6 +13,8 @@ import {
   User,
   Spinner,
   Tooltip,
+  Input,
+  Button,
 } from "@heroui/react";
 
 import {
@@ -23,6 +25,7 @@ import {
   // TrashIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type ProductType = {
   _id: string;
@@ -34,6 +37,7 @@ type ProductType = {
 };
 
 const StoreCart = () => {
+  const router = useRouter();
   const products: ProductType[] = [
     {
       _id: "7763393893033",
@@ -155,6 +159,7 @@ const StoreCart = () => {
     <>
       <Table
         isHeaderSticky
+        aria-label="cart table"
         // bottomContent={
         //   <div className="flex justify-end py-4">
         //     <Pagination
@@ -238,6 +243,57 @@ const StoreCart = () => {
           <TableBody emptyContent={"No data to display."}>{[]}</TableBody>
         )}
       </Table>
+      <div className="w-full flex sm:flex-row flex-col gap-8 mt-3 justify-between items-start">
+        <div className="w-full sm:w-auto">
+          <Input
+            type="text"
+            name="discoun_code"
+            endContent={
+              <Button className="bg-black text-white font-semibold" size="sm">
+                Apply
+              </Button>
+            }
+            aria-label="discount code"
+            placeholder="Enter discoutn code"
+          />
+        </div>
+        <div className="sm:flex hidden flex-col gap-2 items-end">
+          <strong>Sub total: $80.00</strong>
+          <small>Discount. $60</small>
+          <h1 className="font-extrabold text-lg">Total : $80.00</h1>
+          <Button
+            onPress={() => {
+              router.push("/store/checkout");
+            }}
+            className="bg-primary text-white font-semibold"
+          >
+            Proceed to checkout
+          </Button>
+        </div>
+        <div className="flex sm:hidden flex-col gap-2 w-full font-medium">
+          <span className="flex items-center justify-between w-full">
+            <span>Sub total:</span>
+            <span>$80.00</span>
+          </span>
+          <span className="flex items-center justify-between w-full">
+            <span>Discount</span>
+            <span>$60</span>
+          </span>
+          <span className="flex items-center justify-between w-full">
+            <span>Total:</span>
+            <span>$80.00</span>
+          </span>
+
+          <Button
+            onPress={() => {
+              router.push("/store/checkout");
+            }}
+            className="bg-primary text-white font-semibold"
+          >
+            Proceed to checkout
+          </Button>
+        </div>
+      </div>
     </>
   );
 };

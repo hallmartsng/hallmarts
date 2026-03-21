@@ -147,7 +147,7 @@ const AuthLayout = () => {
             aria-label="Options"
             selectedKey={selected}
             onSelectionChange={(value) => setSelected(String(value))}
-            color={"danger"}
+            color={"primary"}
           >
             <Tab key="signup" title="Register">
               <div className="flex justify-center my-4">

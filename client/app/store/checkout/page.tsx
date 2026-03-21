@@ -1,4 +1,4 @@
-import StoreCart from "@/components/store/StoreCart";
+import StoreCheckout from "@/components/store/StoreCheckout";
 
 export default function StoreCartPage() {
   return (
@@ -6,10 +6,10 @@ export default function StoreCartPage() {
       <div className="sm:w-[1230px] mx-auto w-full gap-5 flex flex-col items-start justify-start">
         <div className="flex justify-start w-full">
           <h1 className="font-extrabold text-left sm:text-3xl text-xl">
-            Your Shopping Cart
+            Checkout
           </h1>
         </div>
-        <StoreCart />
+        <StoreCheckout />
       </div>
     </section>
   );
