@@ -1,7 +1,7 @@
 "use client";
 import SectionHeader from "@/components/store/SectionHeader";
 import StoreHero from "@/components/store/StoreLandingPage/StoreHero";
-import StoreProductLists from "@/components/store/StoreProductLists";
+import StoreProductLists from "@/components/store/StoreProductListPage/StoreProductLists";
 import StoreTrends from "@/components/store/StoreTrends";
 import {
   ArrowRightIcon,

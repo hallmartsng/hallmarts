@@ -1,4 +1,4 @@
-import StoreCart from "@/components/store/StoreCart";
+import StoreCart from "@/components/store/StoreCartPage/StoreCart";
 
 export default function StoreCartPage() {
   return (

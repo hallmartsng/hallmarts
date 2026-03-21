@@ -1,5 +1,6 @@
 "use client";
 import { Card, CardBody, CardFooter, Image } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface StoreProductListsProps {
@@ -8,6 +9,7 @@ interface StoreProductListsProps {
 export default function StoreProductLists({
   gridColsDesktop = "sm:grid-cols-8",
 }: StoreProductListsProps) {
+  const router = useRouter();
   const list = [
     {
       title: "Orange",
@@ -60,7 +62,7 @@ export default function StoreProductLists({
           isPressable
           shadow="sm"
           className="rounded-md"
-          onPress={() => console.log("item pressed")}
+          onPress={() => router.push(`/store/product/${item.title}`)}
         >
           <CardBody className="overflow-visible p-0">
             <Image

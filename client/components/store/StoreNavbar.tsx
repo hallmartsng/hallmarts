@@ -153,7 +153,7 @@ const StoreNavbar = () => {
               return (
                 <li key={category.id}>
                   <Link
-                    href={category.id}
+                    href={`/store/product-list/${category.id}`}
                     className="flex hover:text-primary items-center gap-1"
                   >
                     <StoreCategoryIcons value={category.title_id} />

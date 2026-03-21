@@ -1,4 +1,4 @@
-import StoreCheckout from "@/components/store/StoreCheckout";
+import StoreCheckout from "@/components/store/StoreCheckoutPage/StoreCheckout";
 
 export default function StoreCartPage() {
   return (

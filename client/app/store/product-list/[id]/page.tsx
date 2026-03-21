@@ -2,7 +2,7 @@
 import FilterCampuses from "@/components/FilterCampus";
 import StoreFilterForm from "@/components/store/forms/StoreFilterForm";
 import StoreCategories from "@/components/store/StoreCategories";
-import StoreProductLists from "@/components/store/StoreProductLists";
+import StoreProductLists from "@/components/store/StoreProductListPage/StoreProductLists";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { Input, NumberInput } from "@heroui/react";
 
