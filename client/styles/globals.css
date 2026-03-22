@@ -88,7 +88,6 @@ textarea {
 .image-gallery-slide .image-gallery-image {
   width: 100%;
   object-fit: cover;
-  height: 100%;
 }
 
 .image-gallery-slide-wrapper button {
@@ -130,10 +129,9 @@ textarea {
 }
 
 .image-gallery .image-gallery-thumbnail:hover {
-  /* border: 3px solid #ff5733;  */
-  border: none;
-  outline: 2px solid #ff5733;
-  border-radius: 14px;
+  outline: none;
+  border: 3px solid #ff5733; /* Change to your desired color */
+  border-radius: 14px; /* Example: Add rounded corners */
 }
 
 .image-gallery-thumbnail img {

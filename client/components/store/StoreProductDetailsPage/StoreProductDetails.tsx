@@ -17,11 +17,32 @@ const StoreProductDetails = () => {
           Product details: <strong>Nike Sportware</strong>{" "}
         </h1>
       </div>
-      <div className="flex sm:flex-row flex-col gap-5 item-start w-full justify-between">
-        <div className="sm:w-[550px]">
+      {/* <div className="flex sm:flex-row flex-col gap-5 item-start w-full justify-between">
+        <ProductImageGallery />
+
+        <ProductOverView />
+      </div> */}
+      <div className="flex lg:flex-row flex-col gap-10 items-start">
+        <div className="lg:w-[400px] w-full">
           <ProductImageGallery />
         </div>
         <ProductOverView />
+        <div className="p-4 w-[200px] text-sm border-gray-300 border-1 rounded-lg sm:flex hidden flex-col gap-5">
+          <ul>
+            <li>
+              <strong>Campus:</strong> Babcock univeristy
+            </li>
+            <li>
+              <strong>Department:</strong> Sociology
+            </li>
+          </ul>
+          <p>
+            {" "}
+            Mercy Anulla is a student of Babcock univeristy, in the department
+            of Sociology, that provides quality fashion pieces for campus
+            students at affordable prices.
+          </p>
+        </div>
       </div>
 
       {/* Descriptions and comments  */}

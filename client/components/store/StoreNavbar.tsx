@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import SearchBar from "./SearchBar";
-import { ShoppingCartIcon, UserIcon } from "@heroicons/react/24/outline";
+import { ShoppingBagIcon, UserIcon } from "@heroicons/react/24/outline";
 import {
   StoreCategoryIcons,
   StoreCategoryIconsTypes,
@@ -133,7 +133,7 @@ const StoreNavbar = () => {
         <ul className="flex gap-4 justify-start">
           <NavbarItem className="flex gap-5">
             <Link href={"/store/cart"} className="flex gap-1 items-center">
-              <ShoppingCartIcon className="size-5" /> Cart
+              <ShoppingBagIcon className="size-5" /> Cart
             </Link>
             <Link href={"/"} className="flex gap-1 items-center">
               <UserIcon className="size-5" /> Account
@@ -166,7 +166,7 @@ const StoreNavbar = () => {
           <ul className="flex gap-4 justify-start mt-10">
             <NavbarItem className="flex flex-col gap-2">
               <Link href={"/store/cart"} className="flex gap-1 items-center">
-                <ShoppingCartIcon className="size-4" /> Cart
+                <ShoppingBagIcon className="size-4" /> Cart
               </Link>
               <Link href={"/"} className="flex gap-1 items-center">
                 <UserIcon className="size-4" /> Account
