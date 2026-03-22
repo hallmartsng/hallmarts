@@ -6,6 +6,8 @@ import ProductOverView from "./ProductOverView";
 import ProductReview from "./ProductReview";
 import ProductVendor from "./ProductVendor";
 import StoreProductLists from "../StoreProductListPage/StoreProductLists";
+import ProductImageGallery from "./ProductImageGallery";
+import ProductDescription from "./ProductDescription";
 
 const StoreProductDetails = () => {
   return (
@@ -16,14 +18,18 @@ const StoreProductDetails = () => {
         </h1>
       </div>
       <div className="flex sm:flex-row flex-col gap-5 item-start w-full justify-between">
-        <div>Product images</div>
+        <div className="sm:w-[550px]">
+          <ProductImageGallery />
+        </div>
         <ProductOverView />
       </div>
 
       {/* Descriptions and comments  */}
       <div className=" bg-white py-4 rounded-lg shadow flex flex-col gap-4">
         <Tabs aria-label="Tabs variants" variant={"underlined"} color="primary">
-          <Tab key="description" title="Description" />
+          <Tab key="description" title="Description">
+            <ProductDescription />
+          </Tab>
           <Tab key="reviews" title="Reviews">
             <ProductReview />
           </Tab>

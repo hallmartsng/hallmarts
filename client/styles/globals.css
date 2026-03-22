@@ -81,3 +81,61 @@ select,
 textarea {
   font-size: 16px;
 }
+
+.image-gallery-swipe .image-gallery-slides {
+  border-radius: 20px;
+}
+.image-gallery-slide .image-gallery-image {
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+
+.image-gallery-slide-wrapper button {
+  filter: none;
+}
+.image-gallery-slide-wrapper .image-gallery-left-nav {
+  position: absolute;
+  top: 40px;
+  left: 72%;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+.image-gallery-slide-wrapper .image-gallery-right-nav {
+  position: absolute;
+  top: 40px;
+  right: 10%;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.image-gallery-slide-wrapper .image-gallery-left-nav .image-gallery-svg {
+  width: 20px;
+  height: 20px;
+  color: black;
+}
+.image-gallery-slide-wrapper .image-gallery-right-nav .image-gallery-svg {
+  width: 20px;
+  height: 20px;
+  color: black;
+}
+
+.image-gallery .image-gallery-thumbnail.active,
+.image-gallery .image-gallery-thumbnail:focus {
+  outline: none;
+  border: 3px solid #ff5733; /* Change to your desired color */
+  border-radius: 14px; /* Example: Add rounded corners */
+}
+
+.image-gallery .image-gallery-thumbnail:hover {
+  /* border: 3px solid #ff5733;  */
+  border: none;
+  outline: 2px solid #ff5733;
+  border-radius: 14px;
+}
+
+.image-gallery-thumbnail img {
+  border-radius: 10px;
+}

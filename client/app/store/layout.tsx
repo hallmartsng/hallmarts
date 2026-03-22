@@ -1,5 +1,5 @@
 import StoreNavbar from "@/components/store/StoreNavbar";
-
+import "react-image-gallery/styles/image-gallery.css";
 export default function AboutLayout({
   children,
 }: {

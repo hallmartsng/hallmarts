@@ -42,6 +42,13 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <main className=" flex-grow">{children}</main>
         </Providers>
+        {/* <script
+          type="text/javascript"
+          id="hs-script-loader"
+          async
+          defer
+          src="//js-na1.hs-scripts.com/48927544.js"
+        ></script> */}
       </body>
     </html>
   );
