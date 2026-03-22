@@ -80,45 +80,6 @@ const StoreCart = () => {
       case "price":
         return <div className="text-sm w-[100px]">{product.price}</div>;
 
-      // case 'budget':
-      //   return `₦${product.budget.toLocaleString()}`;
-
-      // case "startDate":
-      //   return product.startDate;
-      // case "endDate":
-      //   return product.endDate;
-
-      // case "phase":
-      //   return <div className="capitalize">{product.phase}</div>;
-
-      // case "assignedTo":
-      //   return (
-      //     <div className="capitalize truncate w-1/2">
-      //       {product.assignedTo[0].email}
-      //     </div>
-      //   );
-
-      // case "status":
-      //   return (
-      //     <Progress
-      //       aria-label="Project progress"
-      //       classNames={{
-      //         base: "w-[220px]",
-      //         indicator: `${project.status === 100 ? "bg-green-400" : "bg-[#F19645]"}`,
-      //         label: "tracking-wider font-medium text-default-600",
-      //         value: "text-sm",
-      //       }}
-      //       showValueLabel={true}
-      //       size="md"
-      //       value={project.status}
-      //     />
-      //   );
-
-      // case "location":
-      //   return (
-      //     <div className="text-sm capitalize">{project.location.state}</div>
-      //   );
-
       case "quantity":
         return (
           <div className="flex gap-2 -ml-7">
@@ -157,65 +118,16 @@ const StoreCart = () => {
 
   return (
     <>
-      <Table
-        isHeaderSticky
-        aria-label="cart table"
-        // bottomContent={
-        //   <div className="flex justify-end py-4">
-        //     <Pagination
-        //       color="warning"
-        //       page={page}
-        //       total={totalPages}
-        //       onChange={setPage}
-        //       showControls
-        //     />
-        //   </div>
-        // }
-        aria-sort="other"
-      >
+      <Table isHeaderSticky aria-label="cart table" aria-sort="other">
         <TableHeader>
-          <TableColumn
-            key="name"
-            // onClick={() => handleSort("name")}
-            allowsSorting
-          >
+          <TableColumn key="name" allowsSorting>
             Item
           </TableColumn>
 
-          {/* <TableColumn
-            key="client"
-            onClick={() => handleSort('client')}
-            allowsSorting
-          >
-            Client
-          </TableColumn> */}
-
-          <TableColumn
-            key="price"
-            // onClick={() => handleSort("startDate")}
-            // allowsSorting
-          >
-            Price
-          </TableColumn>
-          {/* <TableColumn key="endDate">End Date</TableColumn>
-
-          <TableColumn key="status">Status</TableColumn>
-
-          <TableColumn key="phase">Phase</TableColumn> */}
-          {/* {operationsTab !== "owner" ? (
-            <TableColumn key="assignedTo">Supervisor</TableColumn>
-          ) : (
-            <></>
-          )} */}
+          <TableColumn key="price">Price</TableColumn>
 
           <TableColumn key="quantity">Quantity</TableColumn>
           <TableColumn key="total">Total</TableColumn>
-
-          {/* {operationsTab === "owner" && !isLoading ? (
-            <TableColumn key="actions">Action</TableColumn>
-          ) : (
-            <></>
-          )} */}
         </TableHeader>
 
         {products.length > 0 || false ? (
