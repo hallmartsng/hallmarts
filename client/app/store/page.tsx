@@ -152,7 +152,7 @@ export default function StorePage() {
             </Link>
           </div>
           <Image
-            src={"https://heroui.com/images/hero-card-complete.jpeg"}
+            src={"/banner.png"}
             alt="Campus weekend"
             className="z-0 w-full h-full scale-125 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
             fill
@@ -246,7 +246,7 @@ export default function StorePage() {
                   <Image
                     alt="Card example background"
                     className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    src="/banner.png"
                     fill
                   />
                   {/* Dark Gradient Overlay */}
@@ -293,7 +293,7 @@ export default function StorePage() {
                   <Image
                     alt="Card example background"
                     className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    src="/banner.png"
                     fill
                   />
                   {/* Dark Gradient Overlay */}
@@ -340,7 +340,7 @@ export default function StorePage() {
                   <Image
                     alt="Card example background"
                     className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    src="/banner.png"
                     fill
                   />
                   {/* Dark Gradient Overlay */}
@@ -387,7 +387,7 @@ export default function StorePage() {
                   <Image
                     alt="Card example background"
                     className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                    src="https://heroui.com/images/hero-card-complete.jpeg"
+                    src="/banner.png"
                     fill
                   />
                   {/* Dark Gradient Overlay */}

@@ -1,11 +1,6 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Navbar as HeroUINavbar,
   NavbarBrand,
   NavbarContent,
@@ -14,9 +9,12 @@ import {
   NavbarMenuToggle,
 } from "@heroui/react";
 import Link from "next/link";
-import { siteConfig } from "@/config/site";
 
 const VendorDashboardNavbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
   const icons = {
     delivery: (
       <svg
@@ -73,7 +71,13 @@ const VendorDashboardNavbar = () => {
     ),
   };
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" shouldHideOnScroll>
+    <HeroUINavbar
+      maxWidth="xl"
+      position="sticky"
+      shouldHideOnScroll
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link className="flex justify-start items-center gap-1" href="/">
@@ -91,12 +95,24 @@ const VendorDashboardNavbar = () => {
       >
         <ul className="flex gap-4 justify-start">
           <NavbarItem className="flex gap-5">
-            <Link href={"/vendor/dashboard"}>Dashboard</Link>
-            <Link href={"/vendor/dashboard/products"}>Products</Link>
-            <Link href={"/vendor/dashboard/orders"}>Orders</Link>
-            <Link href={"/vendor/dashboard/customers"}>Customers</Link>
-            <Link href={"/vendor/dashboard/calendar"}>Calendar</Link>
-            <Link href={"/vendor/dashboard/profile"}>Profile</Link>
+            <Link href={"/vendor/dashboard"} onClick={closeMenu}>
+              Dashboard
+            </Link>
+            <Link href={"/vendor/dashboard/products"} onClick={closeMenu}>
+              Products
+            </Link>
+            <Link href={"/vendor/dashboard/orders"} onClick={closeMenu}>
+              Orders
+            </Link>
+            <Link href={"/vendor/dashboard/customers"} onClick={closeMenu}>
+              Customers
+            </Link>
+            <Link href={"/vendor/dashboard/calendar"} onClick={closeMenu}>
+              Calendar
+            </Link>
+            <Link href={"/vendor/dashboard/profile"} onClick={closeMenu}>
+              Profile
+            </Link>
           </NavbarItem>
         </ul>
 
@@ -140,12 +156,24 @@ const VendorDashboardNavbar = () => {
         <div className=" mt-2 flex flex-col gap-2">
           <ul className="flex gap-4 justify-start">
             <NavbarItem className="flex flex-col gap-5">
-              <Link href={"/vendor/dashboard"}>Dashboard</Link>
-              <Link href={"/vendor/dashboard/products"}>Products</Link>
-              <Link href={"/vendor/dashboard/orders"}>Orders</Link>
-              <Link href={"/vendor/dashboard/customers"}>Customers</Link>
-              <Link href={"/vendor/dashboard/calendar"}>Calendar</Link>
-              <Link href={"/vendor/dashboard/profile"}>Profile</Link>
+              <Link href={"/vendor/dashboard"} onClick={closeMenu}>
+                Dashboard
+              </Link>
+              <Link href={"/vendor/dashboard/products"} onClick={closeMenu}>
+                Products
+              </Link>
+              <Link href={"/vendor/dashboard/orders"} onClick={closeMenu}>
+                Orders
+              </Link>
+              <Link href={"/vendor/dashboard/customers"} onClick={closeMenu}>
+                Customers
+              </Link>
+              <Link href={"/vendor/dashboard/calendar"} onClick={closeMenu}>
+                Calendar
+              </Link>
+              <Link href={"/vendor/dashboard/profile"} onClick={closeMenu}>
+                Profile
+              </Link>
             </NavbarItem>
           </ul>
         </div>

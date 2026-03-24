@@ -6,13 +6,9 @@ import {
   NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
-  NavbarMenuItem,
 } from "@heroui/navbar";
 import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
-// import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
-// import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import {
@@ -21,6 +17,8 @@ import {
   DropdownTrigger,
   DropdownMenu,
 } from "@heroui/react";
+import { useState } from "react";
+import Link from "next/link";
 
 export const Navbar = () => {
   // const searchInput = (
@@ -43,6 +41,9 @@ export const Navbar = () => {
   //     type="search"
   //   />
   // );
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => setIsMenuOpen(false);
 
   const icons = {
     delivery: (
@@ -101,7 +102,13 @@ export const Navbar = () => {
   };
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" shouldHideOnScroll>
+    <HeroUINavbar
+      maxWidth="xl"
+      position="sticky"
+      shouldHideOnScroll
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -119,18 +126,21 @@ export const Navbar = () => {
       >
         <ul className="hidden items-center lg:flex gap-4 justify-start ml-2">
           <NavbarContent>
-            <Link href="/store">Online Store</Link>
+            <Link href="/store" onClick={closeMenu}>
+              Store
+            </Link>
           </NavbarContent>
           <Dropdown>
             <NavbarItem>
               <DropdownTrigger>
                 <Button
                   disableRipple
-                  className="p-0 bg-transparent text-gray-600 data-[hover=true]:bg-transparent"
+                  className="p-0 text-medium bg-transparent data-[hover=true]:bg-transparent"
                   // endContent={icons.chevron}
-                  radius="sm"
+
                   variant="light"
                   aria-label="Campus store"
+                  onPress={closeMenu}
                 >
                   Campus Solution
                 </Button>
@@ -146,13 +156,16 @@ export const Navbar = () => {
                 key="marketing"
                 description="Campus digital marketing hub"
                 startContent={icons.marketing}
+                onClick={closeMenu}
+                href="/market-place"
               >
                 Martet place
               </DropdownItem>
               <DropdownItem
                 key="delivery"
-                description="Package transfer through all campus"
+                description="Travel & transfer packages around all campus"
                 startContent={icons.delivery}
+                onClick={closeMenu}
               >
                 Campus Logistics
               </DropdownItem>
@@ -164,6 +177,7 @@ export const Navbar = () => {
             aria-label="blog"
             className="flex gap-1"
             href={siteConfig.links.blog}
+            onClick={closeMenu}
           >
             {icons.blogs} <span>Blog</span>
           </Link>
@@ -206,16 +220,22 @@ export const Navbar = () => {
       <NavbarMenu>
         {/* {searchInput} */}
         <div className=" mt-2 flex flex-col gap-2">
-          <ul className="flex gap-4 justify-start ml-2">
+          <NavbarItem className="">
+            <Link href="/store" onClick={closeMenu}>
+              Store
+            </Link>
+          </NavbarItem>
+          <ul className="flex gap-4 justify-start">
             <Dropdown>
               <NavbarItem>
                 <DropdownTrigger>
                   <Button
                     disableRipple
-                    className="p-0 bg-transparent text-gray-600 data-[hover=true]:bg-transparent"
+                    className="p-0 text-medium bg-transparent data-[hover=true]:bg-transparent"
                     // endContent={icons.chevron}
-                    radius="sm"
+
                     variant="light"
+                    onPress={closeMenu}
                   >
                     Campus Solution
                   </Button>
@@ -231,6 +251,7 @@ export const Navbar = () => {
                   key="marketing"
                   description="Campus digital marketing hub"
                   startContent={icons.marketing}
+                  onClick={closeMenu}
                 >
                   Martet place
                 </DropdownItem>
@@ -238,6 +259,7 @@ export const Navbar = () => {
                   key="delivery"
                   description="Package transfer through all campus"
                   startContent={icons.delivery}
+                  onClick={closeMenu}
                 >
                   Campus Logistics
                 </DropdownItem>
@@ -249,6 +271,7 @@ export const Navbar = () => {
               aria-label="blog"
               className="flex gap-1"
               href={siteConfig.links.blog}
+              onClick={closeMenu}
             >
               {icons.blogs} <span>Blog</span>
             </Link>

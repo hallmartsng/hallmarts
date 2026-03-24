@@ -20,9 +20,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex w-full bg-gray-50 flex-col items-center  min-h-screen ">
+    <section className="flex w-full bg-primary-50 flex-col items-center  min-h-screen ">
       <VendorDashboardNavbar />
-      <div className="sm:w-[1240px] sm:px-0 px-2 ">{children}</div>
+      <div className="sm:w-[1240px] w-full sm:px-0 px-2 ">{children}</div>
     </section>
   );
 }

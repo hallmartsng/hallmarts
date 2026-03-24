@@ -20,7 +20,7 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-600"
+            className="inline-flex items-center gap-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-600"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,7 @@ const Hero = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-gray-600 text-lg max-w-lg"
+            className="text-gray-600 sm:text-lg text-sm sm:mt-0 mt-2 max-w-lg"
           >
             Hallmarts powers buying and selling across universities — connecting
             vendors, students, and transactions in one seamless network.
@@ -74,7 +74,7 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-wrap gap-4 sm:pt-2"
+            className="flex items-center w-full gap-4 sm:pt-2"
           >
             <Button
               as={"a"}
@@ -89,7 +89,10 @@ const Hero = () => {
                 <Button variant="bordered"> Explore marketplace</Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                <DropdownItem key="whatsapp">
+                <DropdownItem
+                  key="whatsapp"
+                  href="https://wa.me/message/F5MIQ3F63M5LI1"
+                >
                   <span className="flex gap-2 items-center">
                     {" "}
                     <svg

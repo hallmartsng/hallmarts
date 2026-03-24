@@ -41,9 +41,9 @@ const SignUp = () => {
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
     React.useState<boolean>(false);
 
-  const [password, setPassword] = React.useState("");
+  const [password, setPassword] = React.useState<string | null>("");
+  const [retryPassword, setRetryPassword] = React.useState<string | null>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [retryPassword, setRetryPassword] = React.useState("");
   const [term, setTerm] = React.useState<boolean>(false);
 
   const [countryCode, setCountryCode] = React.useState<Country>("NG");
@@ -53,20 +53,22 @@ const SignUp = () => {
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   // Real-time password validation
-  const getPasswordError = (value: string) => {
-    if (value.length < 4) {
-      return "Password must be 4 characters or more";
-    }
-    if ((value.match(/[A-Z]/g) || []).length < 1) {
-      return "Password needs at least 1 uppercase letter";
-    }
-    if ((value.match(/[^a-z]/gi) || []).length < 1) {
-      return "Password needs at least 1 symbol";
+  const getPasswordError = (value: string | null) => {
+    if (value !== null) {
+      if (value.length < 4) {
+        return "Password must be 4 characters or more";
+      }
+      if ((value.match(/[A-Z]/g) || []).length < 1) {
+        return "Password needs at least 1 uppercase letter";
+      }
+      if ((value.match(/[^a-z]/gi) || []).length < 1) {
+        return "Password needs at least 1 symbol";
+      }
     }
 
     return null;
   };
-  const getRetryPasswordError = (value: string) => {
+  const getRetryPasswordError = (value: string | null) => {
     if (value !== password) {
       return "Passwords don't match";
     }
@@ -255,7 +257,7 @@ const SignUp = () => {
           name="password"
           placeholder="Enter your password"
           type={isPasswordVisible ? "text" : "password"}
-          value={password}
+          value={password || ""}
           onValueChange={setPassword}
         />
 
@@ -282,7 +284,7 @@ const SignUp = () => {
           name="retry_password"
           placeholder="Retry password"
           type={isRetryPasswordVisible ? "text" : "password"}
-          value={retryPassword}
+          value={retryPassword || ""}
           onValueChange={setRetryPassword}
         />
 

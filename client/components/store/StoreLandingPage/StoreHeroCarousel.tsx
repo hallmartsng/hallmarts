@@ -15,25 +15,25 @@ interface FeaturedProjectProps {
 const FEATURED_PROJECT: FeaturedProjectProps[] = [
   {
     header: "Northside Commerce (Commercial Office - Kaduna)",
-    image_link: "https://heroui.com/images/hero-card-complete.jpeg",
+    image_link: "/banner.png",
     category: "Commercial",
     filter: "smart-homes",
   },
   {
     header: "Warm Nest (Boho homes)",
-    image_link: "https://heroui.com/images/hero-card-complete.jpeg",
+    image_link: "/banner.png",
     category: "home",
     filter: "smart-homes",
   },
   {
     header: "Vintage Barrel (Wine Store)",
-    image_link: "https://heroui.com/images/hero-card-complete.jpeg",
+    image_link: "/banner.png",
     category: "Vintage",
     filter: "smart-homes",
   },
   {
     header: "Project Haven (3 Bed Shortlet)",
-    image_link: "https://heroui.com/images/hero-card-complete.jpeg",
+    image_link: "/banner.png",
     category: "Shortlet",
     filter: "smart-homes",
   },

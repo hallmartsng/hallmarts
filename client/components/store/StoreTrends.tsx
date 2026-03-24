@@ -16,7 +16,7 @@ const StoreTrends = () => {
           <Image
             alt="Card background"
             className="object-cover rounded-xl"
-            src="https://heroui.com/images/hero-card-complete.jpeg"
+            src="/banner.png"
             width={270}
             height={100}
           />
@@ -32,7 +32,7 @@ const StoreTrends = () => {
           <Image
             alt="Card background"
             className="object-cover rounded-xl"
-            src="https://heroui.com/images/hero-card-complete.jpeg"
+            src="/banner.png"
             width={270}
             height={100}
           />
@@ -48,7 +48,7 @@ const StoreTrends = () => {
           <Image
             alt="Card background"
             className="object-cover rounded-xl"
-            src="https://heroui.com/images/hero-card-complete.jpeg"
+            src="/banner.png"
             width={270}
             height={100}
           />
@@ -64,7 +64,7 @@ const StoreTrends = () => {
           <Image
             alt="Card background"
             className="object-cover rounded-xl"
-            src="https://heroui.com/images/hero-card-complete.jpeg"
+            src="/banner.png"
             width={270}
             height={100}
           />

@@ -18,7 +18,7 @@ import DashboardHeader from "./DashboardHeader";
 import LineChart from "@/components/charts/LineChart";
 import Link from "next/link";
 
-const Overview = () => {
+const DashboardOverview = () => {
   const [filterBy, setFilterBy] = useState<"daily" | "weekly" | "monthly">(
     "weekly",
   );
@@ -77,7 +77,7 @@ const Overview = () => {
         />
         {/* Greetings  */}
         <DashboardHeader
-          header="Mike"
+          header="Welcome Mike 👋"
           subHeader="Here’s what’s happening in your campus store today."
         />
         {/* Analytics cards  */}
@@ -331,4 +331,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default DashboardOverview;
