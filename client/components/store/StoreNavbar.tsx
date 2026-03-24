@@ -21,6 +21,7 @@ import {
   StoreCategoryIconsTypes,
 } from "./StoreCategoryIcons";
 import { IoExitOutline, IoGridOutline } from "react-icons/io5";
+import Logo from "../Logo";
 
 type CategoriesType = {
   title: string;
@@ -85,10 +86,11 @@ const StoreNavbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link
-            className="flex justify-start items-center gap-1"
+            className="flex justify-start  -ml-4 sm:-ml-0 items-center gap-1"
             href="/store"
             onClick={closeMenu}
           >
+            <Logo />
             <span className="font-extrabold">
               Hall<span className="font-extrabold text-primary">Marts</span>
             </span>

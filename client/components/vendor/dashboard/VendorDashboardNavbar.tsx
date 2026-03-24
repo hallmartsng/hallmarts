@@ -9,6 +9,7 @@ import {
   NavbarMenuToggle,
 } from "@heroui/react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 const VendorDashboardNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,8 +81,12 @@ const VendorDashboardNavbar = () => {
     >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <Link className="flex justify-start items-center gap-1" href="/">
+          <Link
+            className="flex justify-start  -ml-4 sm:-ml-0 items-center gap-1"
+            href="/"
+          >
             {/* <Logo /> */}
+            <Logo />
             <span className="font-extrabold">
               Hall<span className="font-extrabold text-primary">Marts</span>
             </span>
