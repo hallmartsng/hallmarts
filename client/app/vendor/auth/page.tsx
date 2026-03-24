@@ -1,5 +1,11 @@
-import AuthLayout from "@/components/vendor/authentication/AuthLayout";
+import React, { Suspense } from "react";
 
+import AuthLayout from "@/components/vendor/authentication/AuthLayout";
+import "react-phone-number-input/style.css";
 export default function AuthPage() {
-  return <AuthLayout />;
+  return (
+    <Suspense fallback={"loading..."}>
+      <AuthLayout />;
+    </Suspense>
+  );
 }

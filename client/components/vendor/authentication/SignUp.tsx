@@ -8,8 +8,13 @@ import {
   addToast,
   Spinner,
 } from "@heroui/react";
+import PhoneInput, {
+  Country,
+  isValidPhoneNumber,
+} from "react-phone-number-input";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import FilterCampuses from "@/components/FilterCampus";
 
 interface FormErrors {
   name?: string;
@@ -29,33 +34,41 @@ interface FormData {
 }
 
 const SignUp = () => {
+  const allowedCountries: Country[] = ["NG", "GH", "ZA"];
+
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
     React.useState<boolean>(false);
 
-  const [password, setPassword] = React.useState("");
+  const [password, setPassword] = React.useState<string | null>("");
+  const [retryPassword, setRetryPassword] = React.useState<string | null>("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [retryPassword, setRetryPassword] = React.useState("");
   const [term, setTerm] = React.useState<boolean>(false);
+
+  const [countryCode, setCountryCode] = React.useState<Country>("NG");
+  const [phone, setPhone] = React.useState<string>("");
+  const [phoneValid, setPhoneValid] = React.useState(true);
 
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   // Real-time password validation
-  const getPasswordError = (value: string) => {
-    if (value.length < 4) {
-      return "Password must be 4 characters or more";
-    }
-    if ((value.match(/[A-Z]/g) || []).length < 1) {
-      return "Password needs at least 1 uppercase letter";
-    }
-    if ((value.match(/[^a-z]/gi) || []).length < 1) {
-      return "Password needs at least 1 symbol";
+  const getPasswordError = (value: string | null) => {
+    if (value !== null) {
+      if (value.length < 4) {
+        return "Password must be 4 characters or more";
+      }
+      if ((value.match(/[A-Z]/g) || []).length < 1) {
+        return "Password needs at least 1 uppercase letter";
+      }
+      if ((value.match(/[^a-z]/gi) || []).length < 1) {
+        return "Password needs at least 1 symbol";
+      }
     }
 
     return null;
   };
-  const getRetryPasswordError = (value: string) => {
+  const getRetryPasswordError = (value: string | null) => {
     if (value !== password) {
       return "Passwords don't match";
     }
@@ -63,6 +76,19 @@ const SignUp = () => {
     return null;
   };
 
+  const handlePhoneChange = (value?: string) => {
+    setPhone(value ?? "");
+
+    if (value && isValidPhoneNumber(value)) {
+      return setPhoneValid(true);
+    } else {
+      return setPhoneValid(false);
+    }
+  };
+  const handleCountryChange = (value?: Country) => {
+    if (!value || !allowedCountries.includes(value)) return;
+    setCountryCode(value);
+  };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(
@@ -126,7 +152,7 @@ const SignUp = () => {
 
   return (
     <Form
-      className="w-full justify-center items-center space-y-4 bg-white p-6 rounded-2xl shadow"
+      className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white p-6 rounded-2xl shadow"
       validationErrors={errors.name ? { name: errors.name } : {}}
       onReset={() => console.log("Form reset")}
       onSubmit={onSubmit}
@@ -173,6 +199,41 @@ const SignUp = () => {
           type="email"
         />
 
+        <div className="flex flex-col gap-1">
+          <div className="">
+            <label htmlFor="phone" className="text-sm text-black">
+              Country & Phone No
+            </label>
+            <PhoneInput
+              international
+              countries={allowedCountries}
+              countryCallingCodeEditable={false}
+              placeholder="Enter phone number"
+              defaultCountry={countryCode}
+              value={phone}
+              onChange={handlePhoneChange}
+              onCountryChange={handleCountryChange}
+              name="phone"
+              className="mt-1"
+            />
+
+            {!phoneValid ? (
+              <p className="text-danger text-xs mt-1 mb-3 ">
+                Please enter a valid phone number
+              </p>
+            ) : (
+              <p className="text-xs mb-3 mt-1">
+                Only campuses available in your country will be displayed.
+              </p>
+            )}
+          </div>
+          <FilterCampuses
+            code={countryCode}
+            name={"campus"}
+            isRequired={true}
+          />
+        </div>
+
         <Input
           isRequired
           endContent={
@@ -196,7 +257,7 @@ const SignUp = () => {
           name="password"
           placeholder="Enter your password"
           type={isPasswordVisible ? "text" : "password"}
-          value={password}
+          value={password || ""}
           onValueChange={setPassword}
         />
 
@@ -223,7 +284,7 @@ const SignUp = () => {
           name="retry_password"
           placeholder="Retry password"
           type={isRetryPasswordVisible ? "text" : "password"}
-          value={retryPassword}
+          value={retryPassword || ""}
           onValueChange={setRetryPassword}
         />
 

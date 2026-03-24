@@ -20,7 +20,7 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-600"
+            className="inline-flex items-center gap-2 sm:px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-600"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,7 @@ const Hero = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-gray-600 text-lg max-w-lg"
+            className="text-gray-600 sm:text-lg text-sm sm:mt-0 mt-2 max-w-lg"
           >
             Hallmarts powers buying and selling across universities — connecting
             vendors, students, and transactions in one seamless network.
@@ -74,12 +74,12 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-wrap gap-4 sm:pt-2"
+            className="flex items-center w-full gap-4 sm:pt-2"
           >
             <Button
               as={"a"}
               href="/vendor/auth?tab=signup"
-              className="px-3 py-2 bg-primary hover:bg-primary/90 text-white transition rounded-lg font-medium"
+              className=" bg-primary  text-white transition font-medium"
             >
               Start selling
             </Button>
@@ -89,7 +89,10 @@ const Hero = () => {
                 <Button variant="bordered"> Explore marketplace</Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                <DropdownItem key="whatsapp">
+                <DropdownItem
+                  key="whatsapp"
+                  href="https://wa.me/message/F5MIQ3F63M5LI1"
+                >
                   <span className="flex gap-2 items-center">
                     {" "}
                     <svg
@@ -109,7 +112,7 @@ const Hero = () => {
                     <span> WhatsApp Channel</span>
                   </span>
                 </DropdownItem>
-                <DropdownItem key="store">
+                <DropdownItem key="store" href="/store">
                   <span className="flex gap-2 items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +129,7 @@ const Hero = () => {
                       />
                     </svg>
 
-                    <span>Store</span>
+                    <span>Online Store</span>
                   </span>
                 </DropdownItem>
 
@@ -160,7 +163,7 @@ const Hero = () => {
               <p className="text-gray-600">Transactions</p>
             </div>
             <div>
-              <p className="font-semibold text-primary">87%</p>
+              <p className="font-semibold text-primary">+87%</p>
               <p className="text-gray-600">Growth</p>
             </div>
           </motion.div>
