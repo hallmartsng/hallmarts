@@ -1,3 +1,4 @@
+"use client";
 import useDebounce from "@/hooks/useDebounceHook";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import React from "react";
