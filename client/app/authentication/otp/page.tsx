@@ -1,10 +1,12 @@
 import Otp from "@/components/authentication/Otp";
-import React from "react";
+import React, { Suspense } from "react";
 
 const page = () => {
   return (
     <section className="sm:w-[350px] w-full">
-      <Otp />
+      <Suspense fallback={"loading..."}>
+        <Otp />
+      </Suspense>
     </section>
   );
 };
