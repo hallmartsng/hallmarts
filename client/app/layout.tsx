@@ -2,10 +2,12 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 
-import { Providers } from "./providers";
-
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/config/nextAuthOptions";
+import { ReduxProvider } from "@/lib/providers/ReduxProvider";
+import { HeroUIProviders } from "@/lib/providers/HeroUIProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -25,11 +27,12 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
   return (
     <html suppressHydrationWarning lang="en">
       <head />
@@ -39,9 +42,14 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <Providers>
-          <main className=" flex-grow">{children}</main>
-        </Providers>
+        <ReduxProvider session={session}>
+          <HeroUIProviders
+            themeProps={{ attribute: "class", defaultTheme: "light" }}
+          >
+            <main className=" flex-grow">{children}</main>
+          </HeroUIProviders>
+        </ReduxProvider>
+
         {/* <script
           type="text/javascript"
           id="hs-script-loader"
