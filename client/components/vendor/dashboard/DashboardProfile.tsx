@@ -224,7 +224,7 @@ const DashboardProfile = () => {
                 type="text"
               />
               <Input
-                aria-label="Email"
+                aria-label="delivery areas"
                 value={"unilag, unical, uniben, cu"}
                 name="delivery_areas"
                 type="text"

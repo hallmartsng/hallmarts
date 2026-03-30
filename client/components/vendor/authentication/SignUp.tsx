@@ -202,7 +202,7 @@ const SignUp = () => {
         <div className="flex flex-col gap-1">
           <div className="">
             <label htmlFor="phone" className="text-sm text-black">
-              Country & Phone No
+              Phone
             </label>
             <PhoneInput
               international

@@ -87,6 +87,7 @@ const ProductImageUpload = ({
       <input
         ref={inputRef}
         type="file"
+        name="images"
         multiple
         accept="image/*"
         hidden

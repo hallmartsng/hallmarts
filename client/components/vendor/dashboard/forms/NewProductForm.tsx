@@ -13,7 +13,7 @@ import ProductImageUpload from "./ProductImageUpload";
 interface FormErrors {
   title?: string;
   price?: string;
-  categories?: string;
+  categories?: string[];
   stock?: string;
 }
 const CATEGORIES = [
