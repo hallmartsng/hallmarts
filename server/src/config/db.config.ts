@@ -1,13 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+// import { Pool } from "pg";
+// import { attachDatabasePool } from "@vercel/functions";
+
+// const mongoURI = process.env['MONGODB_URI']!;
+// const pool = new Pool({
+//   connectionString: mongoURI,
+// });
+
+// attachDatabasePool(pool);
 
 export const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI = process.env['MONGODB_URI']!;
+    const mongoURI = process.env["MONGODB_URI"]!;
     if (!mongoURI)
-      throw new Error('MONGODB_URI is not defined in the environment');
+      throw new Error("MONGODB_URI is not defined in the environment");
 
     await mongoose.connect(mongoURI);
-    process.on('SIGINT', async () => {
+    process.on("SIGINT", async () => {
       await mongoose.connection.close();
       process.exit(0);
     });
