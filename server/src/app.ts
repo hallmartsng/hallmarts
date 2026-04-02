@@ -3,6 +3,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import { connectDB } from "./config/db.config";
+import swaggerUI from "swagger-ui-express";
+import swaggerOpenapiSpecification from "./config/swagger.config";
+
+// vendor imports
+import vendorAuth from "./routes/vendor/auth.routes";
 
 dotenv.config();
 
@@ -18,18 +23,20 @@ app.use(
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.use(cors());
-app.use(express.json());
-
 app.get("/", (_req, res) => {
   res.send("Hallmarts API running...");
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
+app.use(
+  "/api/v1/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerOpenapiSpecification),
+);
+
+app.use("/api/v1/vendor/auth", vendorAuth);
 
 const PORT = 5000;
+
 // Start server ONLY after DB connects
 (async () => {
   try {

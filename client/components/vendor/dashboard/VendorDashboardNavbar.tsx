@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import { signOut } from "next-auth/react";
 
 const VendorDashboardNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,6 +120,15 @@ const VendorDashboardNavbar = () => {
             <Link href={"/vendor/dashboard/profile"} onClick={closeMenu}>
               Profile
             </Link>
+            <button
+              onClick={() => {
+                signOut({
+                  callbackUrl: "/vendor/auth",
+                });
+              }}
+            >
+              Log Out
+            </button>
           </NavbarItem>
         </ul>
 
@@ -182,6 +192,19 @@ const VendorDashboardNavbar = () => {
               </Link>
             </NavbarItem>
           </ul>
+          <div className=" absolute bottom-4 justify-start mt-3">
+            {" "}
+            <button
+              onClick={() => {
+                signOut({
+                  callbackUrl: "/vendor/auth",
+                });
+              }}
+              className="bg-primary rounded-md shadow text-white font-semibold text-xs px-3 py-2"
+            >
+              Log Out
+            </button>
+          </div>
         </div>
       </NavbarMenu>
     </HeroUINavbar>
