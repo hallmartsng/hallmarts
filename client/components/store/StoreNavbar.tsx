@@ -81,12 +81,13 @@ const StoreNavbar = () => {
       shouldHideOnScroll
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
+      className="h-20"
     >
       {/* LOGO */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <Link
-            className="flex justify-start  -ml-4 sm:-ml-0 items-center gap-1"
+            className="flex justify-start -ml-4 sm:-ml-0 items-center gap-1"
             href="/store"
             onClick={closeMenu}
           >
@@ -253,7 +254,7 @@ const StoreNavbar = () => {
       </NavbarMenu>
 
       {/* MOBILE SEARCH */}
-      <NavbarContent className="flex sm:hidden w-full absolute text-center top-14 left-0">
+      <NavbarContent className="flex sm:hidden w-full absolute text-center top-16 left-0">
         <div className="w-full mx-auto px-2">
           <SearchBar />
         </div>
