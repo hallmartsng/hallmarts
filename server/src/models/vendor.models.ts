@@ -1,29 +1,26 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose, { Schema, Document, Model } from "mongoose";
+import bcrypt from "bcrypt";
 
-export type UserRole = 'user' | 'supervisor' | 'admin' | 'director';
+export type UserRole = "user" | "supervisor" | "admin" | "director";
 
-export interface IUser extends Document {
-  name?: string;
+export interface IVendor extends Document {
+  regNo: string;
   email: string;
+  phone: string;
+  campus: string;
+  countryCode: string;
   password: string;
+  role: string;
+  term: boolean;
   refreshToken?: string;
-  role: UserRole;
   isActive: boolean;
-  phone?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IVendor>(
   {
-    name: {
-      type: String,
-      // required: true,
-      trim: true,
-    },
-
     email: {
       type: String,
       required: true,
@@ -50,9 +47,7 @@ const userSchema = new Schema<IUser>(
 
     role: {
       type: String,
-      enum: ['user', 'supervisor', 'admin', 'director'],
-      default: 'user',
-      index: true,
+      required: true,
     },
 
     isActive: {
@@ -60,7 +55,7 @@ const userSchema = new Schema<IUser>(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // userSchema.pre<IUser>('save', async function () {
@@ -71,16 +66,16 @@ const userSchema = new Schema<IUser>(
 
 // });
 
-userSchema.pre('save', async function (this: IUser) {
-  if (!this.isModified('password')) return;
+userSchema.pre("save", async function (this: IVendor) {
+  if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-userSchema.methods['comparePassword'] = async function (
-  candidatePassword: string
+userSchema.methods["comparePassword"] = async function (
+  candidatePassword: string,
 ) {
-  return bcrypt.compare(candidatePassword, this['password']);
+  return bcrypt.compare(candidatePassword, this["password"]);
 };
 
-export const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+export const User: Model<IVendor> = mongoose.model<IVendor>("User", userSchema);
