@@ -1,5 +1,6 @@
 "use client";
-import { Card, CardBody, CardFooter, Image } from "@heroui/react";
+import { HeartIcon } from "@heroicons/react/24/outline";
+import { Button, Card, CardBody, CardFooter, Image } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -33,7 +34,7 @@ export default function StoreProductLists({
     },
     {
       title: "Avocado",
-      img: "/sample_image.jfif",
+      img: "/max-payne.jpg",
       price: "$15.70",
     },
     {
@@ -54,32 +55,31 @@ export default function StoreProductLists({
   ];
 
   return (
-    <div className={`gap-2 grid grid-cols-2 ${gridColsDesktop}`}>
+    <div className={`gap-y-10 gap-x-2 grid grid-cols-2  ${gridColsDesktop}`}>
       {list.map((item, index) => (
-        /* eslint-disable no-console */
-        <Card
-          key={index}
-          isPressable
-          shadow="sm"
-          className="rounded-md"
-          onPress={() => router.push(`/store/product/${item.title}`)}
-        >
-          <CardBody className="overflow-visible p-0">
-            <Image
-              alt={item.title}
-              className="w-full object-cover h-[140px]"
-              radius="md"
-              shadow="sm"
-              src={item.img}
-              width="100%"
-            />
-          </CardBody>
-          <CardFooter className="text-small flex flex-col items-end gap-2">
-            <div className="flex items-center justify-between w-full">
-              <b>{item.title}</b>
-              <p className="text-default-500">{item.price}</p>
-            </div>
-            {/* <button
+        <div key={index}>
+          <Card
+            isPressable
+            shadow="sm"
+            className="rounded-md mb-2 w-full"
+            onPress={() => router.push(`/store/product/${item.title}`)}
+          >
+            <CardBody className="overflow-visible p-0">
+              <Image
+                alt={item.title}
+                className="sm:w-[150px] w-full object-cover sm:h-[140px] h-[150px]"
+                radius="md"
+                shadow="sm"
+                src={item.img}
+                width="100%"
+              />
+            </CardBody>
+            <CardFooter className="text-small flex flex-col items-end gap-2">
+              <div className="flex items-center justify-between w-full">
+                <b>{item.title}</b>
+                <p className="text-default-500">{item.price}</p>
+              </div>
+              {/* <button
               onClick={() => {
                 return console.log("add to cart");
               }}
@@ -87,8 +87,23 @@ export default function StoreProductLists({
             >
               Add to cart
             </button> */}
-          </CardFooter>
-        </Card>
+            </CardFooter>
+          </Card>
+          <div className="flex items-center gap-2">
+            <button className="w-8 h-8 border-1 border-primary/30 text-primary flex items-center justify-center p-2 shadow rounded-md">
+              <HeartIcon className="size-5" />
+            </button>
+            <Button
+              size="sm"
+              onPress={() => {
+                return console.log("add to cart");
+              }}
+              className="bg-primary w-full text-xs font-semibold rounded-md px-4 py-2 text-white"
+            >
+              Add to cart
+            </Button>
+          </div>
+        </div>
       ))}
     </div>
   );

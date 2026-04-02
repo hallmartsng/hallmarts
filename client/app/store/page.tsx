@@ -21,8 +21,8 @@ export default function StorePage() {
       <StoreHero />
 
       {/* Uniport Merch  */}
-      <div className="flex w-full max-w-[1230px] sm:flex-row flex-col justify-between items-center gap-4 mb-10 sm:mb-0">
-        <div className="flex font-honk flex-col sm:w-[32rem] gap-4 items-start sm:px-0 px-4">
+      <div className="flex w-full sm:max-w-[1230px] sm:flex-row flex-col sm:justify-between sm:items-center gap-4 mb-10 sm:mb-0">
+        <div className="flex font-honk flex-col sm:w-[32rem] gap-4 items-start sm:px-0 px-2">
           <SectionHeader
             props={{
               headline: "Campus Merch",
@@ -40,20 +40,24 @@ export default function StorePage() {
             <span> Uniport store</span>
           </Link>
         </div>
-        <StoreProductLists gridColsDesktop="sm:grid-cols-4" />
-        <Link
-          href={"/"}
-          className="rounded-lg sm:hidden  text-sm flex items-center gap-1 px-4 py-2 text-white font-semibold bg-primary"
-        >
-          <span>
-            <ShoppingBagIcon className="size-5" />
-          </span>
-          <span> Uniport store</span>
-        </Link>
+        <div className="sm:px-0 px-2">
+          <StoreProductLists gridColsDesktop="sm:grid-cols-4" />
+        </div>
+        <div className="sm:hidden pl-4 flex justify-center w-full mt-10">
+          <Link
+            href={"/"}
+            className="rounded-lg sm:hidden  text-sm flex items-center gap-1 px-4 py-2 text-black shadow font-semibold bg-white"
+          >
+            <span>
+              <ShoppingBagIcon className="size-5" />
+            </span>
+            <span> Uniport store</span>
+          </Link>
+        </div>
       </div>
 
       {/* New Arrival  */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Food & provisions</h3>
           <Link
@@ -68,7 +72,7 @@ export default function StorePage() {
       </div>
 
       {/* Campus trendz  */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Trendz</h3>
           <Link
@@ -83,7 +87,7 @@ export default function StorePage() {
       </div>
 
       {/* New Arrival  */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">New Arrival</h3>
           <Link
@@ -98,7 +102,7 @@ export default function StorePage() {
       </div>
 
       {/* Campus female  */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Female</h3>
           <Link
@@ -113,7 +117,7 @@ export default function StorePage() {
       </div>
 
       {/* Campus discount  */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Discount</h3>
           <Link
@@ -128,9 +132,9 @@ export default function StorePage() {
       </div>
 
       {/* Unilag week  */}
-      <div className="flex max-w-[1230px] sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
+      <div className="flex sm:max-w-[1230px] sm:px-0 px-4  sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
         <div
-          className={`group relative flex  sm:h-[350px] h-[380px] sm:w-full w-[20rem] overflow-hidden rounded-lg transition`}
+          className={`group relative flex  sm:h-[350px] h-[380px] w-full overflow-hidden rounded-lg transition`}
         >
           <div className="absolute z-10 h-full w-full sm:w-1/2 flex flex-col justify-center gap-4 items-start p-4 sm:p-8">
             <h1 className="font-honk text-white font-extrabold text-5xl">
@@ -159,7 +163,7 @@ export default function StorePage() {
           />
         </div>
 
-        <div className="flex font-honk flex-col gap-4 items-start sm:px-0 px-4">
+        <div className="flex font-honk flex-col gap-4 items-start ">
           <SectionHeader
             props={{
               headline: "Campus Events!",
@@ -181,7 +185,7 @@ export default function StorePage() {
       </div>
 
       {/* Holiday   */}
-      <div>
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">
             What&apos;s for Holiday?
@@ -198,7 +202,7 @@ export default function StorePage() {
       </div>
 
       {/* Calendar  */}
-      <div className="flex w-full max-w-[1230px] rounded-md sm:shadow sm:p-8 mt-10  sm:flex-row flex-col gap-10 justify-between  items-center sm:bg-fuchsia-950">
+      <div className="flex w-full sm:max-w-[1230px] rounded-md sm:shadow sm:p-8 mt-10  sm:flex-row flex-col gap-10 justify-between  items-center sm:bg-fuchsia-950">
         <div className="sm:w-[800px] w-full flex flex-col sm:items-start items-center gap-4">
           <div className="flex font-honk sm:text-white flex-col gap-4 items-start sm:px-0 px-4">
             <SectionHeader
@@ -234,7 +238,7 @@ export default function StorePage() {
             <span>Get tickets</span>
           </Link>
         </div>
-        <div className="w-full flex  flex-col items-end">
+        <div className="w-full flex  flex-col sm:items-end">
           <div className="grid grid-cols-2 sm:px-0 px-2 gap-x-2 gap-y-7">
             <div className="flex flex-col gap-2">
               <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">

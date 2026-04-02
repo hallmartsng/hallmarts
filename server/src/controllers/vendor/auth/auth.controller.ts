@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { User } from '../../models/user.model';
-import { generateAuthTokens } from '../../utils/generateAuthToken';
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { User } from "../../../models/vendor.models";
+import { generateAuthTokens } from "../../../utils/generateAuthToken";
+
 // import bcrypt from 'bcrypt';
 
 export const login = async (req: Request, res: Response) => {
@@ -11,42 +12,42 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     // 1️⃣ Check if user exists
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password");
 
-    console.log('user: ', user?.role);
+    console.log("user: ", user?.role);
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials',
+        message: "Invalid credentials",
       });
     }
 
-    console.log('password: ', password);
+    console.log("password: ", password);
 
     // 2️⃣ Compare password
     const isMatch = await user.comparePassword(password);
-    console.log('isMatch: ', isMatch);
+    console.log("isMatch: ", isMatch);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials',
+        message: "Invalid credentials",
       });
     }
 
     // 3️⃣ Generate tokens
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       user._id.toString(),
-      user.role
+      user.role,
     );
 
     user.refreshToken = refreshAccessToken;
     await user.save();
 
     // 5️⃣ Send refresh token as httpOnly cookie (recommended)
-    res.cookie('refreshToken', refreshAccessToken, {
+    res.cookie("refreshToken", refreshAccessToken, {
       httpOnly: true,
-      secure: process.env['NODE_ENV'] === 'production',
-      sameSite: process.env['NODE_ENV'] === 'production' ? 'none' : 'lax',
+      secure: process.env["NODE_ENV"] === "production",
+      sameSite: process.env["NODE_ENV"] === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -65,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
 
     return res.status(500).json({
       success: false,
-      message: 'Login failed',
+      message: "Login failed",
       error,
     });
   }
@@ -78,14 +79,14 @@ export const refreshToken = async (req: Request, res: Response) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'No refresh token provided',
+        message: "No refresh token provided",
       });
     }
 
     // 1️⃣ Verify refresh token
     const decoded = jwt.verify(
       token,
-      process.env['JWT_REFRESH_SECRET'] as string
+      process.env["JWT_REFRESH_SECRET"] as string,
     ) as { userId: string };
 
     // 2️⃣ Find user
@@ -94,21 +95,21 @@ export const refreshToken = async (req: Request, res: Response) => {
     if (!user || user.refreshToken !== token) {
       return res.status(403).json({
         success: false,
-        message: 'Invalid refresh token',
+        message: "Invalid refresh token",
       });
     }
 
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       user._id.toString(),
-      user.role
+      user.role,
     );
     user.refreshToken = refreshAccessToken;
     await user.save();
 
-    res.cookie('refreshToken', refreshAccessToken, {
+    res.cookie("refreshToken", refreshAccessToken, {
       httpOnly: true,
-      secure: process.env['NODE_ENV'] === 'production',
-      sameSite: 'strict',
+      secure: process.env["NODE_ENV"] === "production",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -119,7 +120,7 @@ export const refreshToken = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(403).json({
       success: false,
-      message: 'Refresh token expired or invalid',
+      message: "Refresh token expired or invalid",
     });
   }
 };

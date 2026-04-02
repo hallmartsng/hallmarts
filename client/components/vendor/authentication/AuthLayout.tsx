@@ -149,7 +149,7 @@ const AuthLayout = () => {
             onSelectionChange={(value) => setSelected(String(value))}
             color={"primary"}
           >
-            <Tab key="signup" title="Register">
+            <Tab key="register" title="Register">
               <div className="flex justify-center my-4">
                 {" "}
                 <p className="text-sm  font-medium text-center w-[80%]">
