@@ -46,7 +46,7 @@ export default async function RootLayout({
           <HeroUIProviders
             themeProps={{ attribute: "class", defaultTheme: "light" }}
           >
-            <main className=" flex-grow">{children}</main>
+            <main className="flex-grow">{children}</main>
           </HeroUIProviders>
         </ReduxProvider>
 

@@ -198,9 +198,9 @@ export default function StorePage() {
       </div>
 
       {/* Calendar  */}
-      <div className="flex w-full max-w-[1230px] rounded-md shadow sm:p-8 p-4 sm:flex-row flex-col gap-10 justify-between  items-center bg-fuchsia-800">
+      <div className="flex w-full max-w-[1230px] rounded-md sm:shadow sm:p-8 mt-10  sm:flex-row flex-col gap-10 justify-between  items-center sm:bg-fuchsia-950">
         <div className="sm:w-[800px] w-full flex flex-col sm:items-start items-center gap-4">
-          <div className="flex font-honk text-white flex-col gap-4 items-start sm:px-0 px-4">
+          <div className="flex font-honk sm:text-white flex-col gap-4 items-start sm:px-0 px-4">
             <SectionHeader
               props={{
                 headline: "Campus Events!",
@@ -235,7 +235,7 @@ export default function StorePage() {
           </Link>
         </div>
         <div className="w-full flex  flex-col items-end">
-          <div className="grid grid-cols-2 gap-x-2 gap-y-7">
+          <div className="grid grid-cols-2 sm:px-0 px-2 gap-x-2 gap-y-7">
             <div className="flex flex-col gap-2">
               <div className="min-w-[50%] h-[150px] sm:min-w-[45%]">
                 <button
@@ -266,7 +266,7 @@ export default function StorePage() {
                   </div>
                 </button>
               </div>
-              <div className="flex flex-col gap-1 text-white">
+              <div className="flex flex-col gap-1 sm:text-white">
                 <span className="flex items-center gap-1">
                   <CalendarDaysIcon className="size-4" />
                   <span className="text-xs font-semibold">Nov 20, 2026</span>
@@ -313,7 +313,7 @@ export default function StorePage() {
                   </div>
                 </button>
               </div>
-              <div className="flex flex-col gap-1 text-white">
+              <div className="flex flex-col gap-1 sm:text-white">
                 <span className="flex items-center gap-1">
                   <CalendarDaysIcon className="size-4" />
                   <span className="text-xs font-semibold">Nov 20, 2026</span>
@@ -360,7 +360,7 @@ export default function StorePage() {
                   </div>
                 </button>
               </div>
-              <div className="flex flex-col gap-1 text-white">
+              <div className="flex flex-col gap-1 sm:text-white">
                 <span className="flex items-center gap-1">
                   <CalendarDaysIcon className="size-4" />
                   <span className="text-xs font-semibold">Nov 20, 2026</span>
@@ -407,7 +407,7 @@ export default function StorePage() {
                   </div>
                 </button>
               </div>
-              <div className="flex flex-col gap-1 text-white">
+              <div className="flex flex-col gap-1 sm:text-white">
                 <span className="flex items-center gap-1">
                   <CalendarDaysIcon className="size-4" />
                   <span className="text-xs font-semibold">Nov 20, 2026</span>
@@ -426,15 +426,17 @@ export default function StorePage() {
             </div>
           </div>
 
-          <Link
-            href={"/"}
-            className="rounded-md text-sm mt-4 flex sm:hidden items-center gap-1 px-4 py-2 text-black font-semibold bg-primary-50 "
-          >
-            <span>
-              <TicketIcon className="size-5" />
-            </span>
-            <span>Get tickets</span>
-          </Link>
+          <div className="flex justify-center w-full py-5">
+            <Link
+              href={"/"}
+              className="rounded-md text-sm mt-4 flex sm:hidden items-center gap-1 px-4 py-2 text-white font-semibold bg-primary "
+            >
+              <span>
+                <TicketIcon className="size-5" />
+              </span>
+              <span>Get tickets</span>
+            </Link>
+          </div>
         </div>
         {/* <Card isFooterBlurred className="border-none" radius="lg">
           <Image
