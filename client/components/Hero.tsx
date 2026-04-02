@@ -78,7 +78,7 @@ const Hero = () => {
           >
             <Button
               as={"a"}
-              href="/vendor/auth?tab=signup"
+              href="/vendor/auth?tab=register"
               className=" bg-primary  text-white transition font-medium"
             >
               Start selling

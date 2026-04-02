@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { MapPinIcon } from "@heroicons/react/24/outline";
 
 type Node = {
   id: string;
@@ -183,6 +184,7 @@ export default function GlobeNetworkPro() {
               strokeWidth="1"
               fill="none"
             />
+            // <MapPinIcon key={i} className="size-5" />
           );
         })}
 
@@ -239,19 +241,25 @@ export default function GlobeNetworkPro() {
                 cx={p.x}
                 cy={p.y}
                 r={18}
-                fill="rgb(236, 255, 220)"
+                fill="rgba(0,0,0,0.0)"
                 animate={{ scale: [1, 1.5, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
 
               {/* Logo */}
-              <foreignObject x={p.x - 10} y={p.y - 10} width={20} height={20}>
+              <foreignObject
+                x={p.x - 10}
+                y={p.y - 10}
+                // width={60}
+                height={70}
+                className=" w-10 -ml-3"
+              >
                 <Image
                   src={`/campus_logo/${node.logo}`}
-                  width={30}
+                  width={40}
                   height={30}
                   alt={`${node.name} campus logo`}
-                  className="w-6 h-6 rounded-full object-cover border border-white/20"
+                  className="w-10 h-10 rounded-full object-cover border border-white/20"
                 />
               </foreignObject>
             </g>
@@ -263,15 +271,16 @@ export default function GlobeNetworkPro() {
       {transactions.map((tx) => (
         <motion.div
           key={`label-${tx.id}`}
-          className="absolute text-[15px] text-green-400 "
+          className="absolute text-[15px] text-green-400 flex items-center gap-1 "
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0], y: -15 }}
-          transition={{ duration: 2 }}
+          transition={{ duration: 1 }}
           style={{
-            right: `300px`,
+            right: `250px`,
             top: `${(tx.from.y + tx.to.y) / 2}px`,
           }}
         >
+          <MapPinIcon key={tx.id} className="size-5 text-primary" />
           {tx.amount}
         </motion.div>
       ))}
@@ -280,15 +289,16 @@ export default function GlobeNetworkPro() {
       {transactions.map((tx) => (
         <motion.div
           key={`label-${tx.id}`}
-          className="absolute text-[15px] text-green-400"
+          className="absolute text-[15px] text-green-400 flex items-center gap-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0], y: -15 }}
           transition={{ duration: 1 }}
           style={{
-            left: `100px`,
-            bottom: `100px`,
+            left: `120px`,
+            bottom: `70px`,
           }}
         >
+          <MapPinIcon key={tx.id} className="size-5 text-primary" />
           {tx.amount}
         </motion.div>
       ))}
@@ -296,15 +306,16 @@ export default function GlobeNetworkPro() {
       {transactions.map((tx) => (
         <motion.div
           key={`label-${tx.id}`}
-          className="absolute text-[15px] text-green-400"
+          className="absolute text-[15px] text-green-400 flex items-center gap-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0], y: -15 }}
           transition={{ duration: 1 }}
           style={{
-            right: `100px`,
+            right: `160px`,
             top: `${tx.from.y + tx.to.y / 2}px`,
           }}
         >
+          <MapPinIcon key={tx.id} className="size-5 text-primary" />
           {tx.amount}
         </motion.div>
       ))}
@@ -312,15 +323,16 @@ export default function GlobeNetworkPro() {
       {transactions.map((tx) => (
         <motion.div
           key={`label-${tx.id}`}
-          className="absolute text-[15px] text-green-400"
+          className="absolute text-[15px] text-green-400 flex items-center gap-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0], y: -15 }}
-          transition={{ duration: 2 }}
+          transition={{ duration: 1 }}
           style={{
             right: `300px`,
             bottom: `100px`,
           }}
         >
+          <MapPinIcon key={tx.id} className="size-5 text-primary" />
           {tx.amount}
         </motion.div>
       ))}
