@@ -35,6 +35,7 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
 
     if (refreshResult.data) {
       console.log("Token refreshed");
+      console.log(refreshResult.data);
 
       // retry original request
       result = await baseQuery(args, api, extraOptions);
@@ -42,7 +43,7 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       console.log("Refresh failed. Logging out.");
 
       await signOut({
-        callbackUrl: "/auth",
+        callbackUrl: "/vendor/auth",
       });
     }
   }

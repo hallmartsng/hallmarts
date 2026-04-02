@@ -8,6 +8,10 @@ import swaggerOpenapiSpecification from "./config/swagger.config";
 
 // vendor imports
 import vendorAuth from "./routes/vendor/auth.routes";
+import vendorProfile from "./routes/vendor/profile.routes";
+
+// General imports
+import generalAuth from "./routes/vendor/auth.routes";
 
 dotenv.config();
 
@@ -33,7 +37,12 @@ app.use(
   swaggerUI.setup(swaggerOpenapiSpecification),
 );
 
+// Vendors Endpoints
 app.use("/api/v1/vendor/auth", vendorAuth);
+app.use("/api/v1/vendor/profile", vendorProfile);
+
+// General Endpoints
+app.use("/api/v1/auth", generalAuth);
 
 const PORT = 5000;
 

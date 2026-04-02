@@ -9,6 +9,7 @@ export interface IVendor extends Document {
   phone: string;
   campus: string;
   countryCode: string;
+  address: string;
   password: string;
   role: string;
   term: boolean;
@@ -17,6 +18,11 @@ export interface IVendor extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
+
+  store_logo?: string;
+  store_name?: string;
+  store_description?: string;
+  fname?: string;
 }
 
 const vendorSchema = new Schema<IVendor>(
@@ -36,6 +42,11 @@ const vendorSchema = new Schema<IVendor>(
       lowercase: true,
       trim: true,
       index: true,
+    },
+    address: {
+      type: String,
+      required: true,
+      lowercase: true,
     },
 
     password: {
