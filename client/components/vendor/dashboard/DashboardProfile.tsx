@@ -9,6 +9,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { useGetVendorProfileQuery } from "@/lib/services/vendor/vendor.api";
 
 interface StoreInfoFormErrors {
   store_name?: string;
@@ -21,22 +22,32 @@ interface StoreInfoFormErrors {
 }
 
 type ImagePreview = {
-  file: File;
+  file: File | string;
   url: string;
 };
 const DashboardProfile = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { data } = useGetVendorProfileQuery();
 
   const [errors, setErrors] = React.useState<StoreInfoFormErrors>({});
   const [password, setPassword] = React.useState<string | null>(null);
+  const [storeName, setStoreName] = React.useState<string | null>(
+    data?.data.store_name || null,
+  );
   const [retryPassword, setRetryPassword] = React.useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
     React.useState<boolean>(false);
 
-  const [uploadedImage, setUploadedImage] =
-    React.useState<ImagePreview | null>();
+  const [uploadedImage, setUploadedImage] = React.useState<ImagePreview | null>(
+    {
+      file: "",
+      url: data?.data.store_logo || "",
+    },
+  );
+
+  console.log("Data: ", data);
 
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
@@ -162,22 +173,22 @@ const DashboardProfile = () => {
               <Input
                 isDisabled
                 aria-label="Email"
-                value={"vendor@hallmarts.com"}
+                value={data?.data.email || ""}
                 name="email"
                 type="text"
               />
 
               <Input
-                isDisabled
                 aria-label="Name"
-                value={"Micheal Essien"}
+                value={data?.data.fname || ""}
+                placeholder="Enter fullame"
                 name="name"
                 type="text"
               />
               <Input
                 isDisabled
                 aria-label="Phone"
-                value={"+234 904 7298 782"}
+                value={data?.data.phone || ""}
                 name="phone"
                 type="text"
               />
@@ -204,37 +215,40 @@ const DashboardProfile = () => {
           >
             <div className="grid mb-3 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
               <Input
+                isDisabled={data?.data.store_name ? true : false}
                 aria-label="Store name"
-                value={"Shillola"}
+                value={storeName || ""}
                 name="store_name"
                 type="text"
                 placeholder="Store name"
+                onValueChange={setStoreName}
               />
 
               <Input
                 aria-label="Campus"
-                value={"Bells University"}
+                value={data?.data.campus}
                 name="campus"
                 type="text"
               />
-              <Input
+              {/* <Input
                 aria-label="Location"
                 value={"Lagos state"}
                 name="location"
                 type="text"
-              />
-              <Input
+              /> */}
+              {/* <Input
                 aria-label="delivery areas"
                 value={"unilag, unical, uniben, cu"}
                 name="delivery_areas"
                 type="text"
-              />
+              /> */}
             </div>
             <Textarea
               aria-label="Store description"
-              value={"Welcome to my store i sell affordable perfumes"}
+              value={data?.data.store_description}
               name="description"
               type="text"
+              placeholder="Tell your customers more about your store"
               className="w-full col-span-12"
             />
             {errors && (

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model";
+import { Vendor } from "../models/vendor.models";
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -41,9 +41,9 @@ export const authenticateMiddleWare = async (
       return;
     }
 
-    const user = await User.findById(decoded.userId).select("-password");
+    const vendor = await Vendor.findById(decoded.userId).select("-password");
 
-    if (!user) {
+    if (!vendor) {
       res.status(401).json({
         success: false,
         message: "User not found",
@@ -57,5 +57,3 @@ export const authenticateMiddleWare = async (
     res.status(401).json({ message: "Unauthorized: Invalid or expired token" });
   }
 };
-
-export default authenticateMiddleWare;

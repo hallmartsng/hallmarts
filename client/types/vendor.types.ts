@@ -7,10 +7,11 @@ export interface CreateVendorRequest {
   retry_password: string;
 }
 
-export interface UpdateVendorRequest {
+export interface VendorProfileUpdateRequest extends CreateVendorRequest {
   store_logo: string;
   store_name: string;
   store_description: string;
+  fname: string;
   password: string;
-  retry_password: string;
+  // retry_password: string;
 }

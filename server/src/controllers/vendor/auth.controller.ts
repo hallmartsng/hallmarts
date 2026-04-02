@@ -6,7 +6,7 @@ import Otp from "../../models/otp.models";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 
 // register a new vendor
-export async function vendorRegistration(req: Request, res: Response) {
+export const vendorRegistration = async (req: Request, res: Response) => {
   try {
     const { regNo, email, password, terms, campus, phone, countryCode } =
       req.body;
@@ -80,10 +80,10 @@ export async function vendorRegistration(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).json({ message: `Server error: ${error}` });
   }
-}
+};
 
 // login vendor
-export async function vendorLogin(req: Request, res: Response) {
+export const vendorLogin = async (req: Request, res: Response) => {
   try {
     const { regNo, password } = req.body as { regNo: string; password: string };
 
@@ -129,7 +129,7 @@ export async function vendorLogin(req: Request, res: Response) {
 
     return res.status(500).json({ message: error });
   }
-}
+};
 
 // Google auth
 // export async function googleAuth(req: Request, res: Response) {
@@ -287,12 +287,3 @@ export async function vendorLogin(req: Request, res: Response) {
 //     return res.status(500).json({ message: "Error updating password" });
 //   }
 // };
-
-export default {
-  vendorRegistration,
-  vendorLogin,
-  // googleAuth,
-  // sendOtp,
-  // verifyOtp,
-  // getRefreshAccessToken,
-};
