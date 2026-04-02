@@ -1,15 +1,15 @@
 import { ApiResponse } from "@/types";
 import { api } from "../api";
-import { RegistrationRequest } from "@/types/auth.types";
+import { VendorRegistrationRequest } from "@/types/auth.types";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<
-      ApiResponse<RegistrationRequest>,
-      RegistrationRequest
+    vendorRegistration: builder.mutation<
+      ApiResponse<VendorRegistrationRequest>,
+      VendorRegistrationRequest
     >({
       query: (body) => ({
-        url: "/auth/register",
+        url: "/vendor/auth/register",
         method: "POST",
         body,
       }),
@@ -17,4 +17,4 @@ export const authApi = api.injectEndpoints({
   }),
 });
 
-export const { useRegisterMutation } = authApi;
+export const { useVendorRegistrationMutation } = authApi;

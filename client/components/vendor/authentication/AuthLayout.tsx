@@ -13,7 +13,9 @@ const AuthLayout = () => {
 
   const authOptions = params.get("tab");
 
-  const [selected, setSelected] = useState<string>(authOptions || "login");
+  const [selectedTabKey, setSelectedTabKey] = useState<string>(
+    authOptions || "login",
+  );
 
   return (
     <section className="flex justify-center min-h-screen">
@@ -145,8 +147,8 @@ const AuthLayout = () => {
           </div>{" "}
           <Tabs
             aria-label="Options"
-            selectedKey={selected}
-            onSelectionChange={(value) => setSelected(String(value))}
+            selectedKey={selectedTabKey}
+            onSelectionChange={(value) => setSelectedTabKey(String(value))}
             color={"primary"}
           >
             <Tab key="register" title="Register">
@@ -156,7 +158,7 @@ const AuthLayout = () => {
                   Enter campus details and connect with your csutomers.
                 </p>
               </div>
-              <SignUp />
+              <SignUp setSelectedTabKey={setSelectedTabKey} />
             </Tab>
             <Tab key="login" title="Login">
               <div className="flex justify-center my-4">

@@ -2,6 +2,8 @@ import { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
 import VendorDashboardNavbar from "@/components/vendor/dashboard/VendorDashboardNavbar";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: {
@@ -14,11 +16,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession();
+  console.log("Dashboard:", session);
+
+  if (!session?.user.email) {
+    return redirect("/vendor/auth");
+  }
   return (
     <section className="flex w-full bg-primary-50 flex-col items-center  min-h-screen ">
       <VendorDashboardNavbar />

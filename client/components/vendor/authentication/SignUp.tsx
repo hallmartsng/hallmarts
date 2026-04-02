@@ -15,6 +15,8 @@ import PhoneInput, {
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import FilterCampuses from "@/components/FilterCampus";
+import { useVendorRegistrationMutation } from "@/lib/services/authentication/auth.api";
+import { VendorRegistrationRequest } from "@/types/auth.types";
 
 interface FormErrors {
   name?: string;
@@ -33,7 +35,11 @@ interface FormData {
   terms: string;
 }
 
-const SignUp = () => {
+interface SignUpProps {
+  setSelectedTabKey: (value: string) => void;
+}
+
+const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
   const allowedCountries: Country[] = ["NG", "GH", "ZA"];
 
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -43,7 +49,7 @@ const SignUp = () => {
 
   const [password, setPassword] = React.useState<string | null>("");
   const [retryPassword, setRetryPassword] = React.useState<string | null>("");
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [term, setTerm] = React.useState<boolean>(false);
 
   const [countryCode, setCountryCode] = React.useState<Country>("NG");
@@ -51,6 +57,8 @@ const SignUp = () => {
   const [phoneValid, setPhoneValid] = React.useState(true);
 
   const [errors, setErrors] = React.useState<FormErrors>({});
+
+  const [createVendor, { isLoading }] = useVendorRegistrationMutation();
 
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
@@ -89,65 +97,47 @@ const SignUp = () => {
     if (!value || !allowedCountries.includes(value)) return;
     setCountryCode(value);
   };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("Submit...");
+
     e.preventDefault();
-    const data = Object.fromEntries(
-      new FormData(e.currentTarget),
-    ) as unknown as FormData;
 
-    // Custom validation checks
-    const newErrors: FormErrors = {};
+    const form = new FormData(e.currentTarget);
 
-    // Password validation
-    const passwordError = getPasswordError(data.password);
-
-    if (passwordError) {
-      newErrors.password = passwordError;
-    }
-
-    // Username validation
-    if (data.name === "admin") {
-      newErrors.name = "Nice try! Choose a different username";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-
-      return;
-    }
-
-    if (!term) {
-      setErrors({ terms: "Please accept the terms & conditions." });
-      return;
-    }
-
-    // Clear errors and submit
-    setErrors({});
+    const payload: VendorRegistrationRequest = {
+      regNo: form.get("regNo") as string,
+      email: form.get("email") as string,
+      phone: form.get("phone") as string,
+      campus: form.get("campus") as string,
+      countryCode: countryCode as string,
+      password: form.get("password") as string,
+      term: term,
+    };
 
     try {
-      setIsLoading(true);
-      // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
+      const res = await createVendor(payload).unwrap();
       console.log(res);
+
       addToast({
         title: "Sign Up",
         description: res.message,
         color: "success",
       });
 
-      setIsLoading(false);
-    } catch (err: any) {
-      setErrors(err.message);
+      setSelectedTabKey("login");
+
+      //  setStages([]);
+      setErrors({});
+      //  onOpenChange();
+    } catch (error: any) {
       addToast({
-        title: "Error occured",
-        description: err.message,
+        title: "Registration failed",
+        description: error?.data?.message || "Something went wrong, try again",
         color: "danger",
       });
+      console.log(error);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -290,7 +280,7 @@ const SignUp = () => {
 
         <Checkbox
           isRequired
-          color="danger"
+          color="primary"
           classNames={{
             label: "text-small",
           }}

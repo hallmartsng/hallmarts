@@ -19,8 +19,16 @@ export interface IVendor extends Document {
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IVendor>(
+const vendorSchema = new Schema<IVendor>(
   {
+    regNo: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
     email: {
       type: String,
       required: true,
@@ -39,9 +47,11 @@ const userSchema = new Schema<IVendor>(
     refreshToken: {
       type: String,
     },
+    campus: { type: String, required: true },
+    countryCode: { type: String, required: true },
     phone: {
       type: String,
-      required: false,
+      required: true,
       trim: true,
     },
 
@@ -58,7 +68,7 @@ const userSchema = new Schema<IVendor>(
   { timestamps: true },
 );
 
-// userSchema.pre<IUser>('save', async function () {
+// vendorSchema.pre<IUser>('save', async function () {
 //   if (!this.isModified('password')) return
 
 //   const salt = await bcrypt.genSalt(10);
@@ -66,16 +76,19 @@ const userSchema = new Schema<IVendor>(
 
 // });
 
-userSchema.pre("save", async function (this: IVendor) {
+vendorSchema.pre("save", async function (this: IVendor) {
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-userSchema.methods["comparePassword"] = async function (
+vendorSchema.methods["comparePassword"] = async function (
   candidatePassword: string,
 ) {
   return bcrypt.compare(candidatePassword, this["password"]);
 };
 
-export const User: Model<IVendor> = mongoose.model<IVendor>("User", userSchema);
+export const Vendor: Model<IVendor> = mongoose.model<IVendor>(
+  "Vendor",
+  vendorSchema,
+);

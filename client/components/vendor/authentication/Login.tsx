@@ -3,41 +3,55 @@ import React from "react";
 import { Form, Input, Button, addToast, Spinner, Link } from "@heroui/react";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
+  const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [password, setPassword] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("Submit...");
+
     e.preventDefault();
-    const data = Object.fromEntries(
-      new FormData(e.currentTarget),
-    ) as unknown as FormData;
+
+    const form = new FormData(e.currentTarget);
+
+    const payload = {
+      regNo: form.get("regNo") as string,
+      password: form.get("password") as string,
+      redirect: false,
+    };
 
     try {
       setIsLoading(true);
-      // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
+      const res = await signIn("credentials", payload);
       console.log(res);
-      addToast({
-        title: "Sign Up",
-        description: res.message,
-        color: "success",
-      });
 
-      setIsLoading(false);
-    } catch (err: any) {
+      if (!res?.ok) {
+        addToast({
+          title: "Login failed",
+          description: res?.error,
+          color: "danger",
+        });
+      }
+
+      if (res?.ok) {
+        router.push("/vendor/dashboard");
+      }
+    } catch (error: any) {
       addToast({
-        title: "Error occured",
-        description: err.message,
+        title: "Login failed",
+        description: "Something went wrong, try again.",
         color: "danger",
       });
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   return (
     <Form
