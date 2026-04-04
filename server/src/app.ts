@@ -44,7 +44,7 @@ app.use("/api/v1/vendor/profile", vendorProfile);
 // General Endpoints
 app.use("/api/v1/auth", generalAuth);
 
-const PORT = 5000;
+const PORT = process.env["PORT"]!;
 
 // Start server ONLY after DB connects
 (async () => {
