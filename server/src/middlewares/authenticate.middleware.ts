@@ -6,7 +6,7 @@ export interface AuthRequest extends Request {
   userId?: string;
 }
 
-export const authenticateMiddleWare = async (
+export const vendorAuthenticateMiddleWare = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -33,15 +33,15 @@ export const authenticateMiddleWare = async (
     }
 
     const decoded = jwt.verify(token, secret) as {
-      userId: string;
+      vendorId: string;
       role: string;
     };
-    if (!decoded || !decoded.userId) {
+    if (!decoded || !decoded.vendorId) {
       res.status(401).json({ message: "Unauthorized: Invalid token payload" });
       return;
     }
 
-    const vendor = await Vendor.findById(decoded.userId).select("-password");
+    const vendor = await Vendor.findById(decoded.vendorId).select("-password");
 
     if (!vendor) {
       res.status(401).json({
@@ -50,7 +50,7 @@ export const authenticateMiddleWare = async (
       });
       return;
     }
-    req.userId = decoded.userId;
+    req.vendorId = decoded.vendorId;
     next(); // ✅ Only reach next() after all checks
   } catch (error) {
     console.error("JWT verification error:", error);

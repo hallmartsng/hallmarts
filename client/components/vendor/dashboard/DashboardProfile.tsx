@@ -41,10 +41,9 @@ const DashboardProfile = () => {
     React.useState<boolean>(false);
 
   const [uploadedImage, setUploadedImage] = React.useState<ImagePreview | null>(
-    {
-      file: "",
-      url: data?.data.store_logo || "",
-    },
+    data?.data.store_logo
+      ? { file: data.data.store_logo, url: data.data.store_logo }
+      : null,
   );
 
   console.log("Data: ", data);
@@ -74,17 +73,25 @@ const DashboardProfile = () => {
   };
 
   const handleSelect = (files: FileList | null) => {
-    console.log("handleSelect: ", files);
-    if (!files) return;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
 
     setUploadedImage({
-      file: files[0],
-      url: URL.createObjectURL(files[0]),
+      file,
+      url: URL.createObjectURL(file),
     });
   };
 
   const removeImage = () => {
-    setUploadedImage(null);
+    setUploadedImage({
+      file: "",
+      url: "",
+    });
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   };
 
   const handlePersonalInfoUpdate = () => {
@@ -128,28 +135,40 @@ const DashboardProfile = () => {
                 width={50}
                 height={50}
               />
+            </div>
+          </div>
 
-              {/* Delete Icon */}
-              {uploadedImage?.url && (
+          <div className="flex items-center gap-4">
+            {uploadedImage?.url ? (
+              <div className="flex items-center gap-4">
+                <Button
+                  className="w-auto flex items-center bg-[#ed1d3e] text-white"
+                  type="submit"
+                  onPress={handleBrandLogoUpdate}
+                >
+                  <p>Save logo</p>
+                  {/* <Spinner size="sm" variant="spinner" color="white" /> */}
+                </Button>
                 <button
                   type="button"
                   onClick={() => removeImage()}
-                  className="absolute right-2 top-2 rounded-full bg-black/60 p-1 text-white hover:bg-black"
+                  className="rounded-xl flex items-center px-2 text-sm gap-1 justify-center bg-black/60 h-10 w-auto text-white hover:bg-black"
                 >
-                  <TrashIcon className="size-4" />
+                  <TrashIcon className="size-5" />
+                  Delete
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="p-2 gap-1 rounded-lg border border-dashed text-sm text-gray-500 hover:border-gray-400 items-center flex w-auto"
+              >
+                <CloudArrowDownIcon className="size-5" />
+                <span>Upload Image</span>
+              </button>
+            )}
           </div>
-          {/* Upload Button */}
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="p-2 gap-1 rounded-lg border border-dashed text-sm text-gray-500 hover:border-gray-400 items-center flex w-auto"
-          >
-            <CloudArrowDownIcon className="size-5" />
-            <span>Upload Image</span>
-          </button>
 
           <input
             ref={inputRef}
@@ -225,6 +244,7 @@ const DashboardProfile = () => {
               />
 
               <Input
+                isDisabled={data?.data.campus ? true : false}
                 aria-label="Campus"
                 value={data?.data.campus}
                 name="campus"
