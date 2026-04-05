@@ -1,7 +1,14 @@
 "use client";
 import React, { useRef } from "react";
 import DashboardHeader from "./DashboardHeader";
-import { Button, Form, Input, Textarea } from "@heroui/react";
+import {
+  addToast,
+  Button,
+  Form,
+  Input,
+  Spinner,
+  Textarea,
+} from "@heroui/react";
 import {
   CloudArrowDownIcon,
   EyeIcon,
@@ -9,7 +16,12 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { useGetVendorProfileQuery } from "@/lib/services/vendor/vendor.api";
+import {
+  useGetVendorProfileQuery,
+  useUpdateVendorProfileMutation,
+  useUploadStoreLogoMutation,
+} from "@/lib/services/vendor/vendor.api";
+import { VendorProfileUpdateRequest } from "@/types/vendor.types";
 
 interface StoreInfoFormErrors {
   store_name?: string;
@@ -22,31 +34,46 @@ interface StoreInfoFormErrors {
 }
 
 type ImagePreview = {
-  file: File | string;
+  file: File | null;
   url: string;
+  public_id?: string;
 };
 const DashboardProfile = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { data } = useGetVendorProfileQuery();
 
   const [errors, setErrors] = React.useState<StoreInfoFormErrors>({});
   const [password, setPassword] = React.useState<string | null>(null);
-  const [storeName, setStoreName] = React.useState<string | null>(
-    data?.data.store_name || null,
-  );
+
   const [retryPassword, setRetryPassword] = React.useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
     React.useState<boolean>(false);
 
+  const { data } = useGetVendorProfileQuery();
+  const [uploadLogo, { isLoading: isLoadingLogoUpload }] =
+    useUploadStoreLogoMutation();
+
+  const [updateProfile, { isLoading: isLoadingVendorProfileUpdate }] =
+    useUpdateVendorProfileMutation();
+
   const [uploadedImage, setUploadedImage] = React.useState<ImagePreview | null>(
-    data?.data.store_logo
-      ? { file: data.data.store_logo, url: data.data.store_logo }
+    data?.data.store_logo?.url
+      ? { file: null, url: data.data.store_logo.url }
       : null,
   );
 
-  console.log("Data: ", data);
+  const [fName, setFName] = React.useState<string>(data?.data.fname || "");
+  const [storeName, setStoreName] = React.useState<string>(
+    data?.data.store_name || "",
+  );
+
+  const [isLoadingPersonalInfo, setIsLoadingPersonalInfo] =
+    React.useState<boolean>(false);
+  const [isLoadingStoreInfo, setIsLoadingStoreInfo] =
+    React.useState<boolean>(false);
+
+  console.log("Data: ", data?.data);
 
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
@@ -85,7 +112,7 @@ const DashboardProfile = () => {
 
   const removeImage = () => {
     setUploadedImage({
-      file: "",
+      file: null,
       url: "",
     });
 
@@ -94,14 +121,95 @@ const DashboardProfile = () => {
     }
   };
 
-  const handlePersonalInfoUpdate = () => {
+  const handlePersonalInfoUpdate = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
     console.log("handlePersonalInfoUpdate");
+    setIsLoadingPersonalInfo(true);
+    try {
+      const res = await updateProfile({
+        formData: { fname: fName },
+      }).unwrap();
+
+      addToast({
+        title: "Personal updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    } finally {
+      setIsLoadingPersonalInfo(false);
+    }
+  };
+  const handleStoreInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoadingStoreInfo(true);
+    try {
+      const formData = new FormData();
+      const payload: VendorProfileUpdateRequest = {
+        store_name: formData.get("store_name") as string,
+        store_description: formData.get("store_description") as string,
+      };
+
+      const res = await updateProfile({
+        formData: {
+          store_name: storeName,
+          store_description: "Welcomme to my hood",
+        },
+      }).unwrap();
+
+      addToast({
+        title: "Store updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    } finally {
+      setIsLoadingStoreInfo(false);
+    }
   };
   const handlePasswordUpdate = () => {
     console.log("handlePersonalInfoUpdate");
   };
-  const handleBrandLogoUpdate = () => {
-    console.log("handlePersonalInfoUpdate");
+  const handleBrandLogoUpdate = async () => {
+    if (!uploadedImage?.file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("logo", uploadedImage.file);
+
+      const res = await uploadLogo({
+        uploadedLogo: formData,
+      }).unwrap();
+
+      addToast({
+        title: "Image uploaded",
+        description: res.message,
+        color: "success",
+      });
+
+      console.log("Logo uploaded successfully");
+    } catch (error: any) {
+      addToast({
+        title: "Image upload failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -128,12 +236,14 @@ const DashboardProfile = () => {
                 src={
                   uploadedImage?.url
                     ? uploadedImage.url
-                    : "/image-upload-image-fallback.png"
+                    : data?.data.store_logo?.url
+                      ? data?.data.store_logo.url
+                      : "/image-upload-image-fallback.png"
                 }
                 alt="brand logo"
                 className="h-full w-full object-cover rounded-full"
-                width={50}
-                height={50}
+                width={100}
+                height={100}
               />
             </div>
           </div>
@@ -147,16 +257,22 @@ const DashboardProfile = () => {
                   onPress={handleBrandLogoUpdate}
                 >
                   <p>Save logo</p>
-                  {/* <Spinner size="sm" variant="spinner" color="white" /> */}
+                  {isLoadingLogoUpload && (
+                    <Spinner size="sm" variant="spinner" color="white" />
+                  )}
                 </Button>
-                <button
-                  type="button"
-                  onClick={() => removeImage()}
-                  className="rounded-xl flex items-center px-2 text-sm gap-1 justify-center bg-black/60 h-10 w-auto text-white hover:bg-black"
-                >
-                  <TrashIcon className="size-5" />
-                  Delete
-                </button>
+                {data && data.data.store_logo?.url ? (
+                  ""
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => removeImage()}
+                    className="rounded-xl flex items-center px-2 text-sm gap-1 justify-center bg-black/60 h-10 w-auto text-white hover:bg-black"
+                  >
+                    <TrashIcon className="size-5" />
+                    Delete
+                  </button>
+                )}
               </div>
             ) : (
               <button
@@ -166,6 +282,16 @@ const DashboardProfile = () => {
               >
                 <CloudArrowDownIcon className="size-5" />
                 <span>Upload Image</span>
+              </button>
+            )}
+            {uploadedImage?.url && (
+              <button
+                type="button"
+                onClick={() => removeImage()}
+                className="rounded-xl flex items-center px-2 text-sm gap-1 justify-center bg-black/60 h-10 w-auto text-white hover:bg-black"
+              >
+                <TrashIcon className="size-5" />
+                Delete
               </button>
             )}
           </div>
@@ -199,10 +325,11 @@ const DashboardProfile = () => {
 
               <Input
                 aria-label="Name"
-                value={data?.data.fname || ""}
+                value={data?.data.fname ? data?.data.fname : fName || ""}
                 placeholder="Enter fullame"
-                name="name"
+                name="fname"
                 type="text"
+                onValueChange={setFName}
               />
               <Input
                 isDisabled
@@ -218,7 +345,9 @@ const DashboardProfile = () => {
                   type="submit"
                 >
                   <p>Submit</p>
-                  {/* <Spinner size="sm" variant="spinner" color="white" /> */}
+                  {isLoadingPersonalInfo && (
+                    <Spinner size="sm" variant="spinner" color="white" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -230,7 +359,7 @@ const DashboardProfile = () => {
           <h1 className="sm:text-lg font-semibold">Store Info</h1>
           <Form
             className="w-full justify-center items-center"
-            onSubmit={handlePersonalInfoUpdate}
+            onSubmit={handleStoreInfoUpdate}
           >
             <div className="grid mb-3 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
               <Input
@@ -266,7 +395,7 @@ const DashboardProfile = () => {
             <Textarea
               aria-label="Store description"
               value={data?.data.store_description}
-              name="description"
+              name="store_description"
               type="text"
               placeholder="Tell your customers more about your store"
               className="w-full col-span-12"

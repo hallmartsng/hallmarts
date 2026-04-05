@@ -2,12 +2,12 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Vendor } from "../models/vendor.models";
 
-export interface AuthRequest extends Request {
+export interface AuthRequestType extends Request {
   userId?: string;
 }
 
 export const vendorAuthenticateMiddleWare = async (
-  req: AuthRequest,
+  req: AuthRequestType,
   res: Response,
   next: NextFunction,
 ) => {

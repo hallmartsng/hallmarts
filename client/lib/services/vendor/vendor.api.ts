@@ -13,8 +13,40 @@ export const authApi = api.injectEndpoints({
         url: "/vendor/profile/",
         method: "GET",
       }),
+      providesTags: ["Vendor"],
+    }),
+    // 🔹 upload Product Images
+    updateVendorProfile: builder.mutation<
+      ApiResponse<VendorProfileUpdateRequest>,
+      {
+        formData: VendorProfileUpdateRequest;
+      }
+    >({
+      query: ({ formData }) => ({
+        url: `/vendor/profile/update/`,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Vendor"],
+    }),
+    uploadStoreLogo: builder.mutation<
+      ApiResponse<VendorProfileUpdateRequest>,
+      {
+        uploadedLogo: FormData;
+      }
+    >({
+      query: ({ uploadedLogo }) => ({
+        url: `/vendor/profile/store-logo/upload/`,
+        method: "POST",
+        body: uploadedLogo,
+      }),
+      invalidatesTags: ["Vendor"],
     }),
   }),
 });
 
-export const { useGetVendorProfileQuery } = authApi;
+export const {
+  useGetVendorProfileQuery,
+  useUploadStoreLogoMutation,
+  useUpdateVendorProfileMutation,
+} = authApi;

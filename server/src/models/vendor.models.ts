@@ -19,7 +19,10 @@ export interface IVendor extends Document {
   createdAt: Date;
   updatedAt: Date;
 
-  store_logo?: string;
+  store_logo?: {
+    url: string;
+    public_id: string;
+  };
   store_name?: string;
   store_description?: string;
   fname?: string;
@@ -74,6 +77,19 @@ const vendorSchema = new Schema<IVendor>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    store_logo: {
+      url: { type: String },
+      public_id: { type: String },
+    },
+    store_name: {
+      type: String,
+    },
+    store_description: {
+      type: String,
+    },
+    fname: {
+      type: String,
     },
   },
   { timestamps: true },
