@@ -4,6 +4,8 @@ import { generateAuthTokens } from "../utils/generateAuthToken";
 
 // Refresh toekn user
 export async function getRefreshAccessToken(req: Request, res: Response) {
+  console.log("req.body: ", req.body);
+
   const { refreshToken } = req.body;
 
   if (!refreshToken)
@@ -14,19 +16,24 @@ export async function getRefreshAccessToken(req: Request, res: Response) {
     const decoded = jwt.verify(
       refreshToken,
       process.env["JWT_REFRESH_SECRET"] as string,
-    ) as { userId: string; role: string };
+    ) as { vendorId: string; role: string };
 
     // ✅ Issue new access token
     const { accessToken, refreshAccessToken } = generateAuthTokens(
-      decoded.userId,
+      decoded.vendorId,
       decoded.role,
     );
 
     return res.json({
-      accessToken: accessToken,
-      refreshToken: refreshAccessToken,
+      data: {
+        accessToken: accessToken,
+        refreshToken: refreshAccessToken,
+      },
     });
   } catch (error) {
     return res.status(403).json({ message: error });
+    // return res
+    //   .status(403)
+    //   .json({ message: "Invalid or expired refresh token" });
   }
 }

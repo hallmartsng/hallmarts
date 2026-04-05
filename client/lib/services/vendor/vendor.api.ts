@@ -10,7 +10,7 @@ export const authApi = api.injectEndpoints({
       void
     >({
       query: () => ({
-        url: "/vendor/profile",
+        url: "/vendor/profile/",
         method: "GET",
       }),
     }),

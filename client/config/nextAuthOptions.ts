@@ -1,6 +1,5 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { register } from "next/dist/next-devtools/userspace/pages/pages-dev-overlay-setup";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -49,6 +48,7 @@ export const authOptions: NextAuthOptions = {
           email: data.user.email,
           role: data.user.role,
           accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         };
       },
     }),
@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
       }
       return token;
     },
@@ -72,6 +73,7 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.id;
       session.user.role = token.role;
       session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
       return session;
     },
   },

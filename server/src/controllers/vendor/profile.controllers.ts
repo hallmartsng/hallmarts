@@ -4,14 +4,18 @@ import { Vendor } from "../../models/vendor.models";
 declare global {
   namespace Express {
     interface Request {
-      vendorId?: string;
+      userId?: string;
     }
   }
 }
 export const getVendorProfile = async (req: Request, res: Response) => {
-  const vendorId = req.vendorId;
+  const userId = req.userId;
 
-  const vendorProfile = await Vendor.findById({ _id: vendorId });
+  console.log("userId: ", userId);
+
+  const vendorProfile = await Vendor.findById({ _id: userId });
+
+  console.log("vendorProfile: ", vendorProfile);
 
   return res.status(200).json({
     message: "Vendor profile found",
@@ -21,7 +25,7 @@ export const getVendorProfile = async (req: Request, res: Response) => {
 };
 
 export const updateVendorProfile = async (req: Request, res: Response) => {
-  const id = req.vendorId;
+  const id = req.userId;
   try {
     const updates = req.body;
 
