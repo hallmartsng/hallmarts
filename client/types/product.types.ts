@@ -1,7 +1,4 @@
-export type ImagePreview = {
-  file: File;
-  url: string;
-};
+import { ImagePreview } from ".";
 
 export interface ProductRequest {
   title: string;

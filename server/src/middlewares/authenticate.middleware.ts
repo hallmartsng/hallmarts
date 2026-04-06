@@ -2,12 +2,12 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Vendor } from "../models/vendor.models";
 
-export interface AuthRequest extends Request {
+export interface AuthRequestType extends Request {
   userId?: string;
 }
 
 export const vendorAuthenticateMiddleWare = async (
-  req: AuthRequest,
+  req: AuthRequestType,
   res: Response,
   next: NextFunction,
 ) => {
@@ -33,15 +33,17 @@ export const vendorAuthenticateMiddleWare = async (
     }
 
     const decoded = jwt.verify(token, secret) as {
-      vendorId: string;
+      userId: string;
       role: string;
     };
-    if (!decoded || !decoded.vendorId) {
+    console.log(decoded);
+
+    if (!decoded || !decoded.userId) {
       res.status(401).json({ message: "Unauthorized: Invalid token payload" });
       return;
     }
 
-    const vendor = await Vendor.findById(decoded.vendorId).select("-password");
+    const vendor = await Vendor.findById(decoded.userId).select("-password");
 
     if (!vendor) {
       res.status(401).json({
@@ -50,7 +52,7 @@ export const vendorAuthenticateMiddleWare = async (
       });
       return;
     }
-    req.vendorId = decoded.vendorId;
+    req.userId = decoded.userId;
     next(); // ✅ Only reach next() after all checks
   } catch (error) {
     console.error("JWT verification error:", error);

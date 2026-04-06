@@ -17,8 +17,10 @@ import { AiOutlineProduct } from "react-icons/ai";
 import DashboardHeader from "./DashboardHeader";
 import LineChart from "@/components/charts/LineChart";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const DashboardOverview = () => {
+  const { data: session } = useSession();
   const [filterBy, setFilterBy] = useState<"daily" | "weekly" | "monthly">(
     "weekly",
   );
@@ -77,7 +79,7 @@ const DashboardOverview = () => {
         />
         {/* Greetings  */}
         <DashboardHeader
-          header="Welcome Mike 👋"
+          header={`Welcome ${session?.user.email ? session?.user.email : "Vendor"} 👋`}
           subHeader="Here’s what’s happening in your campus store today."
         />
         {/* Analytics cards  */}

@@ -11,7 +11,7 @@ import vendorAuth from "./routes/vendor/auth.routes";
 import vendorProfile from "./routes/vendor/profile.routes";
 
 // General imports
-import generalAuth from "./routes/vendor/auth.routes";
+import generalAuth from "./routes/auth.routes";
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://hallmarts-omega.vercel.app/", "http://localhost:3000"],
+    origin: ["https://hallmarts-omega.vercel.app", "http://localhost:3000"],
     credentials: true,
   }),
 );

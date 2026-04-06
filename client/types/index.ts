@@ -15,3 +15,9 @@ export interface ApiResponse<T> {
     totalPages: number;
   };
 }
+
+export type ImagePreview = {
+  file: File | null;
+  url: string;
+  public_id?: string;
+};
