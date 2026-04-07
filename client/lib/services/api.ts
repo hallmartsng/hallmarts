@@ -16,22 +16,27 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
+const baseQueryWithReauth: typeof baseQuery = async (
+  args,
+  api,
+  extraOptions,
+) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  let refreshToken;
-  const session = await getSession();
-
-  console.log("getSession: ", session?.refreshToken);
-  if (session?.refreshToken) {
-    refreshToken = session?.refreshToken;
-  }
-
-  // 🔥 If access token expired
   if (result.error && result.error.status === 401) {
-    console.log("Access token expired. Attempting refresh...");
+    console.log("🔄 Access token expired, refreshing...");
 
-    // call refresh endpoint
+    // Get session again
+    const session = await getSession();
+    const refreshToken = session?.refreshToken;
+
+    if (!refreshToken) {
+      console.log("No refresh token found — signing out");
+      signOut({ callbackUrl: "/vendor/auth" });
+      return result;
+    }
+
+    // Try refreshing token via your backend
     const refreshResult = await baseQuery(
       {
         url: "/auth/refresh",
@@ -42,19 +47,32 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       extraOptions,
     );
 
-    console.log(refreshResult);
     if (refreshResult.data) {
-      console.log("Token refreshed");
-      console.log(refreshResult.data);
+      const newAccessToken = (refreshResult.data as any).accessToken;
+      const newRefreshToken =
+        (refreshResult.data as any).refreshToken ?? refreshToken;
 
-      // retry original request
-      result = await baseQuery(args, api, extraOptions);
-    } else {
-      console.log("Refresh failed. Logging out.");
-
-      await signOut({
-        callbackUrl: "/vendor/auth",
+      // ✅ Update session manually (NextAuth doesn’t auto-refresh client-side)
+      const res = await fetch("/api/auth/session?update=1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        }),
       });
+
+      if (res.ok) {
+        console.log("✅ Token refreshed, retrying original request");
+        // Retry original request with new access token
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        console.log("❌ Failed to update session");
+        signOut({ callbackUrl: "/vendor/auth" });
+      }
+    } else {
+      console.log("❌ Refresh token invalid — signing out");
+      signOut({ callbackUrl: "/vendor/auth" });
     }
   }
 

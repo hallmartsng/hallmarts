@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as crypto from "crypto";
+import bcrypt from "bcrypt";
 import { Vendor } from "../../models/vendor.models";
 import { generateOTP } from "../../utils/generateOTP";
 import Otp from "../../models/otp.models";
@@ -29,12 +30,14 @@ export const vendorRegistration = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "User already exist." });
     }
 
+    const hashPassword = await bcrypt.hash(password, 10);
+
     const vendor = await Vendor.create({
       regNo,
       role,
       email,
       campus,
-      password,
+      password: hashPassword,
       terms,
       phone,
       countryCode,

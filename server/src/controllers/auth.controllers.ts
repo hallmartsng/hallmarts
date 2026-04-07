@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { generateAuthTokens } from "../utils/generateAuthToken";
 
 // Refresh toekn user
-export async function getRefreshAccessToken(req: Request, res: Response) {
+export const getRefreshAccessToken = async (req: Request, res: Response) => {
   console.log("req.body: ", req.body);
 
   const { refreshToken } = req.body;
@@ -36,4 +36,4 @@ export async function getRefreshAccessToken(req: Request, res: Response) {
     //   .status(403)
     //   .json({ message: "Invalid or expired refresh token" });
   }
-}
+};
