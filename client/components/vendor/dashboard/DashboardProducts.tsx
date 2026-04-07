@@ -27,16 +27,19 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { IoClose } from "react-icons/io5";
+import { useGetProductsQuery } from "@/lib/services/vendor/products.api";
+import { ImagePreview } from "@/types";
 
 type ProductType = {
   _id: string;
   name: string;
-  price: string;
-  imgUrl: string;
+  price: number;
+  imgUrl: ImagePreview | null;
   stock: number;
   date_create: string;
   categories: string[];
   status: string;
+  description: string;
 };
 const DashboardProducts = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -49,6 +52,7 @@ const DashboardProducts = () => {
     product?: {
       productId: string;
       productTitle: string;
+      product?: ProductType;
     };
   }>({
     title: "Add product",
@@ -58,6 +62,10 @@ const DashboardProducts = () => {
 
   const debouncedSearch = useDebounce(search, 500);
 
+  const { data: productsData, isLoading: isLoadingProducts } =
+    useGetProductsQuery();
+  console.log("productsData: ", productsData);
+
   const filters = [
     { key: "", label: "All" },
     { key: "approved", label: "Approved" },
@@ -65,28 +73,21 @@ const DashboardProducts = () => {
     { key: "declined", label: "Declined" },
   ];
 
-  const products: ProductType[] = [
-    {
-      _id: "7763393893033",
-      name: "Nike Sportwears",
-      price: "$450",
-      stock: 2,
-      imgUrl: "/max-payne.jpg",
-      date_create: "20 Mar,2026",
-      status: "approved",
-      categories: ["Fashion", "Gaming"],
-    },
-    {
-      _id: "7763390093033",
-      name: "Adidas Terrex",
-      price: "$250",
-      stock: 6,
-      imgUrl: "/max-payne.jpg",
-      date_create: "20 Mar,2026",
-      status: "pending",
-      categories: ["Electronis", "Phones", "Accessories", "Health & beauty"],
-    },
-  ];
+  const products: ProductType[] = productsData?.data
+    ? productsData.data.map((product) => {
+        return {
+          _id: product._id || "",
+          name: product.title,
+          price: product.price,
+          stock: product.stock,
+          imgUrl: product.images ? product.images[0] : null,
+          date_create: product.createdAt ? product.createdAt : "",
+          status: product.status ? product.status : "pending",
+          categories: product.categories,
+          description: product.description,
+        };
+      })
+    : [];
   const renderCell = (product: ProductType, columnKey: React.Key) => {
     console.log("renderCell:", product);
 
@@ -95,7 +96,11 @@ const DashboardProducts = () => {
         return (
           <div className="flex items-center gap-4">
             <Image
-              src={product.imgUrl}
+              src={
+                product.imgUrl
+                  ? product.imgUrl.url
+                  : "/image-upload-image-fallback.png"
+              }
               alt={`${product.name}`}
               width={80}
               height={90}
@@ -154,6 +159,11 @@ const DashboardProducts = () => {
                 setSelectedForm({
                   title: "Update Product",
                   formId: "update-product-form",
+                  product: {
+                    productId: product._id,
+                    productTitle: product.name,
+                    product: product,
+                  },
                 });
                 onOpen();
               }}

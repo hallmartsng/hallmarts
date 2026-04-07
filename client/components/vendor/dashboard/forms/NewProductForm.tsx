@@ -9,6 +9,11 @@ import {
   addToast,
 } from "@heroui/react";
 import ProductImageUpload from "./ProductImageUpload";
+import { ProductRequest } from "@/types/product.types";
+import {
+  useCreateProductMutation,
+  useUploadProductImagesMutation,
+} from "@/lib/services/vendor/products.api";
 
 interface FormErrors {
   title?: string;
@@ -36,9 +41,31 @@ type ImagePreview = {
   url: string;
   coverImage: boolean;
 };
-const NewProductForm = () => {
+
+interface ProductFormValues {
+  title?: string;
+  price?: string;
+  categories?: string[];
+  stock?: string;
+  description?: string;
+  visible?: boolean;
+}
+
+interface NewProductFormProps {
+  setIsLoading: (value: boolean) => void;
+  onOpenChange: () => void;
+}
+const NewProductForm = ({
+  setIsLoading,
+  onOpenChange,
+}: NewProductFormProps) => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [uploadedImages, setUploadedImages] = useState<ImagePreview[]>([]);
+
+  const [createProduct, { isLoading: isLoadingCreateProduct }] =
+    useCreateProductMutation();
+  const [uploadImages, { isLoading: isLoadingImageUpload }] =
+    useUploadProductImagesMutation();
 
   const handleSelect = (files: FileList | null) => {
     console.log("handleSelect: ", files);
@@ -54,9 +81,91 @@ const NewProductForm = () => {
     setUploadedImages((prev) => [...prev, ...newImages]);
   };
 
-  const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateProduct = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("New product submitted");
+
+    const data = Object.fromEntries(
+      new FormData(e.currentTarget),
+    ) as ProductFormValues;
+
+    const payload: ProductRequest = {
+      title: data.title!,
+      description: data.description!,
+      categories: data.categories || [],
+      price: Number(data.price),
+      stock: Number(data.stock),
+      status: "pending",
+    };
+    const newErrors: FormErrors = {};
+
+    if (!data.title || data.title.length < 3) {
+      newErrors.title = "Title must be at least 3 characters";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      // 1️⃣ create product
+      setIsLoading(isLoadingCreateProduct);
+      const productUploadRes = await createProduct(payload).unwrap();
+      if (productUploadRes.success) {
+        addToast({
+          title: "Product upload",
+          description: productUploadRes.message,
+          color: "success",
+        });
+        setUploadedImages([]);
+        // setProductCategories([]);
+      }
+
+      const productId = productUploadRes.data._id;
+      // 2️⃣ upload images
+
+      setIsLoading(isLoadingImageUpload);
+      const formData = new FormData();
+      uploadedImages.forEach((img) => {
+        if (!img.file) return;
+
+        // Append the file
+        formData.append("images", img.file);
+
+        // Append metadata for this file
+        formData.append(
+          "coverImage",
+          JSON.stringify({ coverImage: img.coverImage }),
+        );
+      });
+
+      // Now call your RTK Query mutation
+
+      const imageUploadRes = await uploadImages({
+        productId: productId ? productId : null,
+        uploadedImages: formData, // just pass the FormData
+      }).unwrap();
+
+      if (imageUploadRes.success) {
+        addToast({
+          title: "Images upload",
+          description: imageUploadRes.message,
+          color: "success",
+        });
+      }
+      onOpenChange();
+    } catch (err) {
+      console.log("Product creation failed:", err);
+      addToast({
+        title: "Something went wrong",
+        description: `Falied to upload product`,
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(isLoadingCreateProduct);
+    }
+
+    // ✅ success
   };
   return (
     <Form
@@ -117,7 +226,9 @@ const NewProductForm = () => {
           selectionMode="multiple"
         >
           {CATEGORIES.map((category) => (
-            <SelectItem key={category.key}>{category.label}</SelectItem>
+            <SelectItem key={category.key} textValue={category.label}>
+              {category.label}
+            </SelectItem>
           ))}
         </Select>
       </div>

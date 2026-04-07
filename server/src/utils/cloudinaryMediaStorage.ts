@@ -2,28 +2,31 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.config";
 import { AuthRequestType } from "../middlewares/authenticate.middleware";
 import { Vendor } from "../models/vendor.models";
+import Product from "../models/products.models";
 
-// export const productMediaStorage = new CloudinaryStorage({
-//   cloudinary,
-//   params: async (req: AuthRequest, file) => {
-//     const product = await Product.findById(req.params.id);
+export const productMediaStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req: AuthRequestType, file) => {
+    console.log("id: ", req.params["id"]);
+    const productId = req.params["id"];
+    const product = await Product.findById(productId);
 
-//     if (!product) {
-//       throw new Error("product not found");
-//     }
+    if (!product) {
+      throw new Error("product not found");
+    }
 
-//     console.log("File in productMediaStorage:", file);
+    console.log("File in productMediaStorage:", file);
 
-//     const vendorId = product.vendor.toString();
+    const vendorId = product.vendor.toString();
 
-//     return {
-//       folder: `products/${vendorId}/${product._id}/originals`,
-//       resource_type: "auto",
-//       // allowed_formats: ["jpg", "jpeg", "png"],
-//       public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
-//     };
-//   },
-// });
+    return {
+      folder: `products/${vendorId}/${product._id}/originals`,
+      resource_type: "auto",
+      // allowed_formats: ["jpg", "jpeg", "png"],
+      public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
+    };
+  },
+});
 
 // export const userProfileMediaStorage = new CloudinaryStorage({
 //   cloudinary,
