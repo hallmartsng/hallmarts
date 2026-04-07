@@ -9,7 +9,7 @@ export interface IVendor extends Document {
   phone: string;
   campus: string;
   countryCode: string;
-  address: string;
+  address?: string;
   password: string;
   role: string;
   term: boolean;
@@ -48,7 +48,7 @@ const vendorSchema = new Schema<IVendor>(
     },
     address: {
       type: String,
-      required: true,
+
       lowercase: true,
     },
 
@@ -102,12 +102,6 @@ const vendorSchema = new Schema<IVendor>(
 //   this.password = await bcrypt.hash(this.password, salt);
 
 // });
-
-vendorSchema.pre("save", async function (this: IVendor) {
-  if (!this.isModified("password")) return;
-
-  this.password = await bcrypt.hash(this.password, 10);
-});
 
 vendorSchema.methods["comparePassword"] = async function (
   candidatePassword: string,

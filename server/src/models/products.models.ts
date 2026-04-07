@@ -1,0 +1,127 @@
+import mongoose, { Schema, Document, Model } from "mongoose";
+
+export interface IProduct extends Document {
+  vendor: mongoose.Types.ObjectId;
+  title: string;
+  description: string;
+  metaData?: string;
+  price: number;
+  discount?: number;
+  productType?: string;
+  //   categories: mongoose.Types.ObjectId[];
+  categories: string[];
+  images?: { url: string; public_id: string; coverImage: boolean }[];
+  isVerified?: boolean;
+  stock?: number;
+  clicks?: number;
+  visible?: boolean;
+  status: "approved" | "pending" | "rejected";
+  colors?: string[];
+  sizes?: string[];
+  deliveryFee?: number;
+  deliveryDuration?: string;
+  isBid?: boolean;
+  isSwap?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productSchema = new Schema<IProduct>(
+  {
+    vendor: {
+      type: Schema.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
+    title: { type: String, trim: true, index: true },
+    description: { type: String, trim: true },
+    metaData: { type: String, trim: true },
+
+    price: { type: Number },
+    discount: { type: Number, default: 0 },
+
+    productType: {
+      type: String,
+      // required: true,
+      index: true, // 🔥 filter by type
+    },
+
+    // categories: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Category",
+    //     index: true, // 🔥 category queries
+    //   },
+    // ],
+
+    categories: [
+      {
+        type: String,
+        required: true,
+        index: true,
+      },
+    ],
+    images: [
+      {
+        url: String,
+        public_id: String,
+        coverImage: Boolean,
+      },
+    ],
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+      index: true, // 🔥 public listings
+    },
+    visible: {
+      type: Boolean,
+      default: false,
+      index: true, // 🔥 public listings
+    },
+
+    stock: {
+      type: Number,
+      default: 1,
+      index: true, // 🔥 stock filtering
+    },
+    clicks: {
+      type: Number,
+      default: 0,
+      index: true, // 🔥 clicks filtering
+    },
+
+    colors: [String],
+    sizes: [String],
+
+    deliveryFee: {
+      type: Number,
+      // required: true,
+    },
+
+    deliveryDuration: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["approved", "pending", "rejected"],
+      default: "pending",
+    },
+
+    isBid: { type: Boolean, default: false, index: true },
+    isSwap: { type: Boolean, default: false, index: true },
+  },
+  { timestamps: true },
+);
+
+// Optimized common storefront queries
+productSchema.index({ isVerified: 1, productType: 1 });
+productSchema.index({ categories: 1, isVerified: 1 });
+
+export const Product: Model<IProduct> = mongoose.model<IProduct>(
+  "Product",
+  productSchema,
+);
+
+export default Product;

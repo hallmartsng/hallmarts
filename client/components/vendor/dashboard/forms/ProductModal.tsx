@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -6,17 +6,31 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Spinner,
 } from "@heroui/react";
 import NewProductForm from "./NewProductForm";
 import UpdateProductForm from "./UpdateProductForm";
 import DeleteProductForm from "./DeleteProductForm";
+import { ImagePreview } from "@/types";
 
+type ProductType = {
+  _id: string;
+  name: string;
+  price: number;
+  imgUrl: ImagePreview | null;
+  stock: number;
+  date_create: string;
+  categories: string[];
+  status: string;
+  description: string;
+};
 interface SelectedFormProps {
   title: string;
   formId: string;
   product?: {
     productId: string;
     productTitle: string;
+    product?: ProductType;
   };
 }
 interface ProductModalProps {
@@ -29,6 +43,7 @@ const ProductModal = ({
   isOpen,
   selectedForm,
 }: ProductModalProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   return (
     <>
       {" "}
@@ -46,10 +61,20 @@ const ProductModal = ({
               </ModalHeader>
               <ModalBody>
                 {selectedForm.formId === "add-product-form" && (
-                  <NewProductForm />
+                  <NewProductForm
+                    setIsLoading={setIsLoading}
+                    onOpenChange={onOpenChange}
+                  />
                 )}
                 {selectedForm.formId === "update-product-form" && (
-                  <UpdateProductForm />
+                  <UpdateProductForm
+                    title={selectedForm.product?.productTitle || ""}
+                    product={
+                      selectedForm.product?.product
+                        ? selectedForm.product?.product
+                        : null
+                    }
+                  />
                 )}
                 {selectedForm.formId === "delete-product-form" && (
                   <DeleteProductForm
@@ -68,6 +93,9 @@ const ProductModal = ({
                   type="submit"
                 >
                   {selectedForm.title}
+                  {isLoading && (
+                    <Spinner size="sm" variant="spinner" color="white" />
+                  )}
                 </Button>
               </ModalFooter>
             </>

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Form, Input, SelectItem, Textarea, Select } from "@heroui/react";
 import ProductImageUpload from "./ProductImageUpload";
+import { ImagePreview } from "@/types";
 
 interface FormErrors {
   title?: string;
@@ -23,7 +24,23 @@ const CATEGORIES = [
   { key: "sports", label: "Sports & Fitness" },
   { key: "health", label: "Health & Wellness" },
 ];
-const UpdateProductForm = () => {
+
+type ProductType = {
+  _id: string;
+  name: string;
+  price: number;
+  imgUrl: ImagePreview | null;
+  stock: number;
+  date_create: string;
+  categories: string[];
+  status: string;
+  description: string;
+};
+interface UpdateProductFormProps {
+  title: string;
+  product: ProductType | null;
+}
+const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleProductUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,6 +62,7 @@ const UpdateProductForm = () => {
         name="title"
         placeholder="Enter product title"
         type="text"
+        value={product?.name}
       />
       <Textarea
         isRequired
@@ -53,6 +71,7 @@ const UpdateProductForm = () => {
         name="description"
         labelPlacement="outside"
         placeholder="Enter your description"
+        value={product?.description}
       />
       <Input
         isRequired
@@ -67,6 +86,7 @@ const UpdateProductForm = () => {
           </div>
         }
         type="number"
+        value={`${product?.price}`}
       />
       <Input
         isRequired
@@ -77,6 +97,7 @@ const UpdateProductForm = () => {
         placeholder="In stock"
         defaultValue="1"
         type="number"
+        value={`${product?.stock}`}
       />
       <div className="-mt-6 w-full">
         <Select

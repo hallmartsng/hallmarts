@@ -142,7 +142,7 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
 
   return (
     <Form
-      className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white p-6 rounded-2xl shadow"
+      className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white sm:p-6 px-4 py-6 rounded-2xl shadow"
       validationErrors={errors.name ? { name: errors.name } : {}}
       onReset={() => console.log("Form reset")}
       onSubmit={onSubmit}
@@ -189,7 +189,7 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
           type="email"
         />
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col w-full gap-1">
           <div className="">
             <label htmlFor="phone" className="text-sm text-black">
               Phone
@@ -217,11 +217,13 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
               </p>
             )}
           </div>
-          <FilterCampuses
-            code={countryCode}
-            name={"campus"}
-            isRequired={true}
-          />
+          <div className="w-full">
+            <FilterCampuses
+              code={countryCode}
+              name={"campus"}
+              isRequired={true}
+            />
+          </div>
         </div>
 
         <Input

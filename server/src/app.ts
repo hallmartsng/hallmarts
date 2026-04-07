@@ -9,6 +9,7 @@ import swaggerOpenapiSpecification from "./config/swagger.config";
 // vendor imports
 import vendorAuth from "./routes/vendor/auth.routes";
 import vendorProfile from "./routes/vendor/profile.routes";
+import vendorProductRoutes from "./routes/vendor/product.routes";
 
 // General imports
 import generalAuth from "./routes/auth.routes";
@@ -40,6 +41,7 @@ app.use(
 // Vendors Endpoints
 app.use("/api/v1/vendor/auth", vendorAuth);
 app.use("/api/v1/vendor/profile", vendorProfile);
+app.use("/api/v1/vendor/product", vendorProductRoutes);
 
 // General Endpoints
 app.use("/api/v1/auth", generalAuth);

@@ -20,4 +20,5 @@ export type ImagePreview = {
   file: File | null;
   url: string;
   public_id?: string;
+  coverImage?: boolean;
 };

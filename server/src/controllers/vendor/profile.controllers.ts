@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+
 import { Vendor } from "../../models/vendor.models";
 import multer from "multer";
 import { storeLogoStorage } from "../../utils/cloudinaryMediaStorage";
@@ -27,15 +29,54 @@ export const getVendorProfile = async (req: Request, res: Response) => {
 
 export const updateVendorProfile = async (req: Request, res: Response) => {
   const id = req.userId;
-  console.log("req.body: ", req.body);
+
+  const { password, retry_password, ...otherUpdates } = req.body;
 
   try {
-    const updates = req.body;
+    const updates: any = { ...otherUpdates };
 
-    //1️⃣ Update project
+    // 🔐 If password update requested
+    if (password || retry_password) {
+      if (!password || !retry_password) {
+        return res.status(400).json({
+          success: false,
+          message: "Both password fields are required",
+        });
+      }
+
+      const vendor = await Vendor.findOne({ _id: id }).select("+password");
+      if (!vendor) {
+        return res.status(401).json({ message: "Vendor not found" });
+      }
+
+      // const isMatch = await vendor.comparePassword(password);
+      const isMatch = await bcrypt.compare(password, vendor.password);
+      console.log("vendor.password: ", vendor.password);
+      console.log("isMatch: ", isMatch);
+
+      // hash password
+      if (!isMatch) {
+        return res.status(401).json({ message: "Incorrect password" });
+      }
+      const hashedPassword = await bcrypt.hash(retry_password, 10);
+
+      vendor.password = hashedPassword;
+      console.log("retry_password: ", retry_password);
+      console.log("hashedPassword: ", hashedPassword);
+
+      await vendor.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+        data: vendor,
+      });
+    }
+
     const updatedVendorProfile = await Vendor.findByIdAndUpdate(id, updates, {
       new: true,
-    });
+      runValidators: true,
+    }).select("-password"); // don't return password
 
     if (!updatedVendorProfile) {
       return res.status(404).json({
@@ -50,9 +91,11 @@ export const updateVendorProfile = async (req: Request, res: Response) => {
       data: updatedVendorProfile,
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       success: false,
-      message: "Failed to update project",
+      message: "Failed to update vendor profile",
       error,
     });
   }

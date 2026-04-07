@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import DashboardHeader from "./DashboardHeader";
 import {
   addToast,
@@ -50,7 +50,7 @@ const DashboardProfile = () => {
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
     React.useState<boolean>(false);
 
-  const { data } = useGetVendorProfileQuery();
+  const { data, isLoading: isLoadingProfile } = useGetVendorProfileQuery();
   const [uploadLogo, { isLoading: isLoadingLogoUpload }] =
     useUploadStoreLogoMutation();
 
@@ -67,10 +67,15 @@ const DashboardProfile = () => {
   const [storeName, setStoreName] = React.useState<string>(
     data?.data.store_name || "",
   );
+  const [storeDesc, setStoreDesc] = React.useState<string>(
+    data?.data.store_description || "",
+  );
 
   const [isLoadingPersonalInfo, setIsLoadingPersonalInfo] =
     React.useState<boolean>(false);
   const [isLoadingStoreInfo, setIsLoadingStoreInfo] =
+    React.useState<boolean>(false);
+  const [isLoadingPasswordChange, setIsLoadingPasswordChange] =
     React.useState<boolean>(false);
 
   console.log("Data: ", data?.data);
@@ -87,13 +92,6 @@ const DashboardProfile = () => {
       if ((value.match(/[^a-z]/gi) || []).length < 1) {
         return "Password needs at least 1 symbol";
       }
-    }
-
-    return null;
-  };
-  const getRetryPasswordError = (value: string | null) => {
-    if (value !== password) {
-      return "Passwords don't match";
     }
 
     return null;
@@ -121,69 +119,7 @@ const DashboardProfile = () => {
     }
   };
 
-  const handlePersonalInfoUpdate = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
-    e.preventDefault();
-    console.log("handlePersonalInfoUpdate");
-    setIsLoadingPersonalInfo(true);
-    try {
-      const res = await updateProfile({
-        formData: { fname: fName },
-      }).unwrap();
-
-      addToast({
-        title: "Personal updated",
-        description: res.message,
-        color: "success",
-      });
-    } catch (error: any) {
-      addToast({
-        title: "Personal update failed",
-        description: error?.data?.message || "Something went wrong, try again",
-        color: "danger",
-      });
-      console.log(error);
-    } finally {
-      setIsLoadingPersonalInfo(false);
-    }
-  };
-  const handleStoreInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoadingStoreInfo(true);
-    try {
-      const formData = new FormData();
-      const payload: VendorProfileUpdateRequest = {
-        store_name: formData.get("store_name") as string,
-        store_description: formData.get("store_description") as string,
-      };
-
-      const res = await updateProfile({
-        formData: {
-          store_name: storeName,
-          store_description: "Welcomme to my hood",
-        },
-      }).unwrap();
-
-      addToast({
-        title: "Store updated",
-        description: res.message,
-        color: "success",
-      });
-    } catch (error: any) {
-      addToast({
-        title: "Personal update failed",
-        description: error?.data?.message || "Something went wrong, try again",
-        color: "danger",
-      });
-      console.log(error);
-    } finally {
-      setIsLoadingStoreInfo(false);
-    }
-  };
-  const handlePasswordUpdate = () => {
-    console.log("handlePersonalInfoUpdate");
-  };
+  // Logo handler
   const handleBrandLogoUpdate = async () => {
     if (!uploadedImage?.file) return;
 
@@ -212,6 +148,100 @@ const DashboardProfile = () => {
     }
   };
 
+  // Personal info handler
+  const handlePersonalInfoUpdate = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    console.log("handlePersonalInfoUpdate");
+    try {
+      setIsLoadingPersonalInfo(isLoadingVendorProfileUpdate);
+      const res = await updateProfile({
+        formData: { fname: fName },
+      }).unwrap();
+
+      addToast({
+        title: "Personal updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    } finally {
+      setIsLoadingPersonalInfo(isLoadingVendorProfileUpdate);
+    }
+  };
+
+  // Store info handler
+  const handleStoreInfoUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setIsLoadingStoreInfo(isLoadingVendorProfileUpdate);
+      const formData = new FormData(e.currentTarget);
+      const payload: VendorProfileUpdateRequest = {
+        store_name:
+          (formData.get("store_name") as string) || data?.data.store_name,
+        store_description: formData.get("store_description") as string,
+      };
+
+      const res = await updateProfile({
+        formData: payload,
+      }).unwrap();
+
+      addToast({
+        title: "Store updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    } finally {
+      setIsLoadingStoreInfo(isLoadingVendorProfileUpdate);
+    }
+  };
+
+  // password handler
+  const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setIsLoadingPasswordChange(isLoadingVendorProfileUpdate);
+      const formData = new FormData(e.currentTarget);
+      const payload: VendorProfileUpdateRequest = {
+        password: formData.get("password") as string,
+        retry_password: formData.get("retry_password") as string,
+      };
+
+      const res = await updateProfile({
+        formData: payload,
+      }).unwrap();
+
+      addToast({
+        title: "Store updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
+    } finally {
+      setIsLoadingPasswordChange(isLoadingVendorProfileUpdate);
+    }
+  };
+
   return (
     <section className="sm:max-w-7xl w-full py-5 flex flex-col gap-4">
       <DashboardHeader
@@ -219,51 +249,62 @@ const DashboardProfile = () => {
         subHeader="Manage your account and store details."
       />
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-        {/* Store logo  */}
-        <div className="bg-white rounded-lg p-4 shadow space-y-4">
-          <h1 className="sm:text-lg font-semibold">Branding</h1>
-          <p className="text-gray-600 text-sm">
-            Upload an image of your business logo to keep your customers
-            visually comfortable
-          </p>
-          {/* <ul>
+        {!isLoadingProfile && (
+          <>
+            {/* Store logo  */}
+            <div className="bg-white rounded-lg p-4 shadow space-y-4">
+              <h1 className="sm:text-lg font-semibold">Branding</h1>
+              <p className="text-gray-600 text-sm">
+                Upload an image of your business logo to keep your customers
+                visually comfortable
+              </p>
+              {/* <ul>
             <li>Store logo: </li>
             <li>Store Banner: </li>
           </ul> */}
-          <div className="relative space-y-3">
-            <div className="relative w-32 h-32 rounded-full">
-              <Image
-                src={
-                  uploadedImage?.url
-                    ? uploadedImage.url
-                    : data?.data.store_logo?.url
-                      ? data?.data.store_logo.url
-                      : "/image-upload-image-fallback.png"
-                }
-                alt="brand logo"
-                className="h-full w-full object-cover rounded-full"
-                width={100}
-                height={100}
-              />
-            </div>
-          </div>
+              <div className="relative space-y-3">
+                <div className="relative w-32 h-32 rounded-full">
+                  <Image
+                    src={
+                      uploadedImage?.url
+                        ? uploadedImage.url
+                        : data?.data.store_logo?.url
+                          ? data?.data.store_logo.url
+                          : "/image-upload-image-fallback.png"
+                    }
+                    alt="brand logo"
+                    className="h-full w-full object-cover rounded-full"
+                    width={100}
+                    height={100}
+                  />
+                </div>
+              </div>
 
-          <div className="flex items-center gap-4">
-            {uploadedImage?.url ? (
               <div className="flex items-center gap-4">
-                <Button
-                  className="w-auto flex items-center bg-[#ed1d3e] text-white"
-                  type="submit"
-                  onPress={handleBrandLogoUpdate}
-                >
-                  <p>Save logo</p>
-                  {isLoadingLogoUpload && (
-                    <Spinner size="sm" variant="spinner" color="white" />
-                  )}
-                </Button>
-                {data && data.data.store_logo?.url ? (
-                  ""
+                {uploadedImage?.url ? (
+                  <div className="flex items-center gap-4">
+                    <Button
+                      className="w-auto flex items-center bg-[#ed1d3e] text-white"
+                      type="submit"
+                      onPress={handleBrandLogoUpdate}
+                    >
+                      <p>Save logo</p>
+                      {isLoadingLogoUpload && (
+                        <Spinner size="sm" variant="spinner" color="white" />
+                      )}
+                    </Button>
+                  </div>
                 ) : (
+                  <button
+                    type="button"
+                    onClick={() => inputRef.current?.click()}
+                    className="p-2 gap-1 rounded-lg border border-dashed text-sm text-gray-500 hover:border-gray-400 items-center flex w-auto"
+                  >
+                    <CloudArrowDownIcon className="size-5" />
+                    <span>Upload Image</span>
+                  </button>
+                )}
+                {uploadedImage?.url && (
                   <button
                     type="button"
                     onClick={() => removeImage()}
@@ -274,228 +315,204 @@ const DashboardProfile = () => {
                   </button>
                 )}
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                className="p-2 gap-1 rounded-lg border border-dashed text-sm text-gray-500 hover:border-gray-400 items-center flex w-auto"
-              >
-                <CloudArrowDownIcon className="size-5" />
-                <span>Upload Image</span>
-              </button>
-            )}
-            {uploadedImage?.url && (
-              <button
-                type="button"
-                onClick={() => removeImage()}
-                className="rounded-xl flex items-center px-2 text-sm gap-1 justify-center bg-black/60 h-10 w-auto text-white hover:bg-black"
-              >
-                <TrashIcon className="size-5" />
-                Delete
-              </button>
-            )}
-          </div>
 
-          <input
-            ref={inputRef}
-            type="file"
-            multiple={false}
-            accept="image/*"
-            hidden
-            onChange={(e) => {
-              handleSelect(e.target.files);
-            }}
-          />
-        </div>
-        {/* Personal info  */}
-        <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
-          <h1 className="sm:text-lg font-semibold">Personal Info</h1>
-          <Form
-            className="w-full justify-center items-center space-y-4"
-            onSubmit={handlePersonalInfoUpdate}
-          >
-            <div className="flex flex-col items-end gap-4 w-full">
-              <Input
-                isDisabled
-                aria-label="Email"
-                value={data?.data.email || ""}
-                name="email"
-                type="text"
+              <input
+                ref={inputRef}
+                type="file"
+                multiple={false}
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  handleSelect(e.target.files);
+                }}
               />
-
-              <Input
-                aria-label="Name"
-                value={data?.data.fname ? data?.data.fname : fName || ""}
-                placeholder="Enter fullame"
-                name="fname"
-                type="text"
-                onValueChange={setFName}
-              />
-              <Input
-                isDisabled
-                aria-label="Phone"
-                value={data?.data.phone || ""}
-                name="phone"
-                type="text"
-              />
-
-              <div className="flex gap-4">
-                <Button
-                  className="w-full flex items-center bg-[#ed1d3e] text-white"
-                  type="submit"
-                >
-                  <p>Submit</p>
-                  {isLoadingPersonalInfo && (
-                    <Spinner size="sm" variant="spinner" color="white" />
-                  )}
-                </Button>
-              </div>
             </div>
-          </Form>
-        </div>
-
-        {/* Store info  */}
-        <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
-          <h1 className="sm:text-lg font-semibold">Store Info</h1>
-          <Form
-            className="w-full justify-center items-center"
-            onSubmit={handleStoreInfoUpdate}
-          >
-            <div className="grid mb-3 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
-              <Input
-                isDisabled={data?.data.store_name ? true : false}
-                aria-label="Store name"
-                value={storeName || ""}
-                name="store_name"
-                type="text"
-                placeholder="Store name"
-                onValueChange={setStoreName}
-              />
-
-              <Input
-                isDisabled={data?.data.campus ? true : false}
-                aria-label="Campus"
-                value={data?.data.campus}
-                name="campus"
-                type="text"
-              />
-              {/* <Input
-                aria-label="Location"
-                value={"Lagos state"}
-                name="location"
-                type="text"
-              /> */}
-              {/* <Input
-                aria-label="delivery areas"
-                value={"unilag, unical, uniben, cu"}
-                name="delivery_areas"
-                type="text"
-              /> */}
-            </div>
-            <Textarea
-              aria-label="Store description"
-              value={data?.data.store_description}
-              name="store_description"
-              type="text"
-              placeholder="Tell your customers more about your store"
-              className="w-full col-span-12"
-            />
-            {errors && (
-              <span className="text-danger text-small">{errors.campus}</span>
-            )}
-            <div className="flex gap-4 justify-end w-full">
-              <Button
-                className=" flex items-center bg-[#ed1d3e] text-white"
-                type="submit"
+            {/* Personal info  */}
+            <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
+              <h1 className="sm:text-lg font-semibold">Personal Info</h1>
+              <Form
+                className="w-full justify-center items-center space-y-4"
+                onSubmit={handlePersonalInfoUpdate}
               >
-                <p>Submit</p>
-                {/* <Spinner size="sm" variant="spinner" color="white" /> */}
-              </Button>
-            </div>
-          </Form>
-        </div>
+                <div className="flex flex-col items-end gap-4 w-full">
+                  <Input
+                    isDisabled
+                    aria-label="Email"
+                    value={data?.data.email || ""}
+                    name="email"
+                    type="text"
+                  />
 
-        {/* Password  */}
-        <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
-          <h1 className="sm:text-lg font-semibold">Security</h1>
-          <Form
-            className="w-full justify-center items-center  "
-            onSubmit={handlePasswordUpdate}
-          >
-            <div className="flex flex-col gap-4 w-full">
-              <Input
-                isRequired
-                endContent={
-                  <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-solid outline-transparent"
-                    type="button"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  <Input
+                    aria-label="Name"
+                    value={fName || data?.data.fname}
+                    placeholder="Enter fullame"
+                    name="fname"
+                    type="text"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      console.log(fName);
+
+                      setFName(e.target.value);
+                    }}
+                  />
+                  <Input
+                    isDisabled
+                    aria-label="Phone"
+                    value={data?.data.phone}
+                    name="phone"
+                    type="text"
+                  />
+
+                  <div className="flex gap-4">
+                    <Button
+                      className="w-full flex items-center bg-[#ed1d3e] text-white"
+                      type="submit"
+                    >
+                      <p>Submit</p>
+                      {isLoadingPersonalInfo && (
+                        <Spinner size="sm" variant="spinner" color="white" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </Form>
+            </div>
+
+            {/* Store info  */}
+            <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
+              <h1 className="sm:text-lg font-semibold">Store Info</h1>
+              <Form
+                className="w-full justify-center items-center"
+                onSubmit={handleStoreInfoUpdate}
+              >
+                <div className="grid mb-3 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
+                  <Input
+                    isDisabled={data?.data.store_name ? true : false}
+                    aria-label="Store name"
+                    value={storeName || data?.data.store_name}
+                    name="store_name"
+                    type="text"
+                    placeholder="Store name"
+                    onValueChange={setStoreName}
+                  />
+
+                  <Input
+                    isDisabled={data?.data.campus ? true : false}
+                    aria-label="Campus"
+                    value={data?.data.campus}
+                    name="campus"
+                    type="text"
+                  />
+                </div>
+                <Textarea
+                  aria-label="Store description"
+                  value={storeDesc || data?.data.store_description}
+                  name="store_description"
+                  type="text"
+                  placeholder="Tell your customers more about your store"
+                  className="w-full col-span-12"
+                  onValueChange={setStoreDesc}
+                />
+                {errors && (
+                  <span className="text-danger text-small">
+                    {errors.campus}
+                  </span>
+                )}
+                <div className="flex gap-4 justify-end w-full">
+                  <Button
+                    className=" flex items-center bg-[#ed1d3e] text-white"
+                    type="submit"
                   >
-                    {isPasswordVisible ? (
-                      <EyeSlashIcon className="size-4" />
-                    ) : (
-                      <EyeIcon className="size-4" />
+                    <p>Submit</p>
+                    {isLoadingStoreInfo && (
+                      <Spinner size="sm" variant="spinner" color="white" />
                     )}
-                  </button>
-                }
-                errorMessage={getPasswordError(password)}
-                isInvalid={getPasswordError(password) !== null}
-                label="Password"
-                labelPlacement="outside"
-                name="password"
-                placeholder="Enter your password"
-                type={isPasswordVisible ? "text" : "password"}
-                value={password || ""}
-                onValueChange={setPassword}
-              />
+                  </Button>
+                </div>
+              </Form>
+            </div>
 
-              <Input
-                isRequired
-                endContent={
-                  <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-solid outline-transparent"
-                    type="button"
-                    onClick={() =>
-                      setIsRetryPasswordVisible(!isRetryPasswordVisible)
+            {/* Password  */}
+            <div className="bg-white rounded-lg p-4 flex flex-col gap-4 shadow">
+              <h1 className="sm:text-lg font-semibold">Security</h1>
+              <Form
+                className="w-full justify-center items-center  "
+                onSubmit={handlePasswordUpdate}
+              >
+                <div className="flex flex-col gap-4 w-full">
+                  <Input
+                    isRequired
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-solid outline-transparent"
+                        type="button"
+                        onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                      >
+                        {isPasswordVisible ? (
+                          <EyeSlashIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </button>
                     }
-                  >
-                    {isRetryPasswordVisible ? (
-                      <EyeSlashIcon className="size-4" />
-                    ) : (
-                      <EyeIcon className="size-4" />
-                    )}
-                  </button>
-                }
-                errorMessage={getRetryPasswordError(retryPassword)}
-                isInvalid={getRetryPasswordError(retryPassword) !== null}
-                label="Retry Password"
-                labelPlacement="outside"
-                name="retry_password"
-                placeholder="Retry password"
-                type={isRetryPasswordVisible ? "text" : "password"}
-                value={retryPassword || ""}
-                onValueChange={setRetryPassword}
-              />
+                    errorMessage={getPasswordError(password)}
+                    isInvalid={getPasswordError(password) !== null}
+                    label="Password"
+                    labelPlacement="outside"
+                    name="password"
+                    placeholder="Enter your password"
+                    type={isPasswordVisible ? "text" : "password"}
+                    value={password || ""}
+                    onValueChange={setPassword}
+                  />
 
-              {errors && (
-                <span className="text-danger text-small">
-                  {errors.password}
-                </span>
-              )}
-            </div>
-            <div className="flex gap-4 justify-end w-full">
-              <Button
-                className=" flex items-center bg-[#ed1d3e] text-white"
-                type="submit"
-              >
-                <p>Submit</p>
-                {/* <Spinner size="sm" variant="spinner" color="white" /> */}
-              </Button>
-            </div>
-          </Form>
-          {/* <ul>
+                  <Input
+                    isRequired
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-solid outline-transparent"
+                        type="button"
+                        onClick={() =>
+                          setIsRetryPasswordVisible(!isRetryPasswordVisible)
+                        }
+                      >
+                        {isRetryPasswordVisible ? (
+                          <EyeSlashIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </button>
+                    }
+                    label="Retry Password"
+                    labelPlacement="outside"
+                    name="retry_password"
+                    placeholder="Retry password"
+                    type={isRetryPasswordVisible ? "text" : "password"}
+                    value={retryPassword || ""}
+                    onValueChange={setRetryPassword}
+                  />
+
+                  {errors && (
+                    <span className="text-danger text-small">
+                      {errors.password}
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-4 justify-end w-full">
+                  <Button
+                    className=" flex items-center bg-[#ed1d3e] text-white"
+                    type="submit"
+                  >
+                    <p>Submit</p>
+                    {isLoadingPasswordChange && (
+                      <Spinner size="sm" variant="spinner" color="white" />
+                    )}
+                  </Button>
+                </div>
+              </Form>
+              {/* <ul>
             <li>
               Security 2FA{" "}
               <small className="bg-blue-600 rounded-lg flex items-center justify-center px-2 py-1 text-white font-medium">
@@ -504,7 +521,9 @@ const DashboardProfile = () => {
               :{" "}
             </li>
           </ul> */}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

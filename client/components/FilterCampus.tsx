@@ -28,6 +28,7 @@ const FilterCampuses = ({
       isRequired={isRequired}
       labelPlacement="outside"
       name={name}
+      className="sm:w-full w-[280px]"
       aria-label="select campus"
       placeholder="Select campus"
       // errorMessage="Select campus"
