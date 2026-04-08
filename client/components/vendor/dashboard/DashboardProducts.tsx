@@ -29,6 +29,8 @@ import {
 import { IoClose } from "react-icons/io5";
 import { useGetProductsQuery } from "@/lib/services/vendor/products.api";
 import { ImagePreview } from "@/types";
+import { formatDate } from "@/utils/dateFormat.utils";
+import nairaSymbol from "@/utils/symbols";
 
 type ProductType = {
   _id: string;
@@ -38,7 +40,7 @@ type ProductType = {
   stock: number;
   date_create: string;
   categories: string[];
-  status: string;
+  status: "approved" | "pending" | "rejected";
   description: string;
 };
 const DashboardProducts = () => {
@@ -94,7 +96,7 @@ const DashboardProducts = () => {
     switch (columnKey) {
       case "image":
         return (
-          <div className="flex items-center gap-4">
+          <div className="flex w-20 h-20 items-center gap-4">
             <Image
               src={
                 product.imgUrl
@@ -103,22 +105,24 @@ const DashboardProducts = () => {
               }
               alt={`${product.name}`}
               width={80}
-              height={90}
-              className="shadow rounded-md"
+              height={80}
+              className="shadow rounded-md object-cover"
             />
           </div>
         );
 
       case "name":
         return (
-          <div className="text-sm ">
+          <div className="text-sm w-[100px]">
             {" "}
             <p>{product.name}</p>
             {/* <p className="text-gray-600">{product._id}</p> */}
           </div>
         );
       case "price":
-        return <div className="text-sm ">{product.price}</div>;
+        return (
+          <div className="text-sm ">{`${nairaSymbol()} ${product.price.toLocaleString()}`}</div>
+        );
 
       case "stock":
         return <div className=" pl-4">{product.stock}</div>;
@@ -135,7 +139,11 @@ const DashboardProducts = () => {
           </div>
         );
       case "date_create":
-        return <div className="text-sm">{product.date_create}</div>;
+        return (
+          <div className="text-sm w-[100px]">
+            {formatDate(product.date_create)}
+          </div>
+        );
       case "status":
         return (
           <div
@@ -266,30 +274,26 @@ const DashboardProducts = () => {
               <TableColumn key="action">Action</TableColumn>
             </TableHeader>
 
-            {products.length > 0 || false ? (
-              <TableBody<ProductType>
-                items={products}
-                isLoading={false}
-                loadingContent={
-                  <Spinner
-                    label="Loading..."
-                    size="sm"
-                    variant="spinner"
-                    color="warning"
-                  />
-                }
-              >
-                {(item) => (
-                  <TableRow key={item._id}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody>
-            ) : (
-              <TableBody emptyContent={"No data to display."}>{[]}</TableBody>
-            )}
+            <TableBody<ProductType>
+              items={products}
+              isLoading={isLoadingProducts}
+              loadingContent={
+                <Spinner
+                  label="Loading..."
+                  size="sm"
+                  variant="spinner"
+                  color="primary"
+                />
+              }
+            >
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </div>
         <ProductModal

@@ -12,6 +12,7 @@ import ProductImageUpload from "./ProductImageUpload";
 import { ProductRequest } from "@/types/product.types";
 import {
   useCreateProductMutation,
+  useDeleteProductMutation,
   useUploadProductImagesMutation,
 } from "@/lib/services/vendor/products.api";
 
@@ -67,6 +68,8 @@ const NewProductForm = ({
   const [uploadImages, { isLoading: isLoadingImageUpload }] =
     useUploadProductImagesMutation();
 
+  const [deleteProduct, { isLoading }] = useDeleteProductMutation();
+
   const handleSelect = (files: FileList | null) => {
     console.log("handleSelect: ", files);
 
@@ -109,7 +112,7 @@ const NewProductForm = ({
 
     try {
       // 1️⃣ create product
-      setIsLoading(isLoadingCreateProduct);
+      setIsLoading(true);
       const productUploadRes = await createProduct(payload).unwrap();
       if (productUploadRes.success) {
         addToast({
@@ -122,38 +125,49 @@ const NewProductForm = ({
       }
 
       const productId = productUploadRes.data._id;
-      // 2️⃣ upload images
+      try {
+        // 2️⃣ upload images
 
-      setIsLoading(isLoadingImageUpload);
-      const formData = new FormData();
-      uploadedImages.forEach((img) => {
-        if (!img.file) return;
+        setIsLoading(isLoadingImageUpload);
+        const formData = new FormData();
+        uploadedImages.forEach((img) => {
+          if (!img.file) return;
 
-        // Append the file
-        formData.append("images", img.file);
+          // Append the file
+          formData.append("images", img.file);
 
-        // Append metadata for this file
-        formData.append(
-          "coverImage",
-          JSON.stringify({ coverImage: img.coverImage }),
-        );
-      });
-
-      // Now call your RTK Query mutation
-
-      const imageUploadRes = await uploadImages({
-        productId: productId ? productId : null,
-        uploadedImages: formData, // just pass the FormData
-      }).unwrap();
-
-      if (imageUploadRes.success) {
-        addToast({
-          title: "Images upload",
-          description: imageUploadRes.message,
-          color: "success",
+          // Append metadata for this file
+          formData.append(
+            "coverImage",
+            JSON.stringify({ coverImage: img.coverImage }),
+          );
         });
+
+        const imageUploadRes = await uploadImages({
+          productId: productId ? productId : null,
+          uploadedImages: formData, // just pass the FormData
+        }).unwrap();
+
+        if (imageUploadRes.success) {
+          addToast({
+            title: "Images upload",
+            description: imageUploadRes.message,
+            color: "success",
+          });
+        }
+      } catch (error) {
+        if (productId) {
+          const res = await deleteProduct(productId ?? "").unwrap();
+
+          if (res.success) {
+            addToast({
+              title: "Product upload failed",
+              description: "Please try again.",
+              color: "danger",
+            });
+          }
+        }
       }
-      onOpenChange();
     } catch (err) {
       console.log("Product creation failed:", err);
       addToast({
@@ -162,7 +176,8 @@ const NewProductForm = ({
         color: "danger",
       });
     } finally {
-      setIsLoading(isLoadingCreateProduct);
+      setIsLoading(false);
+      onOpenChange();
     }
 
     // ✅ success

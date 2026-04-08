@@ -112,9 +112,9 @@ export const productsApi = api.injectEndpoints({
         }
       },
 
-      // invalidatesTags: (_r, _e, { productId }) => [
-      //   { type: "Product", id: productId },
-      // ],
+      invalidatesTags: (_r, _e, { productId }) => [
+        { type: "Product", id: productId },
+      ],
     }),
 
     // 🔹 Delete product
