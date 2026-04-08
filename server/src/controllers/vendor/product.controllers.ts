@@ -74,9 +74,13 @@ export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   const vendorId = req.userId;
 
+  console.log("vendorId: ", vendorId);
+  console.log("id: ", id);
+  console.log("req.body: ", req.body.body);
+
   const product = await Product.findOneAndUpdate(
     { _id: id, vendor: vendorId },
-    req.body,
+    req.body.body,
     { new: true, runValidators: true },
   );
 

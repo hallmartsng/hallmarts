@@ -21,7 +21,7 @@ type ProductType = {
   stock: number;
   date_create: string;
   categories: string[];
-  status: string;
+  status: "approved" | "pending" | "rejected";
   description: string;
 };
 interface SelectedFormProps {
@@ -68,18 +68,21 @@ const ProductModal = ({
                 )}
                 {selectedForm.formId === "update-product-form" && (
                   <UpdateProductForm
-                    title={selectedForm.product?.productTitle || ""}
                     product={
                       selectedForm.product?.product
                         ? selectedForm.product?.product
                         : null
                     }
+                    setIsLoading={setIsLoading}
+                    onOpenChange={onOpenChange}
                   />
                 )}
                 {selectedForm.formId === "delete-product-form" && (
                   <DeleteProductForm
                     title={selectedForm.product?.productTitle || ""}
                     id={selectedForm.product?.productId || ""}
+                    setIsLoading={setIsLoading}
+                    onOpenChange={onOpenChange}
                   />
                 )}
               </ModalBody>

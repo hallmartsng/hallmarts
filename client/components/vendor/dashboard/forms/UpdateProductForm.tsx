@@ -1,8 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import { Form, Input, SelectItem, Textarea, Select } from "@heroui/react";
+import {
+  Form,
+  Input,
+  SelectItem,
+  Textarea,
+  Select,
+  addToast,
+} from "@heroui/react";
 import ProductImageUpload from "./ProductImageUpload";
 import { ImagePreview } from "@/types";
+import { useUpdateProductMutation } from "@/lib/services/vendor/products.api";
+import { ProductRequest } from "@/types/product.types";
 
 interface FormErrors {
   title?: string;
@@ -33,20 +42,91 @@ type ProductType = {
   stock: number;
   date_create: string;
   categories: string[];
-  status: string;
+  status: "approved" | "pending" | "rejected";
   description: string;
 };
-interface UpdateProductFormProps {
-  title: string;
-  product: ProductType | null;
+
+interface ProductFormValues {
+  title?: string;
+  price?: string;
+  categories?: string;
+  stock?: string;
+  description?: string;
+  visible?: boolean;
 }
-const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
+interface UpdateProductFormProps {
+  product: ProductType | null;
+  setIsLoading: (value: boolean) => void;
+  onOpenChange: () => void;
+}
+const UpdateProductForm = ({
+  product,
+  setIsLoading,
+  onOpenChange,
+}: UpdateProductFormProps) => {
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const [updateProduct, { isLoading }] = useUpdateProductMutation();
+
+  const [title, setTitle] = useState<string>(product?.name || "");
+  const [description, setDescription] = useState<string>(
+    product?.description || "",
+  );
+  const [price, setPrice] = useState<string>(`${product?.price}` || "");
+  const [stock, setStock] = useState<string>(`${product?.stock}` || "");
 
   const handleProductUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("New product submitted");
+
+    setIsLoading(true);
+
+    const data = Object.fromEntries(
+      new FormData(e.currentTarget),
+    ) as ProductFormValues;
+
+    console.log(data);
+
+    const newErrors: FormErrors = {};
+
+    const productId = product?._id ?? "";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    const payload: ProductRequest = {
+      title: title,
+      description: description,
+      price: Number(price),
+      stock: Number(stock),
+      categories: [data.categories ?? ""],
+      status: product?.status ?? "pending",
+    };
+    try {
+      const updateProductRes = await updateProduct({
+        productId: productId,
+        body: payload,
+      }).unwrap();
+
+      if (updateProductRes.success) {
+        addToast({
+          title: "Product Updated",
+          description: updateProductRes.message,
+          color: "success",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Something went wrong",
+        description: "Can not update product, try again.",
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(false);
+      onOpenChange(); // close modal
+    }
   };
+
   return (
     <Form
       id="update-product-form"
@@ -62,7 +142,8 @@ const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
         name="title"
         placeholder="Enter product title"
         type="text"
-        value={product?.name}
+        value={title || product?.name}
+        onValueChange={setTitle}
       />
       <Textarea
         isRequired
@@ -71,7 +152,8 @@ const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
         name="description"
         labelPlacement="outside"
         placeholder="Enter your description"
-        value={product?.description}
+        value={description || product?.description}
+        onValueChange={setDescription}
       />
       <Input
         isRequired
@@ -86,7 +168,8 @@ const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
           </div>
         }
         type="number"
-        value={`${product?.price}`}
+        value={price || `${product?.price}`}
+        onValueChange={setPrice}
       />
       <Input
         isRequired
@@ -96,8 +179,10 @@ const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
         labelPlacement="outside"
         placeholder="In stock"
         defaultValue="1"
+        min={1}
         type="number"
-        value={`${product?.stock}`}
+        value={stock || `${product?.stock}`}
+        onValueChange={setStock}
       />
       <div className="-mt-6 w-full">
         <Select
@@ -113,6 +198,11 @@ const UpdateProductForm = ({ title, product }: UpdateProductFormProps) => {
             <SelectItem key={category.key}>{category.label}</SelectItem>
           ))}
         </Select>
+      </div>
+      <div>
+        {product?.categories.map((category) => {
+          return <span key={category}>{category}</span>;
+        })}
       </div>
     </Form>
   );
