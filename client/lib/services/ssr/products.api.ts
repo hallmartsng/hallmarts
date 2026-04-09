@@ -1,6 +1,6 @@
 const API_URL = process.env["API_BASE_URL"];
 
-export async function getHomepageFeed(campusId: string) {
+export async function getHomepageFeed() {
   const res = await fetch(`${API_URL}/store/product`, {
     next: { revalidate: 60 },
   });
