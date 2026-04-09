@@ -168,10 +168,10 @@ const StoreNavbar = () => {
       </NavbarContent>
 
       {/* MOBILE MENU */}
-      <NavbarMenu>
-        <div className="mt-16 flex flex-col gap-2">
+      <NavbarMenu className="w-full">
+        <div className="mt-[6rem] w-full flex flex-col gap-2">
           {/* Categories */}
-          <ul className="flex flex-col text-sm gap-4">
+          <ul className="flex flex-col text-sm gap-4 w-full ">
             {CATEGORIES.map((category) => (
               <li key={category.id}>
                 <Link
@@ -254,7 +254,7 @@ const StoreNavbar = () => {
       </NavbarMenu>
 
       {/* MOBILE SEARCH */}
-      <NavbarContent className="flex sm:hidden w-full absolute text-center top-16 left-0">
+      <NavbarContent className="flex sm:hidden w-full absolute text-center top-[4.5rem] left-0">
         <div className="w-full mx-auto px-2">
           <SearchBar />
         </div>

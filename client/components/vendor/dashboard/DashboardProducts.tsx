@@ -121,7 +121,7 @@ const DashboardProducts = () => {
         );
       case "price":
         return (
-          <div className="text-sm ">{`${nairaSymbol()} ${product.price.toLocaleString()}`}</div>
+          <div className="text-sm w-[100px]">{`${nairaSymbol()} ${product.price.toLocaleString()}`}</div>
         );
 
       case "stock":
@@ -131,7 +131,7 @@ const DashboardProducts = () => {
           <div className="grid">
             {product.categories.map((category) => {
               return (
-                <span key={category} className="font-semibold">
+                <span key={category} className="font-semibold capitalize">
                   {category}
                 </span>
               );
@@ -204,7 +204,7 @@ const DashboardProducts = () => {
     <section className="sm:max-w-7xl w-full py-5">
       <div className="flex w-full flex-col gap-4">
         {" "}
-        <div className="flex sm:flex-row flex-col gap-4 items-end sm:items-center justify-between w-full">
+        <div className="flex sm:flex-row flex-col gap-4 items-start sm:items-center justify-between w-full">
           <DashboardHeader
             header="Products"
             subHeader="Manage your products, pricing, and availability."

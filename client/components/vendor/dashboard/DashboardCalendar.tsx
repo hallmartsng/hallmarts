@@ -16,7 +16,7 @@ const DashboardCalendar = () => {
     <section className="sm:max-w-7xl w-full py-5">
       <div className="flex w-full flex-col gap-4">
         {" "}
-        <div className="flex sm:flex-row flex-col gap-4 sm:items-center items-end justify-between w-full">
+        <div className="flex sm:flex-row flex-col gap-4 sm:items-center items-start justify-between w-full">
           <DashboardHeader
             header="Campus Calendar"
             subHeader="Plan your sales, deliveries, and campus activities."

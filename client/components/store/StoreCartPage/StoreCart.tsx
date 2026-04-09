@@ -22,45 +22,51 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
+import { addToCart, removeFromCart } from "@/lib/slices/cartSlice";
+import nairaSymbol from "@/utils/symbols";
 
-type ProductType = {
-  _id: string;
+interface CartItem {
+  productId: string;
+  vendorId: string;
   name: string;
-  price: string;
-  imgUrl: string;
+  price: number;
   quantity: number;
-  total: number;
-};
+  imgUrl?: string;
+}
 
 const StoreCart = () => {
   const router = useRouter();
-  const products: ProductType[] = [
-    {
-      _id: "7763393893033",
-      name: "Nike Sportwears",
-      price: "$450",
-      quantity: 2,
-      imgUrl: "/images/fruit-8.jpeg",
-      total: 400.0,
-    },
-    {
-      _id: "7763390093033",
-      name: "Adidas Terrex",
-      price: "$250",
-      quantity: 6,
-      imgUrl: "/images/fruit-8.jpeg",
-      total: 1900.0,
-    },
-  ];
-  const renderCell = (product: ProductType, columnKey: React.Key) => {
+
+  const cart = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = (product: CartItem) => {
+    dispatch(
+      addToCart({
+        productId: product.productId,
+        vendorId: "v1",
+        name: product.name,
+        price: Number(product.price),
+        quantity: 1,
+      }),
+    );
+  };
+  const handleRemoveFromCart = (productId: string) => {
+    dispatch(removeFromCart(productId));
+  };
+
+  console.log("cart: ", cart);
+
+  const renderCell = (product: CartItem, columnKey: React.Key) => {
     console.log("renderCell:", product);
 
     switch (columnKey) {
       case "name":
         return (
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 w-[220px] sm:w-auto">
             <Image
-              src={product.imgUrl}
+              src={product.imgUrl ?? "/image-upload-image-fallback.png"}
               alt={`${product.name}`}
               width={80}
               height={50}
@@ -68,7 +74,7 @@ const StoreCart = () => {
             />
             <div>
               <p>{product.name}</p>
-              <p className="text-gray-600">{product._id}</p>
+              <p className="text-gray-600">{product.productId}</p>
             </div>
           </div>
         );
@@ -83,7 +89,7 @@ const StoreCart = () => {
               <Tooltip content="Subtract product">
                 <button
                   onClick={() => {
-                    console.log("clicked");
+                    handleRemoveFromCart(product.productId);
                   }}
                   className=" p-2 rounded-lg text-black font-semibold"
                 >
@@ -94,7 +100,7 @@ const StoreCart = () => {
               <Tooltip content="Add product">
                 <button
                   onClick={() => {
-                    console.log("clicked");
+                    handleAddToCart(product);
                   }}
                   className=" p-2 rounded-lg text-black font-semibold"
                 >
@@ -106,9 +112,11 @@ const StoreCart = () => {
           </div>
         );
       case "total":
-        return <div className="text-sm">#{product.total}</div>;
+        return (
+          <div className="text-sm">{`${nairaSymbol()} ${product.price * product.quantity}`}</div>
+        );
       default:
-        return product[columnKey as keyof ProductType] as React.ReactNode;
+        return product[columnKey as keyof CartItem] as React.ReactNode;
     }
   };
 
@@ -126,10 +134,10 @@ const StoreCart = () => {
           <TableColumn key="total">Total</TableColumn>
         </TableHeader>
 
-        {products.length > 0 || false ? (
-          <TableBody<ProductType>
-            items={products}
-            isLoading={false}
+        {
+          <TableBody<CartItem>
+            items={cart.items}
+            isLoading={cart.items ? false : true}
             loadingContent={
               <Spinner
                 label="Loading..."
@@ -140,16 +148,14 @@ const StoreCart = () => {
             }
           >
             {(item) => (
-              <TableRow key={item._id}>
+              <TableRow key={item.productId}>
                 {(columnKey) => (
                   <TableCell>{renderCell(item, columnKey)}</TableCell>
                 )}
               </TableRow>
             )}
           </TableBody>
-        ) : (
-          <TableBody emptyContent={"No data to display."}>{[]}</TableBody>
-        )}
+        }
       </Table>
       <div className="w-full flex sm:flex-row flex-col gap-8 mt-3 justify-between items-start">
         <div className="w-full sm:w-auto">

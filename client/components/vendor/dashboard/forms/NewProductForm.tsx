@@ -62,6 +62,7 @@ const NewProductForm = ({
 }: NewProductFormProps) => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [uploadedImages, setUploadedImages] = useState<ImagePreview[]>([]);
+  const [productCategories, setProductCategories] = useState<string[]>([]);
 
   const [createProduct, { isLoading: isLoadingCreateProduct }] =
     useCreateProductMutation();
@@ -94,7 +95,7 @@ const NewProductForm = ({
     const payload: ProductRequest = {
       title: data.title!,
       description: data.description!,
-      categories: data.categories || [],
+      categories: productCategories,
       price: Number(data.price),
       stock: Number(data.stock),
       status: "pending",
@@ -239,6 +240,14 @@ const NewProductForm = ({
           errorMessage="Select category"
           className="mb-3"
           selectionMode="multiple"
+          onSelectionChange={(keys) => {
+            if (keys.currentKey !== undefined) {
+              setProductCategories((prevs) => [
+                ...prevs,
+                keys.currentKey as string,
+              ]);
+            }
+          }}
         >
           {CATEGORIES.map((category) => (
             <SelectItem key={category.key} textValue={category.label}>

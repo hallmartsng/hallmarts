@@ -65,6 +65,7 @@ const UpdateProductForm = ({
   onOpenChange,
 }: UpdateProductFormProps) => {
   const [errors, setErrors] = useState<FormErrors>({});
+  const [productCategories, setProductCategories] = useState<string[]>([]);
 
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
 
@@ -99,7 +100,7 @@ const UpdateProductForm = ({
       description: description,
       price: Number(price),
       stock: Number(stock),
-      categories: [data.categories ?? ""],
+      categories: productCategories,
       status: product?.status ?? "pending",
     };
     try {
@@ -193,13 +194,21 @@ const UpdateProductForm = ({
           errorMessage="Select category"
           className="mb-3"
           selectionMode="multiple"
+          onSelectionChange={(keys) => {
+            if (keys.currentKey !== undefined) {
+              setProductCategories((prevs) => [
+                ...prevs,
+                keys.currentKey as string,
+              ]);
+            }
+          }}
         >
           {CATEGORIES.map((category) => (
             <SelectItem key={category.key}>{category.label}</SelectItem>
           ))}
         </Select>
       </div>
-      <div>
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 font-semibold capitalize">
         {product?.categories.map((category) => {
           return <span key={category}>{category}</span>;
         })}

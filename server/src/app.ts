@@ -14,6 +14,9 @@ import vendorProductRoutes from "./routes/vendor/product.routes";
 // General imports
 import generalAuth from "./routes/auth.routes";
 
+// Store imports
+import storeProducts from "./routes/store/product.routes";
+
 dotenv.config();
 
 const app = express();
@@ -45,6 +48,9 @@ app.use("/api/v1/vendor/product", vendorProductRoutes);
 
 // General Endpoints
 app.use("/api/v1/auth", generalAuth);
+
+// Store Endpoints
+app.use("/api/v1/store/product", storeProducts);
 
 const PORT = process.env["PORT"]!;
 
