@@ -2,6 +2,7 @@ import { ImagePreview } from ".";
 
 export interface ProductRequest {
   _id?: string;
+  vendor?: string;
   title: string;
   description: string;
   price: number;

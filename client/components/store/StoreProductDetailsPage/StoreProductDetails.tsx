@@ -5,7 +5,7 @@ import { Tab, Tabs } from "@heroui/react";
 import ProductOverView from "./ProductOverView";
 import ProductReview from "./ProductReview";
 import ProductVendor from "./ProductVendor";
-import StoreProductLists from "../StoreProductListPage/StoreProductLists";
+import StoreProductLists from "../StoreProductLists";
 import ProductImageGallery from "./ProductImageGallery";
 import ProductDescription from "./ProductDescription";
 
@@ -67,14 +67,14 @@ const StoreProductDetails = () => {
             Similar products by Mercy Annulla
           </h3>
         </div>
-        <StoreProductLists />
+        {/* <StoreProductLists /> */}
       </div>
       {/* More from campus  */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Babcock market</h3>
         </div>
-        <StoreProductLists />
+        {/* <StoreProductLists /> */}
       </div>
     </div>
   );

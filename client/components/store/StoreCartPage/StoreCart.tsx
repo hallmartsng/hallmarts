@@ -18,13 +18,21 @@ import {
   // EyeIcon,
   // PencilIcon,
   PlusIcon,
+  TrashIcon,
   // TrashIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
-import { addToCart, removeFromCart } from "@/lib/slices/cartSlice";
+import {
+  addToCart,
+  deleteFromCart,
+  removeFromCart,
+} from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
+import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
+import { ImagePreview } from "@/types";
+import { getCartLocalStorageItem } from "@/lib/localStorage";
 
 interface CartItem {
   productId: string;
@@ -32,13 +40,15 @@ interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  imgUrl?: string;
+  imgUrl: ImagePreview[];
 }
 
 const StoreCart = () => {
   const router = useRouter();
 
   const cart = useAppSelector((state) => state.cart);
+  console.log("cart: ", cart);
+
   const dispatch = useAppDispatch();
 
   const handleAddToCart = (product: CartItem) => {
@@ -49,6 +59,7 @@ const StoreCart = () => {
         name: product.name,
         price: Number(product.price),
         quantity: 1,
+        imgUrl: product.imgUrl,
       }),
     );
   };
@@ -56,31 +67,46 @@ const StoreCart = () => {
     dispatch(removeFromCart(productId));
   };
 
-  console.log("cart: ", cart);
-
   const renderCell = (product: CartItem, columnKey: React.Key) => {
     console.log("renderCell:", product);
 
     switch (columnKey) {
       case "name":
         return (
-          <div className="flex items-start gap-4 w-[220px] sm:w-auto">
-            <Image
-              src={product.imgUrl ?? "/image-upload-image-fallback.png"}
-              alt={`${product.name}`}
-              width={80}
-              height={50}
-              className="shadow rounded-md"
-            />
-            <div>
-              <p>{product.name}</p>
-              <p className="text-gray-600">{product.productId}</p>
+          <div className="flex items-center gap-4 w-[200px] sm:w-auto">
+            <div className="flex w-20 h-20 items-center gap-4">
+              <Image
+                src={
+                  product.imgUrl[0].url ?? "/image-upload-image-fallback.png"
+                }
+                alt={`${product.name}`}
+                width={80}
+                height={80}
+                className="shadow rounded-md object-cover"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold">{product.name} </p>
+              <Button
+                onPress={() => {
+                  dispatch(deleteFromCart(product.productId));
+                }}
+                size="sm"
+                className="text-primary bg-primary-50 font-medium shadow rounded-md text-xs flex items-center gap-1"
+              >
+                <TrashIcon className="size-4 text-primary" />
+                <span>Remove</span>
+              </Button>
             </div>
           </div>
         );
 
       case "price":
-        return <div className="text-sm w-[100px]">{product.price}</div>;
+        return (
+          <div className="text-sm w-[100px]">
+            {`${nairaSymbol()}${product.price.toLocaleString()}`}
+          </div>
+        );
 
       case "quantity":
         return (
@@ -113,7 +139,7 @@ const StoreCart = () => {
         );
       case "total":
         return (
-          <div className="text-sm">{`${nairaSymbol()} ${product.price * product.quantity}`}</div>
+          <div className="text-sm w-[100px]">{`${nairaSymbol()} ${(product.price * product.quantity).toLocaleString()}`}</div>
         );
       default:
         return product[columnKey as keyof CartItem] as React.ReactNode;
@@ -122,11 +148,9 @@ const StoreCart = () => {
 
   return (
     <>
-      <Table isHeaderSticky aria-label="cart table" aria-sort="other">
+      <Table isHeaderSticky aria-label="cart table">
         <TableHeader>
-          <TableColumn key="name" allowsSorting>
-            Item
-          </TableColumn>
+          <TableColumn key="name">Item</TableColumn>
 
           <TableColumn key="price">Price</TableColumn>
 
@@ -136,15 +160,28 @@ const StoreCart = () => {
 
         {
           <TableBody<CartItem>
-            items={cart.items}
-            isLoading={cart.items ? false : true}
+            items={cart.items ?? []}
+            isLoading={!cart ? true : false}
             loadingContent={
               <Spinner
                 label="Loading..."
                 size="sm"
                 variant="spinner"
-                color="warning"
+                color="primary"
               />
+            }
+            emptyContent={
+              <div className="w-full h-full py-10 flex items-center gap-3 justify-center flex-col">
+                <PiShoppingCartSimpleDuotone className="size-20" />
+                <p className="text-sm ">There is no item here</p>
+                <Button
+                  as={"a"}
+                  href="/store"
+                  className="bg-primary text-white font-semibold"
+                >
+                  Shop now
+                </Button>
+              </div>
             }
           >
             {(item) => (
@@ -157,57 +194,65 @@ const StoreCart = () => {
           </TableBody>
         }
       </Table>
-      <div className="w-full flex sm:flex-row flex-col gap-8 mt-3 justify-between items-start">
-        <div className="w-full sm:w-auto">
-          <Input
-            type="text"
-            name="discoun_code"
-            endContent={
-              <Button className="bg-black text-white font-semibold" size="sm">
-                Apply
-              </Button>
-            }
-            aria-label="discount code"
-            placeholder="Enter discoutn code"
-          />
-        </div>
-        <div className="sm:flex hidden flex-col gap-2 items-end">
-          <strong>Sub total: $80.00</strong>
-          <small>Discount. $60</small>
-          <h1 className="font-extrabold text-lg">Total : $80.00</h1>
-          <Button
-            onPress={() => {
-              router.push("/store/checkout");
-            }}
-            className="bg-primary text-white font-semibold"
-          >
-            Proceed to checkout
-          </Button>
-        </div>
-        <div className="flex sm:hidden flex-col gap-2 w-full font-medium">
-          <span className="flex items-center justify-between w-full">
-            <span>Sub total:</span>
-            <span>$80.00</span>
-          </span>
-          <span className="flex items-center justify-between w-full">
-            <span>Discount</span>
-            <span>$60</span>
-          </span>
-          <span className="flex items-center justify-between w-full">
-            <span>Total:</span>
-            <span>$80.00</span>
-          </span>
 
-          <Button
-            onPress={() => {
-              router.push("/store/checkout");
-            }}
-            className="bg-primary text-white font-semibold"
-          >
-            Proceed to checkout
-          </Button>
+      {/* Cart Summary   */}
+      {cart.subtotal > 0 && (
+        <div className="w-full flex sm:flex-row flex-col gap-8 mt-3 justify-between items-start">
+          <div className="w-full sm:w-auto">
+            <Input
+              type="text"
+              name="discoun_code"
+              endContent={
+                <Button className="bg-black text-white font-semibold" size="sm">
+                  Apply
+                </Button>
+              }
+              aria-label="discount code"
+              placeholder="Enter discoutn code"
+            />
+          </div>
+          <div className="sm:flex hidden flex-col gap-2 items-end">
+            <strong>
+              Sub total: {`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}
+            </strong>
+            <small>Discount. {`${nairaSymbol()}0.00`}</small>
+            <h1 className="font-extrabold text-lg">
+              Total : {`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}
+            </h1>
+            <Button
+              onPress={() => {
+                router.push("/store/checkout");
+              }}
+              className="bg-primary text-white font-semibold"
+            >
+              Proceed to checkout
+            </Button>
+          </div>
+          <div className="flex sm:hidden flex-col gap-2 w-full font-medium">
+            <span className="flex items-center justify-between w-full">
+              <span>Sub total:</span>
+              <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
+            </span>
+            <span className="flex items-center justify-between w-full">
+              <span>Discount</span>
+              <span>{`${nairaSymbol()}0.00`}</span>
+            </span>
+            <span className="flex items-center justify-between w-full">
+              <span>Total:</span>
+              <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
+            </span>
+
+            <Button
+              onPress={() => {
+                router.push("/store/checkout");
+              }}
+              className="bg-primary text-white font-semibold"
+            >
+              Proceed to checkout
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
