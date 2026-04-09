@@ -49,16 +49,13 @@ const StoreHeroCarousel = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions, [autoplay]);
 
   return (
-    <div
-      className="overflow-hidden sm:w-[700px] w-[20rem] mx-auto"
-      ref={emblaRef}
-    >
+    <div className="overflow-hidden sm:w-[700px] w-[30rem]  " ref={emblaRef}>
       <div className="flex gap-5">
         {emblaApi &&
           FEATURED_PROJECT.map((project, index) => (
-            <div key={index} className=" sm:min-w-full">
+            <div key={index} className=" sm:min-w-full ">
               <button
-                className={`group relative sm:h-[350px] h-[280px] sm:w-full w-[20rem] overflow-hidden rounded-lg transition`}
+                className={`group relative sm:h-[350px] h-[280px] sm:w-full w-[20rem]  overflow-hidden rounded-lg transition`}
               >
                 {/* Background Image */}
                 <div className="absolute inset-0 bg-cover bg-center " />

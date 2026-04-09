@@ -1,4 +1,4 @@
-import { projectStages } from '../../types/project.types';
+import { projectStages } from "../../types/products.types";
 
 const calculateProgress = (stages: projectStages[]) => {
   const total = stages.length;

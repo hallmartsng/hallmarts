@@ -8,7 +8,7 @@ export default function AboutLayout({
   return (
     <section className="flex bg-primary-50 min-h-screen flex-col items-center gap-4 ">
       <StoreNavbar />
-      <div className="pb-20 w-full">{children}</div>
+      <div className="pb-20 w-full pt-4">{children}</div>
     </section>
   );
 }

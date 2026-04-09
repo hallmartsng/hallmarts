@@ -24,6 +24,9 @@ export interface IProduct extends Document {
   isSwap?: boolean;
   createdAt: Date;
   updatedAt: Date;
+  rating: Number;
+  costPrice?: number; // what the vendor pays
+  sellingPrice?: number;
 }
 
 const productSchema = new Schema<IProduct>(
@@ -111,6 +114,8 @@ const productSchema = new Schema<IProduct>(
 
     isBid: { type: Boolean, default: false, index: true },
     isSwap: { type: Boolean, default: false, index: true },
+    costPrice: { type: Number }, // vendor's cost
+    sellingPrice: { type: Number },
   },
   { timestamps: true },
 );
@@ -118,7 +123,16 @@ const productSchema = new Schema<IProduct>(
 // Optimized common storefront queries
 productSchema.index({ isVerified: 1, productType: 1 });
 productSchema.index({ categories: 1, isVerified: 1 });
+productSchema.index({ title: "text", description: "text", metaData: "text" });
 
+productSchema.pre<IProduct>("save", function (next) {
+  if (this.discount && this.price) {
+    this.sellingPrice = this.price - (this.price * this.discount) / 100;
+  } else {
+    this.sellingPrice = this.price;
+  }
+  next();
+});
 export const Product: Model<IProduct> = mongoose.model<IProduct>(
   "Product",
   productSchema,

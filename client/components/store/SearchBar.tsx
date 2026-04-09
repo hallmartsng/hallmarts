@@ -38,7 +38,7 @@ const SearchBar = () => {
       onInputChange={setSearch}
       //   isLoading={isLoadingProjects}
       defaultItems={data || []}
-      className="max-w-md"
+      className="max-w-md sm:shadow-none shadow rounded-lg"
       onSelectionChange={(key) => onSelectionChange(key as number)}
     >
       {(project) => (

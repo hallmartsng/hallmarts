@@ -1,16 +1,16 @@
-import { sendEmail } from '../config/sendGrid.config';
-import { paymentSuccessTemplate } from '../templates/project/paymentSuccessful';
-import { otpEmailTemplate } from '../templates/auth/otpEmail.template';
-import { otpForgotPasswordTemplate } from '../templates/auth/otpForgotPassword.template';
-import { newsLetterTemplate } from '../templates/user/newsLetter.template';
-import { staffInivitationEmailTemplate } from '../templates/staff/staffInivitationEmail';
-import { newProjectConfirmedTemplate } from '../templates/project/newProjectConfirmed';
-import { updateProjectTemplate } from '../templates/project/updateProjectTemplate';
-import { projectStages } from '../types/project.types';
+import { sendEmail } from "../config/sendGrid.config";
+import { paymentSuccessTemplate } from "../templates/project/paymentSuccessful";
+import { otpEmailTemplate } from "../templates/auth/otpEmail.template";
+import { otpForgotPasswordTemplate } from "../templates/auth/otpForgotPassword.template";
+import { newsLetterTemplate } from "../templates/user/newsLetter.template";
+import { staffInivitationEmailTemplate } from "../templates/staff/staffInivitationEmail";
+import { newProjectConfirmedTemplate } from "../templates/project/newProjectConfirmed";
+import { updateProjectTemplate } from "../templates/project/updateProjectTemplate";
+import { projectStages } from "../types/products.types";
 export const sendOtpEmail = async (
   to: string,
   otp: string,
-  purpose: string
+  purpose: string,
 ) => {
   await sendEmail({
     to,
@@ -22,7 +22,7 @@ export const sendOtpEmail = async (
 export const sendProjectPaymentEmail = async (
   to: string,
   amount: number,
-  project: string
+  project: string,
 ) => {
   await sendEmail({
     to,
@@ -34,7 +34,7 @@ export const sendProjectPaymentEmail = async (
 export const sendOtpForgotPasswordEmail = async (
   to: string,
   otp: string,
-  purpose: string
+  purpose: string,
 ) => {
   await sendEmail({
     to,
@@ -54,7 +54,7 @@ export const sendNewsletterEmail = async (to: string) => {
 export const sendStaffInivitationEmail = async (
   to: string,
   firstName: string,
-  invitationLink: string
+  invitationLink: string,
 ) => {
   await sendEmail({
     to,
@@ -67,7 +67,7 @@ export const sendProjectConfirmationEmail = async (
   to: string,
   amount: number,
   project: string,
-  clientName: string
+  clientName: string,
 ) => {
   await sendEmail({
     to,
@@ -81,7 +81,7 @@ export const sendProjectProgressEmail = async (
   project: string,
   clientName: string,
   stages: projectStages[],
-  phase: string
+  phase: string,
 ) => {
   await sendEmail({
     to,

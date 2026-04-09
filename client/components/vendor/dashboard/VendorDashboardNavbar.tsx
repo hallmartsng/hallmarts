@@ -169,7 +169,7 @@ const VendorDashboardNavbar = () => {
 
       <NavbarMenu>
         {/* {searchInput} */}
-        <div className=" mt-2 flex flex-col gap-2">
+        <div className=" mt-2 flex flex-col h-full relative gap-2">
           <ul className="flex gap-4 justify-start">
             <NavbarItem className="flex flex-col gap-5">
               <Link href={"/vendor/dashboard"} onClick={closeMenu}>
@@ -192,7 +192,7 @@ const VendorDashboardNavbar = () => {
               </Link>
             </NavbarItem>
           </ul>
-          <div className=" absolute bottom-4 justify-start mt-3">
+          <div className="absolute bottom-4 justify-start mt-3">
             {" "}
             <button
               onClick={() => {

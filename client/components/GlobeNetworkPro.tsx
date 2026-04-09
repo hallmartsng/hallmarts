@@ -252,7 +252,7 @@ export default function GlobeNetworkPro() {
                 y={p.y - 10}
                 // width={60}
                 height={70}
-                className=" w-10 -ml-3"
+                className="w-10 sm:-ml-3"
               >
                 <Image
                   src={`/campus_logo/${node.logo}`}
