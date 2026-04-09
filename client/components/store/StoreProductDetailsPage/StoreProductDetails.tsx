@@ -5,7 +5,7 @@ import { Tab, Tabs } from "@heroui/react";
 import ProductOverView from "./ProductOverView";
 import ProductReview from "./ProductReview";
 import ProductVendor from "./ProductVendor";
-import StoreProductLists from "../StoreProductListPage/StoreProductLists";
+import StoreProductLists from "../StoreProductLists";
 import ProductImageGallery from "./ProductImageGallery";
 import ProductDescription from "./ProductDescription";
 

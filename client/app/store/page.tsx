@@ -1,6 +1,6 @@
 import SectionHeader from "@/components/store/SectionHeader";
 import StoreHero from "@/components/store/StoreLandingPage/StoreHero";
-import StoreProductLists from "@/components/store/StoreProductListPage/StoreProductLists";
+import StoreProductLists from "@/components/store/StoreProductLists";
 import StoreTrends from "@/components/store/StoreTrends";
 import {
   ArrowRightIcon,
@@ -14,7 +14,7 @@ import { getHomepageFeed } from "@/lib/services/ssr/products.api";
 import StoreCalendarBanner from "@/components/store/StoreLandingPage/StoreCalendarBanner";
 
 export default async function StorePage() {
-  const products = await getHomepageFeed("campusIdHere"); // SSR fetch
+  const products = await getHomepageFeed(); // SSR fetch
   console.log("products: ", products);
 
   return (
@@ -26,10 +26,11 @@ export default async function StorePage() {
         headerText={"Steeze : Uniport launched their merch"}
         subHeaderText={"Come in your merch for 2027 Campus THRILL!"}
         headline={"Campus Merch"}
+        products={products.data.newArrivals}
       />
 
       {/* New Arrival  */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Food & provisions</h3>
           <Link
@@ -41,10 +42,10 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreProductLists />
-      </div>
+      </div> */}
 
       {/* Campus trendz  */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Trendz</h3>
           <Link
@@ -56,10 +57,10 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreTrends />
-      </div>
+      </div> */}
 
       {/* New Arrival  */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">New Arrival</h3>
           <Link
@@ -71,10 +72,10 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreProductLists />
-      </div>
+      </div> */}
 
       {/* Campus female  */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Female</h3>
           <Link
@@ -86,10 +87,10 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreProductLists />
-      </div>
+      </div> */}
 
       {/* Campus discount  */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Campus Discount</h3>
           <Link
@@ -101,10 +102,10 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreProductLists />
-      </div>
+      </div> */}
 
       {/* Unilag week  */}
-      <div className="flex sm:max-w-[1230px] sm:px-0 px-4  sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
+      {/* <div className="flex sm:max-w-[1230px] sm:px-0 px-4  sm:flex-row flex-col items-center sm:justify-between w-full gap-4">
         <div
           className={`group relative flex  sm:h-[350px] h-[380px] w-full overflow-hidden rounded-lg transition`}
         >
@@ -154,10 +155,10 @@ export default async function StorePage() {
             <span> Unilag store</span>
           </Link>
         </div>
-      </div>
+      </div> */}
 
       {/* Holiday   */}
-      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">
             What&apos;s for Holiday?
@@ -171,7 +172,7 @@ export default async function StorePage() {
           </Link>
         </div>
         <StoreProductLists />
-      </div>
+      </div> */}
 
       {/* Calendar  */}
       <StoreCalendarBanner />
