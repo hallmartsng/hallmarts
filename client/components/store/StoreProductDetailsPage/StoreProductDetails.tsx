@@ -67,14 +67,14 @@ const StoreProductDetails = () => {
             Similar products by Mercy Annulla
           </h3>
         </div>
-        <StoreProductLists />
+        {/* <StoreProductLists /> */}
       </div>
       {/* More from campus  */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-left w-full font-semibold ">Babcock market</h3>
         </div>
-        <StoreProductLists />
+        {/* <StoreProductLists /> */}
       </div>
     </div>
   );
