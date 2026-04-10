@@ -1,8 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Badge,
-  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -38,6 +37,7 @@ type CategoriesType = {
 const StoreNavbar = () => {
   const cartTotal = useAppSelector((state) => state.cart.totalItems);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -80,6 +80,10 @@ const StoreNavbar = () => {
       id: "775590954800933773",
     },
   ];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <HeroUINavbar
@@ -130,9 +134,13 @@ const StoreNavbar = () => {
               <CalendarIcon className="size-5" />
             </Link>
             <Link href={"/store/cart"} className="flex gap-1 items-center">
-              <Badge color="primary" content={cartTotal ?? 0}>
-                <ShoppingBagIcon className="size-5" />
-              </Badge>
+              {mounted && cartTotal > 0 ? (
+                <Badge color="primary" content={cartTotal ?? 0}>
+                  <ShoppingBagIcon className="size-5" />
+                </Badge>
+              ) : (
+                "loading..."
+              )}
             </Link>
           </NavbarItem>
 

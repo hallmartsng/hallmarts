@@ -34,21 +34,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      // if (!state.items) {
-      //   state.items.push()
-      //   setCartLocalStorageItem();
-      // }
-      // const existingItem = state.items.find(
-      //   (item) => item.productId === action.payload.productId,
-      // );
-      // if (existingItem) {
-      //   existingItem.quantity += 1;
-      // } else {
-      //   state.items.push(action.payload);
-      // }
-      // state.totalItems += 1;
-      // state.subtotal = calculateSubtotal(state.items);
-      // setCartLocalStorageItem(state);
       try {
         const existingItem = state.items.find(
           (item) => item.productId === action.payload.productId,

@@ -11,6 +11,7 @@ import {
   Tooltip,
   Input,
   Button,
+  Image,
 } from "@heroui/react";
 
 import {
@@ -21,7 +22,6 @@ import {
   TrashIcon,
   // TrashIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
 import {
@@ -74,29 +74,33 @@ const StoreCart = () => {
       case "name":
         return (
           <div className="flex items-center gap-4 w-[200px] sm:w-auto">
-            <div className="flex w-20 h-20 items-center gap-4">
+            <div className="w-[80px]">
               <Image
+                alt={`check out product`}
+                className="w-full object-cover h-[70px]"
+                radius="lg"
+                shadow="sm"
                 src={
                   product.imgUrl[0].url ?? "/image-upload-image-fallback.png"
                 }
-                alt={`${product.name}`}
-                width={80}
-                height={80}
-                className="shadow rounded-md object-cover"
+                width="100%"
               />
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <p className="font-semibold">{product.name} </p>
-              <Button
-                onPress={() => {
-                  dispatch(deleteFromCart(product.productId));
-                }}
-                size="sm"
-                className="text-primary bg-primary-50 font-medium shadow rounded-md text-xs flex items-center gap-1"
-              >
-                <TrashIcon className="size-4 text-primary" />
-                <span>Remove</span>
-              </Button>
+              <div className="flex items-start gap-1">
+                <small className="text-gray-600 truncate w-[100px]">
+                  {product.productId}{" "}
+                </small>
+                <button
+                  onClick={() => {
+                    dispatch(deleteFromCart(product.productId));
+                  }}
+                  className="text-primary bg-transparent font-medium text-xs flex items-end gap-1"
+                >
+                  <TrashIcon className="size-4 text-primary" />
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -110,7 +114,7 @@ const StoreCart = () => {
 
       case "quantity":
         return (
-          <div className="flex gap-2 -ml-7">
+          <div className="flex gap-2 w-[100px]">
             <div className="flex items-center gap-2">
               <Tooltip content="Subtract product">
                 <button
@@ -148,7 +152,7 @@ const StoreCart = () => {
 
   return (
     <>
-      <Table isHeaderSticky aria-label="cart table">
+      <Table isHeaderSticky isStriped aria-label="cart table">
         <TableHeader>
           <TableColumn key="name">Item</TableColumn>
 
@@ -220,9 +224,8 @@ const StoreCart = () => {
               Total : {`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}
             </h1>
             <Button
-              onPress={() => {
-                router.push("/store/checkout");
-              }}
+              as={"a"}
+              href="/store/checkout"
               className="bg-primary text-white font-semibold"
             >
               Proceed to checkout

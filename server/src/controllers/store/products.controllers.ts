@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { filteredProducts, homePageProducts } from "../../utils/helpers";
 
 // Home page
-export async function getHomepageProducts(_req: Request, res: Response) {
+export const getHomepageProducts = async (_req: Request, res: Response) => {
   try {
     const { trending, newArrivals, topDeals, electronics } =
       await homePageProducts();
@@ -23,7 +23,7 @@ export async function getHomepageProducts(_req: Request, res: Response) {
       .status(500)
       .json({ error: "Failed to fetch homepage products", success: false });
   }
-}
+};
 
 // product filters
 export const getFilteredproducts = async (req: Request, res: Response) => {

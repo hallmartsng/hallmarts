@@ -68,6 +68,17 @@ export const homePageProducts = async () => {
     { $match: { status: "pending" } },
     { $sort: { createdAt: -1 } },
     { $limit: 10 },
+    // {
+    //   $lookup: {
+    //     from: "vendors", // The collection to join
+    //     localField: "vendor", // Field in 'product'
+    //     foreignField: "_id", // Field in 'vendor'
+    //     as: "vendorDetails", // Output array field
+    //   },
+    // },
+    // {
+    //   $unwind: "$vendorDetails", // Flatten the array from lookup
+    // },
   ]);
 
   const topDealsQuery = Product.aggregate([

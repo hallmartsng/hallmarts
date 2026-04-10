@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IProduct extends Document {
   vendor: mongoose.Types.ObjectId;
+  campus: mongoose.Types.ObjectId;
   title: string;
   description: string;
   metaData?: string;
@@ -24,7 +25,7 @@ export interface IProduct extends Document {
   isSwap?: boolean;
   createdAt: Date;
   updatedAt: Date;
-  rating: Number;
+  rating: number;
   costPrice?: number; // what the vendor pays
   sellingPrice?: number;
 }
@@ -36,11 +37,16 @@ const productSchema = new Schema<IProduct>(
       ref: "Vendor",
       required: true,
     },
+    campus: {
+      type: Schema.Types.ObjectId,
+      ref: "Campus",
+      index: true,
+    },
     title: { type: String, trim: true, index: true },
     description: { type: String, trim: true },
     metaData: { type: String, trim: true },
 
-    price: { type: Number },
+    price: { type: Number, required: true },
     discount: { type: Number, default: 0 },
 
     productType: {
@@ -66,9 +72,9 @@ const productSchema = new Schema<IProduct>(
     ],
     images: [
       {
-        url: String,
-        public_id: String,
-        coverImage: Boolean,
+        url: { type: String },
+        public_id: { type: String },
+        coverImage: { type: Boolean, default: false },
       },
     ],
 
@@ -85,7 +91,12 @@ const productSchema = new Schema<IProduct>(
 
     stock: {
       type: Number,
-      default: 1,
+      default: 0,
+      index: true, // 🔥 stock filtering
+    },
+    rating: {
+      type: Number,
+      default: 0,
       index: true, // 🔥 stock filtering
     },
     clicks: {
@@ -124,12 +135,17 @@ const productSchema = new Schema<IProduct>(
 productSchema.index({ isVerified: 1, productType: 1 });
 productSchema.index({ categories: 1, isVerified: 1 });
 productSchema.index({ title: "text", description: "text", metaData: "text" });
+productSchema.index({ status: 1, createdAt: -1 });
+productSchema.index({ vendor: 1, createdAt: -1 });
+productSchema.index({ status: 1, visible: 1 });
+productSchema.index({ status: 1, clicks: -1 });
 
 productSchema.pre<IProduct>("save", function (next) {
-  if (this.discount && this.price) {
-    this.sellingPrice = this.price - (this.price * this.discount) / 100;
-  } else {
-    this.sellingPrice = this.price;
+  if (this.price != null) {
+    this.sellingPrice =
+      this.discount && this.discount > 0
+        ? this.price - (this.price * this.discount) / 100
+        : this.price;
   }
   next();
 });

@@ -1,4 +1,8 @@
 "use client";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
+import { useLazyGetUserShippingAddressQuery } from "@/lib/services/shipping/shipping.api";
+import { deleteFromCart } from "@/lib/slices/cartSlice";
+import nairaSymbol from "@/utils/symbols";
 import {
   addToast,
   Button,
@@ -7,9 +11,10 @@ import {
   Input,
   Select,
   SelectItem,
-  Switch,
 } from "@heroui/react";
-import React from "react";
+import { useSession } from "next-auth/react";
+import { skip } from "node:test";
+import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface FormErrors {
@@ -32,9 +37,16 @@ interface FormData {
   country: string;
 }
 const StoreCheckout = () => {
+  const cart = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
+
+  const { data: session, status } = useSession();
+
   const [errors, setErrors] = React.useState<FormErrors>({});
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isSelected, setIsSelected] = React.useState(true);
+  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const [fetchShipping, { data, isLoading }] =
+    useLazyGetUserShippingAddressQuery();
 
   const states = [
     {
@@ -84,7 +96,6 @@ const StoreCheckout = () => {
     setErrors({});
 
     try {
-      setIsLoading(true);
       // 1️⃣ Register user
       //  const res = await registerUser(data);
       const res = {
@@ -96,8 +107,6 @@ const StoreCheckout = () => {
         description: "Your order has been completed",
         color: "success",
       });
-
-      setIsLoading(false);
     } catch (err: any) {
       setErrors(err.message);
       addToast({
@@ -106,8 +115,13 @@ const StoreCheckout = () => {
         color: "danger",
       });
     }
-    setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchShipping(session.user.email);
+    }
+  }, [status, session, fetchShipping]);
   return (
     <section className="w-full flex sm:flex-row flex-col sm:justify-between items-start gap-4">
       <Form
@@ -195,14 +209,6 @@ const StoreCheckout = () => {
               </div>{" "}
               <h1 className="text-xl font-bold">Delivery Details</h1>
             </div>
-            <Switch
-              isSelected={isSelected}
-              className="w-full"
-              size="sm"
-              onValueChange={setIsSelected}
-            >
-              Campus address
-            </Switch>
           </div>
 
           {/* personal details form  */}
@@ -277,46 +283,74 @@ const StoreCheckout = () => {
       {/* Checkout details  */}
       <div className=" bg-white rounded-lg shadow p-4 flex flex-col gap-4">
         {/* Items  */}
-        <div className="flex items-center gap-10 border-b-1 border-gray-200 pb-5">
-          <div className="flex items-center gap-3">
-            <div className="w-[80px]">
-              <Image
-                alt={`check out product`}
-                className="w-full object-cover h-[70px]"
-                radius="lg"
-                shadow="sm"
-                src={"/max-payne.jpg"}
-                width="100%"
-              />
-            </div>
-            <div>
-              <p>Nike Sportwear</p>
-              <button className="flex text-primary text-sm font-medium items-center gap-1">
-                <IoClose />
-                <span> Remove</span>{" "}
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 items-end">
-            <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
-              2
-            </div>
-            <p>$40.00</p>
-          </div>
-        </div>
+        {cart &&
+          cart?.items?.map((item) => {
+            return (
+              <div
+                key={item.productId}
+                className="flex items-center gap-10 border-b-1 border-gray-200 pb-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-[80px]">
+                    <Image
+                      alt={`check out product`}
+                      className="w-full object-cover h-[70px]"
+                      radius="lg"
+                      shadow="sm"
+                      src={
+                        item.imgUrl[0].url ?? "/image-upload-image-fallback.png"
+                      }
+                      width="100%"
+                    />
+                  </div>
+                  <div>
+                    <p>Nike Sportwear</p>
+                    <button
+                      onClick={() => {
+                        dispatch(deleteFromCart(item.productId));
+                      }}
+                      className="flex text-primary text-sm font-medium items-center gap-1"
+                    >
+                      <IoClose />
+                      <span> Remove</span>{" "}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 items-end">
+                  <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
+                    {item?.quantity}
+                  </div>
+                  <p>
+                    {`${nairaSymbol()}${item?.price?.toLocaleString()}` || 0}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+
         {/* Checkout summary  */}
         <div className="flex flex-col gap-2 w-full font-medium">
           <span className="flex items-center justify-between w-full">
             <span>Sub total:</span>
-            <span>$80.00</span>
+            <span>
+              {(cart?.subtotal &&
+                `${nairaSymbol()}${cart?.subtotal?.toLocaleString()}`) ||
+                0}
+            </span>
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Discount</span>
-            <span>$60</span>
+            <span>
+              <span>{`${nairaSymbol()}0.00`}</span>
+            </span>
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Total:</span>
-            <span>$80.00</span>
+            <span>
+              {(cart?.subtotal &&
+                `${nairaSymbol()}${cart?.subtotal?.toLocaleString()}`) ||
+                0}
+            </span>
           </span>
 
           <Button
