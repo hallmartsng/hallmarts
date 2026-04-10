@@ -1,4 +1,7 @@
 "use client";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
+import { deleteFromCart } from "@/lib/slices/cartSlice";
+import nairaSymbol from "@/utils/symbols";
 import {
   addToast,
   Button,
@@ -32,6 +35,9 @@ interface FormData {
   country: string;
 }
 const StoreCheckout = () => {
+  const cart = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
+
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isSelected, setIsSelected] = React.useState(true);
@@ -277,46 +283,64 @@ const StoreCheckout = () => {
       {/* Checkout details  */}
       <div className=" bg-white rounded-lg shadow p-4 flex flex-col gap-4">
         {/* Items  */}
-        <div className="flex items-center gap-10 border-b-1 border-gray-200 pb-5">
-          <div className="flex items-center gap-3">
-            <div className="w-[80px]">
-              <Image
-                alt={`check out product`}
-                className="w-full object-cover h-[70px]"
-                radius="lg"
-                shadow="sm"
-                src={"/max-payne.jpg"}
-                width="100%"
-              />
-            </div>
-            <div>
-              <p>Nike Sportwear</p>
-              <button className="flex text-primary text-sm font-medium items-center gap-1">
-                <IoClose />
-                <span> Remove</span>{" "}
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 items-end">
-            <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
-              2
-            </div>
-            <p>$40.00</p>
-          </div>
-        </div>
+        {cart &&
+          cart?.items?.map((item) => {
+            return (
+              <div
+                key={item.productId}
+                className="flex items-center gap-10 border-b-1 border-gray-200 pb-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-[80px]">
+                    <Image
+                      alt={`check out product`}
+                      className="w-full object-cover h-[70px]"
+                      radius="lg"
+                      shadow="sm"
+                      src={
+                        item.imgUrl[0].url ?? "/image-upload-image-fallback.png"
+                      }
+                      width="100%"
+                    />
+                  </div>
+                  <div>
+                    <p>Nike Sportwear</p>
+                    <button
+                      onClick={() => {
+                        dispatch(deleteFromCart(item.productId));
+                      }}
+                      className="flex text-primary text-sm font-medium items-center gap-1"
+                    >
+                      <IoClose />
+                      <span> Remove</span>{" "}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 items-end">
+                  <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
+                    {item.quantity}
+                  </div>
+                  <p>{`${nairaSymbol()}${item.price.toLocaleString()}`}</p>
+                </div>
+              </div>
+            );
+          })}
+
         {/* Checkout summary  */}
         <div className="flex flex-col gap-2 w-full font-medium">
           <span className="flex items-center justify-between w-full">
             <span>Sub total:</span>
-            <span>$80.00</span>
+            <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Discount</span>
-            <span>$60</span>
+            <span>
+              <span>{`${nairaSymbol()}0.00`}</span>
+            </span>
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Total:</span>
-            <span>$80.00</span>
+            <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
           </span>
 
           <Button

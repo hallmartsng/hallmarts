@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import multer from "multer";
 import { productMediaStorage } from "../../utils/cloudinaryMediaStorage";
 import Product from "../../models/products.models";
+import { Vendor } from "../../models/vendor.models";
 
 /**
  * GET /products
@@ -55,12 +56,22 @@ export const getProductById = async (req: Request, res: Response) => {
 export const createProduct = async (req: Request, res: Response) => {
   const vendorId = req.userId;
 
+  const vendor = await Vendor.findById(vendorId);
+
+  if (!vendor) {
+    return res.status(403).json({
+      success: false,
+      message: "Session expired, re-login your account",
+    });
+  }
+
   const product = await Product.create({
     ...req.body,
     vendor: vendorId,
+    campus: vendor.campus,
   });
 
-  res.status(201).json({
+  return res.status(201).json({
     success: true,
     message: "Product created successfully",
     data: product,
