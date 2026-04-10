@@ -134,12 +134,10 @@ const StoreNavbar = () => {
               <CalendarIcon className="size-5" />
             </Link>
             <Link href={"/store/cart"} className="flex gap-1 items-center">
-              {mounted && cartTotal > 0 ? (
+              {mounted && (
                 <Badge color="primary" content={cartTotal ?? 0}>
                   <ShoppingBagIcon className="size-5" />
                 </Badge>
-              ) : (
-                "loading..."
               )}
             </Link>
           </NavbarItem>
