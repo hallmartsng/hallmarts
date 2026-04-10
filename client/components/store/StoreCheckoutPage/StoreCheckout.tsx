@@ -1,5 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
+import { useLazyGetUserShippingAddressQuery } from "@/lib/services/shipping/shipping.api";
 import { deleteFromCart } from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
 import {
@@ -10,9 +11,10 @@ import {
   Input,
   Select,
   SelectItem,
-  Switch,
 } from "@heroui/react";
-import React from "react";
+import { useSession } from "next-auth/react";
+import { skip } from "node:test";
+import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
 interface FormErrors {
@@ -38,9 +40,13 @@ const StoreCheckout = () => {
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
 
+  const { data: session, status } = useSession();
+
   const [errors, setErrors] = React.useState<FormErrors>({});
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isSelected, setIsSelected] = React.useState(true);
+  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const [fetchShipping, { data, isLoading }] =
+    useLazyGetUserShippingAddressQuery();
 
   const states = [
     {
@@ -90,7 +96,6 @@ const StoreCheckout = () => {
     setErrors({});
 
     try {
-      setIsLoading(true);
       // 1️⃣ Register user
       //  const res = await registerUser(data);
       const res = {
@@ -102,8 +107,6 @@ const StoreCheckout = () => {
         description: "Your order has been completed",
         color: "success",
       });
-
-      setIsLoading(false);
     } catch (err: any) {
       setErrors(err.message);
       addToast({
@@ -112,8 +115,13 @@ const StoreCheckout = () => {
         color: "danger",
       });
     }
-    setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchShipping(session.user.email);
+    }
+  }, [status, session, fetchShipping]);
   return (
     <section className="w-full flex sm:flex-row flex-col sm:justify-between items-start gap-4">
       <Form
@@ -201,14 +209,6 @@ const StoreCheckout = () => {
               </div>{" "}
               <h1 className="text-xl font-bold">Delivery Details</h1>
             </div>
-            <Switch
-              isSelected={isSelected}
-              className="w-full"
-              size="sm"
-              onValueChange={setIsSelected}
-            >
-              Campus address
-            </Switch>
           </div>
 
           {/* personal details form  */}
@@ -318,9 +318,11 @@ const StoreCheckout = () => {
                 </div>
                 <div className="flex flex-col gap-2 items-end">
                   <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
-                    {item.quantity}
+                    {item?.quantity}
                   </div>
-                  <p>{`${nairaSymbol()}${item.price.toLocaleString()}`}</p>
+                  <p>
+                    {`${nairaSymbol()}${item?.price?.toLocaleString()}` || 0}
+                  </p>
                 </div>
               </div>
             );
@@ -330,7 +332,11 @@ const StoreCheckout = () => {
         <div className="flex flex-col gap-2 w-full font-medium">
           <span className="flex items-center justify-between w-full">
             <span>Sub total:</span>
-            <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
+            <span>
+              {(cart?.subtotal &&
+                `${nairaSymbol()}${cart?.subtotal?.toLocaleString()}`) ||
+                0}
+            </span>
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Discount</span>
@@ -340,7 +346,11 @@ const StoreCheckout = () => {
           </span>
           <span className="flex items-center justify-between w-full">
             <span>Total:</span>
-            <span>{`${nairaSymbol()}${cart.subtotal.toLocaleString()}`}</span>
+            <span>
+              {(cart?.subtotal &&
+                `${nairaSymbol()}${cart?.subtotal?.toLocaleString()}`) ||
+                0}
+            </span>
           </span>
 
           <Button

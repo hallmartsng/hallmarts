@@ -3,7 +3,7 @@ import { api } from "../api";
 import { VendorRegistrationRequest } from "@/types/auth.types";
 import { VendorProfileUpdateRequest } from "@/types/vendor.types";
 
-export const authApi = api.injectEndpoints({
+export const vendorApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getVendorProfile: builder.query<
       ApiResponse<VendorProfileUpdateRequest>,
@@ -49,4 +49,4 @@ export const {
   useGetVendorProfileQuery,
   useUploadStoreLogoMutation,
   useUpdateVendorProfileMutation,
-} = authApi;
+} = vendorApi;
