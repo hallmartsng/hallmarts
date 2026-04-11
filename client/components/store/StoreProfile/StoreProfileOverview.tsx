@@ -1,18 +1,23 @@
+"use client";
 import {
   CheckCircleIcon,
   ClockIcon,
   ShoppingBagIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 
 const StoreProfileOverview = () => {
+  const { data: session } = useSession();
   return (
     <section className="w-full flex flex-col gap-10 sm:pt-10 pt-5">
       <div className="flex sm:justify-between sm:flex-row flex-col sm:items-end items-start gap-4">
         <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-extrabold capitalize">Hi John</h1>
+          <h1 className="sm:text-4xl text-2xl font-extrabold capitalize">
+            Hi {session?.user.fname ?? session?.user.email}
+          </h1>
           <p className="text-gray-600 sm:w-[350px]">
             Welcome to your account, you can manage your orders and profile
             details

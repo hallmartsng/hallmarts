@@ -27,6 +27,7 @@ import {
 import { IoExitOutline, IoGridOutline } from "react-icons/io5";
 import Logo from "../Logo";
 import { useAppSelector } from "@/hooks/useReduxHook";
+import { signOut, useSession } from "next-auth/react";
 
 type CategoriesType = {
   title: string;
@@ -38,6 +39,8 @@ const StoreNavbar = () => {
   const cartTotal = useAppSelector((state) => state.cart.totalItems);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const { data: session } = useSession();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -178,7 +181,15 @@ const StoreNavbar = () => {
               >
                 Profile
               </DropdownItem>
-              <DropdownItem key="logout" startContent={icons.logout}>
+              <DropdownItem
+                onPress={() => {
+                  signOut({
+                    callbackUrl: "/store/auth",
+                  });
+                }}
+                key="logout"
+                startContent={icons.logout}
+              >
                 Logout
               </DropdownItem>
             </DropdownMenu>
@@ -204,6 +215,21 @@ const StoreNavbar = () => {
               </li>
             ))}
           </ul>
+          {session?.user.email && (
+            <div className=" justify-start mt-3">
+              {" "}
+              <button
+                onClick={() => {
+                  signOut({
+                    callbackUrl: "/store/auth",
+                  });
+                }}
+                className="bg-primary rounded-md shadow text-white font-semibold text-xs px-3 py-2"
+              >
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       </NavbarMenu>
 

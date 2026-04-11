@@ -1,11 +1,30 @@
 "use client";
 import React from "react";
 import {
+  ExclamationTriangleIcon,
   EyeIcon,
   EyeSlashIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
-import { Button, Form, Input } from "@heroui/react";
+import {
+  addToast,
+  Button,
+  Form,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+  useDisclosure,
+} from "@heroui/react";
+import { useSession } from "next-auth/react";
+import {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+} from "@/lib/services/user'/user.api";
+import { ProfileRequest } from "@/types/vendor.types";
 interface FormErrors {
   password?: string;
   retryPassword?: string;
@@ -16,6 +35,9 @@ interface FormData {
   password: string;
 }
 const StoreProfile = () => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data: session } = useSession();
+
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [isRetryPasswordVisible, setIsRetryPasswordVisible] =
@@ -29,6 +51,12 @@ const StoreProfile = () => {
 
   const [errors, setErrors] = React.useState<FormErrors>({});
 
+  const { data, isLoading } = useGetUserProfileQuery();
+  console.log(data);
+
+  const [updateProfile, { isLoading: isLoadingUserProfileUpdate }] =
+    useUpdateUserProfileMutation();
+  const [fName, setFName] = React.useState<string>(data?.data.fname || "");
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
     if (value !== null) {
@@ -53,32 +81,59 @@ const StoreProfile = () => {
     return null;
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePersonalInfoUpdate = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
     e.preventDefault();
-    const data = Object.fromEntries(
-      new FormData(e.currentTarget),
-    ) as unknown as FormData;
+    console.log("handlePersonalInfoUpdate");
+    try {
+      const res = await updateProfile({
+        formData: { fname: fName },
+      }).unwrap();
 
-    console.log(data.password, data.retryPassword);
-
-    // Custom validation checks
-    const newErrors: FormErrors = {};
-
-    // Password validation
-    const passwordError = getPasswordError(data.password);
-
-    if (passwordError) {
-      newErrors.password = passwordError;
+      addToast({
+        title: "Profilr updated",
+        description: res.message,
+        color: "success",
+      });
+      onOpenChange();
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
     }
+  };
 
-    if (Object.keys(newErrors).length > 0) {
-      return setErrors(newErrors);
+  // password handler
+  const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      const payload: ProfileRequest = {
+        password: formData.get("password") as string,
+        retry_password: formData.get("retry_password") as string,
+      };
+
+      const res = await updateProfile({
+        formData: payload,
+      }).unwrap();
+
+      addToast({
+        title: "Store updated",
+        description: res.message,
+        color: "success",
+      });
+    } catch (error: any) {
+      addToast({
+        title: "Personal update failed",
+        description: error?.data?.message || "Something went wrong, try again",
+        color: "danger",
+      });
+      console.log(error);
     }
-
-    // Clear errors and submit
-    setErrors({});
-    setSubmitted(data);
-    console.log(submitted);
   };
   return (
     <section className="w-full flex flex-col gap-10 sm:pt-10 pt-5">
@@ -89,115 +144,196 @@ const StoreProfile = () => {
         </p>
       </div>
 
-      <div className="flex sm:flex-row flex-col items-center gap-10">
-        <div className="bg-white p-4 shadow rounded-lg sm:w-1/2 w-full">
-          <h2 className="text-xl font-extrabold capitalize border-b-1 border-gray-200 pb-3 mb-4">
-            Personal Details
-          </h2>
-          <div className="flex items-start justify-between">
-            <div className="text-sm flex flex-col gap-4">
-              <div>
-                <strong className="">Name</strong>
-                <p>John doe</p>
+      {isLoading ? (
+        "Loading..."
+      ) : (
+        <div className="flex sm:flex-row flex-col items-start gap-10">
+          <div className="bg-white p-4 shadow rounded-lg sm:w-1/2 w-full">
+            <h2 className="text-xl font-extrabold capitalize border-b-1 border-gray-200 pb-3 mb-4">
+              Personal Details
+            </h2>
+            <div className="flex items-start justify-between">
+              <div className="text-sm flex flex-col gap-4">
+                <div>
+                  <strong className="">Name</strong>
+                  <p>
+                    {data?.data.fname ? (
+                      data?.data.fname
+                    ) : (
+                      <span className="flex items-center text-primary">
+                        <ExclamationTriangleIcon className="size-4" />{" "}
+                        <span>Update name</span>
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <strong className="">Email</strong>
+                  <p>{session?.user.email}</p>
+                </div>
+                <div>
+                  <strong className="">Phone</strong>
+                  <p>{data?.data?.phone}</p>
+                </div>
               </div>
-              <div>
-                <strong className="">Email</strong>
-                <p>example@gmial.com</p>
-              </div>
-              <div>
-                <strong className="">Phone</strong>
-                <p>+234 909 6736 893</p>
-              </div>
-            </div>
-            <div>
-              <PencilSquareIcon className="size-6 text-primary" />
+              {/* Edit profile form  */}
+              <button onClick={onOpen}>
+                <PencilSquareIcon className="size-6 text-primary" />
+              </button>
+              <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                placement="center"
+                scrollBehavior="inside"
+              >
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1">
+                        <h3 className="text-lg font-semibold">
+                          Profile update
+                        </h3>
+                        <p className="text-sm text-default-500">
+                          Reg / Matric No. can not be changed without campus
+                          admin. Changes of phone number will need verification.
+                        </p>
+                      </ModalHeader>
+                      <ModalBody>
+                        <Form
+                          className="w-full space-y-6"
+                          onSubmit={handlePersonalInfoUpdate}
+                          id="update-user-form"
+                        >
+                          {" "}
+                          <Input
+                            aria-label="Name"
+                            value={fName || data?.data.fname}
+                            placeholder="Enter fullame"
+                            name="fname"
+                            type="text"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              console.log(fName);
+
+                              setFName(e.target.value);
+                            }}
+                          />
+                        </Form>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button
+                          color="danger"
+                          variant="light"
+                          onPress={onClose}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          form="update-user-form" // ðŸ”¥ connects to form
+                          className="bg-primary text-white font-semibold"
+                        >
+                          Update profile
+                          {isLoadingUserProfileUpdate && (
+                            <Spinner
+                              size="sm"
+                              variant="spinner"
+                              color="white"
+                            />
+                          )}
+                        </Button>
+                      </ModalFooter>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
             </div>
           </div>
-        </div>
-        <div className="bg-white p-4 shadow rounded-lg sm:w-1/2 w-full">
-          <h2 className="text-xl font-extrabold capitalize border-b-1 border-gray-200 pb-3 mb-3">
-            Reset Password
-          </h2>
-          <Form
-            className="w-full justify-center items-center space-y-2"
-            onSubmit={onSubmit}
-          >
-            <div className="flex flex-col gap-3 w-full items-start">
-              <Input
-                isRequired
-                endContent={
-                  <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-solid outline-transparent"
-                    type="button"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  >
-                    {isPasswordVisible ? (
-                      <EyeSlashIcon className="size-4" />
-                    ) : (
-                      <EyeIcon className="size-4" />
-                    )}
-                  </button>
-                }
-                errorMessage={getPasswordError(password)}
-                isInvalid={getPasswordError(password) !== null}
-                aria-label="Password"
-                labelPlacement="outside"
-                name="password"
-                placeholder="Enter new password"
-                type={isPasswordVisible ? "text" : "password"}
-                value={password || ""}
-                onValueChange={setPassword}
-              />
+          <div className="bg-white p-4 shadow rounded-lg sm:w-1/2 w-full">
+            <h2 className="text-xl font-extrabold capitalize border-b-1 border-gray-200 pb-3 mb-3">
+              Reset Password
+            </h2>
+            <Form
+              className="w-full justify-center items-center  "
+              onSubmit={handlePasswordUpdate}
+            >
+              <div className="flex flex-col gap-4 w-full">
+                <Input
+                  isRequired
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="focus:outline-solid outline-transparent"
+                      type="button"
+                      onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                    >
+                      {isPasswordVisible ? (
+                        <EyeSlashIcon className="size-4" />
+                      ) : (
+                        <EyeIcon className="size-4" />
+                      )}
+                    </button>
+                  }
+                  errorMessage={getPasswordError(password)}
+                  isInvalid={getPasswordError(password) !== null}
+                  label="Password"
+                  labelPlacement="outside"
+                  name="password"
+                  placeholder="Enter your password"
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password || ""}
+                  onValueChange={setPassword}
+                />
 
-              <Input
-                isRequired
-                endContent={
-                  <button
-                    aria-label="toggle password visibility"
-                    className="focus:outline-solid outline-transparent"
-                    type="button"
-                    onClick={() =>
-                      setIsRetryPasswordVisible(!isRetryPasswordVisible)
-                    }
-                  >
-                    {isRetryPasswordVisible ? (
-                      <EyeSlashIcon className="size-4" />
-                    ) : (
-                      <EyeIcon className="size-4" />
-                    )}
-                  </button>
-                }
-                errorMessage={getRetryPasswordError(retryPassword)}
-                isInvalid={getRetryPasswordError(retryPassword) !== null}
-                aria-label="retry Password"
-                labelPlacement="outside"
-                name="retry_password"
-                placeholder="Retry password"
-                type={isRetryPasswordVisible ? "text" : "password"}
-                value={retryPassword || ""}
-                onValueChange={setRetryPassword}
-              />
+                <Input
+                  isRequired
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="focus:outline-solid outline-transparent"
+                      type="button"
+                      onClick={() =>
+                        setIsRetryPasswordVisible(!isRetryPasswordVisible)
+                      }
+                    >
+                      {isRetryPasswordVisible ? (
+                        <EyeSlashIcon className="size-4" />
+                      ) : (
+                        <EyeIcon className="size-4" />
+                      )}
+                    </button>
+                  }
+                  label="Retry Password"
+                  labelPlacement="outside"
+                  name="retry_password"
+                  placeholder="Retry password"
+                  type={isRetryPasswordVisible ? "text" : "password"}
+                  value={retryPassword || ""}
+                  onValueChange={setRetryPassword}
+                />
 
-              {errors && (
-                <span className="text-danger text-small">
-                  {errors.password}
-                </span>
-              )}
-
-              <div className="flex">
+                {errors && (
+                  <span className="text-danger text-small">
+                    {errors.password}
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-4 justify-end w-full">
                 <Button
-                  className="w-full flex items-center bg-[#ed1d3e] text-white"
+                  className=" flex items-center bg-[#ed1d3e] text-white"
                   type="submit"
                 >
-                  <p>Update password</p>
-                  {/* <Spinner size="sm" variant="spinner" color="white" /> */}
+                  <p>Submit</p>
+                  {isLoadingUserProfileUpdate && (
+                    <Spinner size="sm" variant="spinner" color="white" />
+                  )}
                 </Button>
               </div>
-            </div>
-          </Form>
+            </Form>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

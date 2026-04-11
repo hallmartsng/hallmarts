@@ -14,7 +14,7 @@ export function ReduxProvider({
 }) {
   return (
     <SessionProvider session={session}>
-      <Provider store={store}>{children}</Provider>;
+      <Provider store={store}>{children}</Provider>
     </SessionProvider>
   );
 }

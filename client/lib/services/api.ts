@@ -1,6 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession, signOut } from "next-auth/react";
 
+const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+
+const authRedirect = pathname.startsWith("/vendor")
+  ? "/vendor/auth"
+  : "/store/auth";
 const baseQuery = fetchBaseQuery({
   baseUrl:
     process.env["NEXT_PUBLIC_API_BASE_URL"] || "http://localhost:5000/api/v1",
@@ -68,11 +73,11 @@ const baseQueryWithReauth: typeof baseQuery = async (
         result = await baseQuery(args, api, extraOptions);
       } else {
         console.log("❌ Failed to update session");
-        signOut({ callbackUrl: "/vendor/auth" });
+        signOut({ callbackUrl: authRedirect });
       }
     } else {
       console.log("❌ Refresh token invalid — signing out");
-      signOut({ callbackUrl: "/vendor/auth" });
+      signOut({ callbackUrl: authRedirect });
     }
   }
 
@@ -82,6 +87,6 @@ const baseQueryWithReauth: typeof baseQuery = async (
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Vendor", "Product"],
+  tagTypes: ["Vendor", "Product", "User"],
   endpoints: () => ({}), // empty here
 });

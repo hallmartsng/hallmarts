@@ -46,7 +46,9 @@ export default async function RootLayout({
           <HeroUIProviders
             themeProps={{ attribute: "class", defaultTheme: "light" }}
           >
-            <main className="flex-grow overflow-x-hidden">{children}</main>
+            <main className="flex-grow sm:overflow-x-auto overflow-x-hidden">
+              {children}
+            </main>
           </HeroUIProviders>
         </ReduxProvider>
 

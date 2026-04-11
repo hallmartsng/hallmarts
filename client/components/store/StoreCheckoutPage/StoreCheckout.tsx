@@ -13,6 +13,7 @@ import {
   SelectItem,
 } from "@heroui/react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { skip } from "node:test";
 import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
@@ -72,8 +73,14 @@ const StoreCheckout = () => {
       label: "Ghana",
     },
   ];
+
+  const [showLoginMsg, setShowLoginMsg] = React.useState<boolean>(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session) {
+      return setShowLoginMsg(true);
+    }
     const data = Object.fromEntries(
       new FormData(e.currentTarget),
     ) as unknown as FormData;
@@ -129,6 +136,7 @@ const StoreCheckout = () => {
         validationErrors={errors.name ? { name: errors.name } : {}}
         onReset={() => console.log("Form reset")}
         onSubmit={onSubmit}
+        id="checkout-form"
       >
         {/* Personal Data  */}
         <div className="w-full bg-white rounded-lg shadow ">
@@ -281,14 +289,14 @@ const StoreCheckout = () => {
       </Form>
 
       {/* Checkout details  */}
-      <div className=" bg-white rounded-lg shadow p-4 flex flex-col gap-4">
+      <div className=" bg-white w-full sm:w-[400px] rounded-lg shadow p-4 flex flex-col gap-4">
         {/* Items  */}
         {cart &&
           cart?.items?.map((item) => {
             return (
               <div
                 key={item.productId}
-                className="flex items-center gap-10 border-b-1 border-gray-200 pb-5"
+                className="flex items-center justify-between gap-10 border-b-1 border-gray-200 pb-5"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-[80px]">
@@ -303,8 +311,8 @@ const StoreCheckout = () => {
                       width="100%"
                     />
                   </div>
-                  <div>
-                    <p>Nike Sportwear</p>
+                  <div className="text-sm font-semibold">
+                    <p className="w-[100px] truncate">{item.name}</p>
                     <button
                       onClick={() => {
                         dispatch(deleteFromCart(item.productId));
@@ -320,7 +328,7 @@ const StoreCheckout = () => {
                   <div className="h-10 w-10 border-1 border-gray-200 flex items-center justify-center p-2 rounded-lg">
                     {item?.quantity}
                   </div>
-                  <p>
+                  <p className="font-semibold">
                     {`${nairaSymbol()}${item?.price?.toLocaleString()}` || 0}
                   </p>
                 </div>
@@ -329,7 +337,7 @@ const StoreCheckout = () => {
           })}
 
         {/* Checkout summary  */}
-        <div className="flex flex-col gap-2 w-full font-medium">
+        <div className="flex text-sm font-semibold flex-col gap-2 w-full">
           <span className="flex items-center justify-between w-full">
             <span>Sub total:</span>
             <span>
@@ -354,13 +362,25 @@ const StoreCheckout = () => {
           </span>
 
           <Button
-            onPress={() => {
-              console.log("Pay now");
-            }}
+            // onPress={(e) => {
+            //   onSubmit(e as React.FormEvent<HTMLFormElement>);
+            // }}
+            type="submit"
+            form="checkout-form"
+            disabled={showLoginMsg}
             className="bg-primary text-white font-semibold"
           >
             Pay now
           </Button>
+          {showLoginMsg && (
+            <small className=" font-medium text-sm ">
+              To proceed with payment,
+              <Link href={"/store/auth"} className="text-primary">
+                {" "}
+                Log In
+              </Link>{" "}
+            </small>
+          )}
         </div>
       </div>
     </section>
