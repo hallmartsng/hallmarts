@@ -11,6 +11,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Switch,
 } from "@heroui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -42,6 +43,7 @@ const StoreCheckout = () => {
   const dispatch = useAppDispatch();
 
   const { data: session, status } = useSession();
+  const [useCampusAddress, setUseCampusAddress] = React.useState(false);
 
   const [errors, setErrors] = React.useState<FormErrors>({});
   // const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -124,13 +126,32 @@ const StoreCheckout = () => {
     }
   };
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchShipping(session.user.email);
-    }
-  }, [status, session, fetchShipping]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (useCampusAddress === true && session?.user.id) {
+  //       const res = await fetchShipping(session?.user.id);
+  //       console.log("res: ", res);
+  //     }
+  //     return;
+  //   };
+  //   fetchData();
+  //   console.log("session: ", session);
+  // }, [useCampusAddress, fetchShipping]);
   return (
     <section className="w-full flex sm:flex-row flex-col sm:justify-between items-start gap-4">
+      <div className="flex sm:hidden flex-col gap-3">
+        <span className="text-xs">
+          Toggle to use your default campus address.
+        </span>
+        <Switch
+          isSelected={useCampusAddress}
+          className="w-full"
+          size="sm"
+          onValueChange={setUseCampusAddress}
+        >
+          My campus
+        </Switch>
+      </div>
       <Form
         className="w-full sm:w-[880px] justify-center items-center space-y-4 "
         validationErrors={errors.name ? { name: errors.name } : {}}
@@ -140,34 +161,46 @@ const StoreCheckout = () => {
       >
         {/* Personal Data  */}
         <div className="w-full bg-white rounded-lg shadow ">
-          <div className="w-full flex items-center gap-2 border-b-1 border-gray-200 p-4">
-            <div className="w-8 h-8 flex items-center justify-center p-2 bg-gray-300 font-semibold rounded-full">
-              1
-            </div>{" "}
-            <h1 className="text-xl font-bold">Personal Details</h1>
+          <div className="w-full flex justify-between items-center  border-b-1 border-gray-200 p-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 flex items-center justify-center p-2 bg-gray-300 font-semibold rounded-full">
+                1
+              </div>{" "}
+              <h1 className="text-xl font-bold">Personal Details</h1>
+            </div>
+            <div className="sm:flex hidden items-center gap-3">
+              <span className="text-xs">
+                Toggle to use your default campus address.
+              </span>
+              <Switch
+                isSelected={useCampusAddress}
+                className="w-full"
+                size="sm"
+                onValueChange={setUseCampusAddress}
+              >
+                My campus
+              </Switch>
+            </div>
           </div>
 
           {/* personal details form  */}
-          <div className="flex flex-col w-full gap-4 p-4">
-            <Input
-              isRequired
-              errorMessage={({
-                validationDetails,
-              }: {
-                validationDetails: ValidityState;
-              }) => {
-                if (validationDetails.valueMissing) {
-                  return "Please enter full name";
-                }
-
-                return;
-              }}
-              aria-label="Full name"
-              name="full_name"
-              placeholder="Enter your full name"
-              type="text"
-            />
-            <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+          {useCampusAddress ? (
+            <ul className="flex text-sm flex-col w-full gap-4 p-4">
+              <li>
+                <span className="font-semibold">Full Name:</span>{" "}
+                <span>{session?.user.name}</span>
+              </li>
+              <li>
+                <span className="font-semibold">Email:</span>{" "}
+                <span>{session?.user.email}</span>
+              </li>
+              <li>
+                <span className="font-semibold">Phone:</span>{" "}
+                <span>{session?.user.phone}</span>
+              </li>
+            </ul>
+          ) : (
+            <div className="flex flex-col w-full gap-4 p-4">
               <Input
                 isRequired
                 errorMessage={({
@@ -176,36 +209,56 @@ const StoreCheckout = () => {
                   validationDetails: ValidityState;
                 }) => {
                   if (validationDetails.valueMissing) {
-                    return "Please enter email";
+                    return "Please enter full name";
                   }
 
                   return;
                 }}
-                aria-label="Email"
-                name="email"
-                placeholder="Your email"
-                type="email"
-              />
-              <Input
-                isRequired
-                errorMessage={({
-                  validationDetails,
-                }: {
-                  validationDetails: ValidityState;
-                }) => {
-                  if (validationDetails.valueMissing) {
-                    return "Please enter phone";
-                  }
-
-                  return;
-                }}
-                aria-label="Phone"
-                name="phone"
-                placeholder="Phone"
+                aria-label="Full name"
+                name="full_name"
+                placeholder="Enter your full name"
                 type="text"
               />
+              <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+                <Input
+                  isRequired
+                  errorMessage={({
+                    validationDetails,
+                  }: {
+                    validationDetails: ValidityState;
+                  }) => {
+                    if (validationDetails.valueMissing) {
+                      return "Please enter email";
+                    }
+
+                    return;
+                  }}
+                  aria-label="Email"
+                  name="email"
+                  placeholder="Your email"
+                  type="email"
+                />
+                <Input
+                  isRequired
+                  errorMessage={({
+                    validationDetails,
+                  }: {
+                    validationDetails: ValidityState;
+                  }) => {
+                    if (validationDetails.valueMissing) {
+                      return "Please enter phone";
+                    }
+
+                    return;
+                  }}
+                  aria-label="Phone"
+                  name="phone"
+                  placeholder="Phone"
+                  type="text"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Delivery Data  */}
@@ -219,72 +272,85 @@ const StoreCheckout = () => {
             </div>
           </div>
 
-          {/* personal details form  */}
-          <div className="flex flex-col gap-4 p-4">
-            <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
-              <Input
-                isRequired
-                errorMessage={({
-                  validationDetails,
-                }: {
-                  validationDetails: ValidityState;
-                }) => {
-                  if (validationDetails.valueMissing) {
-                    return "Please enter address";
-                  }
+          {/* Delivery details form  */}
+          {useCampusAddress ? (
+            <ul className="flex text-sm flex-col w-full gap-4 p-4">
+              <li>
+                <span className="font-semibold">Campus:</span>{" "}
+                <span>{session?.user.campus}</span>
+              </li>
+              <li>
+                <span className="font-semibold">Country:</span>{" "}
+                <span>{session?.user.country}</span>
+              </li>
+            </ul>
+          ) : (
+            <div className="flex flex-col gap-4 p-4">
+              <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+                <Input
+                  isRequired
+                  errorMessage={({
+                    validationDetails,
+                  }: {
+                    validationDetails: ValidityState;
+                  }) => {
+                    if (validationDetails.valueMissing) {
+                      return "Please enter address";
+                    }
 
-                  return;
-                }}
-                aria-label="Address"
-                name="address"
-                placeholder="Address"
-                type="text"
-              />
-              <Input
-                isRequired
-                className="sm:w-1/2"
-                errorMessage={({
-                  validationDetails,
-                }: {
-                  validationDetails: ValidityState;
-                }) => {
-                  if (validationDetails.valueMissing) {
-                    return "Please enter city";
-                  }
+                    return;
+                  }}
+                  aria-label="Address"
+                  name="address"
+                  placeholder="Address"
+                  type="text"
+                />
+                <Input
+                  isRequired
+                  className="sm:w-1/2"
+                  errorMessage={({
+                    validationDetails,
+                  }: {
+                    validationDetails: ValidityState;
+                  }) => {
+                    if (validationDetails.valueMissing) {
+                      return "Please enter city";
+                    }
 
-                  return;
-                }}
-                aria-label="city"
-                name="city"
-                placeholder="City"
-                type="text"
-              />
+                    return;
+                  }}
+                  aria-label="city"
+                  name="city"
+                  placeholder="City"
+                  type="text"
+                />
+              </div>
+              <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+                <Select
+                  isRequired
+                  className="w-full"
+                  aria-label="Select a state"
+                  placeholder="State"
+                  name="state"
+                >
+                  {states.map((state) => (
+                    <SelectItem key={state.key}>{state.label}</SelectItem>
+                  ))}
+                </Select>
+                <Select
+                  className="w-full"
+                  isRequired
+                  aria-label="Select a country"
+                  placeholder="Country"
+                  name="country"
+                >
+                  {countries.map((country) => (
+                    <SelectItem key={country.key}>{country.label}</SelectItem>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
-              <Select
-                isRequired
-                className="w-full"
-                aria-label="Select a state"
-                placeholder="State"
-                name="state"
-              >
-                {states.map((state) => (
-                  <SelectItem key={state.key}>{state.label}</SelectItem>
-                ))}
-              </Select>
-              <Select
-                className="w-full"
-                isRequired
-                aria-label="Select a country"
-                placeholder="Country"
-                name="country"
-              >
-                {countries.map((country) => (
-                  <SelectItem key={country.key}>{country.label}</SelectItem>
-                ))}
-              </Select>
-            </div>
-          </div>
+          )}
         </div>
       </Form>
 
