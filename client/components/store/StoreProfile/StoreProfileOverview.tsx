@@ -16,7 +16,7 @@ const StoreProfileOverview = () => {
       <div className="flex sm:justify-between sm:flex-row flex-col sm:items-end items-start gap-4">
         <div className="flex flex-col gap-4">
           <h1 className="sm:text-4xl text-2xl font-extrabold capitalize">
-            Hi {session?.user.fname ?? session?.user.email}
+            Hi {session?.user.name ?? session?.user.email}
           </h1>
           <p className="text-gray-600 sm:w-[350px]">
             Welcome to your account, you can manage your orders and profile

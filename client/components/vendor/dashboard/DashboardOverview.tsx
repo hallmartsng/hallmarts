@@ -79,7 +79,7 @@ const DashboardOverview = () => {
         />
         {/* Greetings  */}
         <DashboardHeader
-          header={`Welcome ${session?.user.email ? session?.user.email : "Vendor"} 👋`}
+          header={`Welcome ${session?.user.name ? session?.user.name : "Vendor"} 👋`}
           subHeader="Here’s what’s happening in your campus store today."
         />
         {/* Analytics cards  */}
