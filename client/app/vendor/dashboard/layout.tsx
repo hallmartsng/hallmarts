@@ -24,9 +24,11 @@ export default async function DashboardLayout({
   const session = await getServerSession();
   console.log("Dashboard:", session);
 
-  if (!session?.user.email) {
+  if (!session?.user.email && session?.user.role !== "vendor") {
     return redirect("/vendor/auth");
   }
+  console.log("session?.user.role: ", session?.user);
+
   return (
     <section className="flex w-full bg-primary-50 flex-col items-center  min-h-screen ">
       <VendorDashboardNavbar />

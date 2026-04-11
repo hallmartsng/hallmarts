@@ -52,6 +52,7 @@ export const authOptions: NextAuthOptions = {
           refreshToken: data.refreshToken,
           phone: data.phone,
           fname: data.fname,
+          name: data.role,
         };
       },
     }),
@@ -77,6 +78,9 @@ export const authOptions: NextAuthOptions = {
       session.user.role = token.role;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
+
+      console.log("session: ", session);
+
       return session;
     },
   },

@@ -162,7 +162,7 @@ const AuthLayout = ({ page }: { page: string }) => {
                   Log In to maage your campus business from anywhere.
                 </p>
               </div>
-              <Login userRole="user" />
+              <Login userRole={page === "store" ? "user" : "vendor"} />
             </Tab>
             <Tab key="register" title="Register">
               <div className="flex justify-center my-4">
@@ -171,7 +171,10 @@ const AuthLayout = ({ page }: { page: string }) => {
                   Enter campus details and connect with your csutomers.
                 </p>
               </div>
-              <SignUp setSelectedTabKey={setSelectedTabKey} userRole="user" />
+              <SignUp
+                setSelectedTabKey={setSelectedTabKey}
+                userRole={page === "store" ? "user" : "vendor"}
+              />
             </Tab>
           </Tabs>
         </div>

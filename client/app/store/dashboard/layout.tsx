@@ -23,7 +23,7 @@ export default async function DashboardLayout({
   const session = await getServerSession();
   console.log("Dashboard:", session);
 
-  if (!session?.user.email) {
+  if (!session?.user.email && session?.user.role !== "user") {
     return redirect("/vendor/auth");
   }
   return (
