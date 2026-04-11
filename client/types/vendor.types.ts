@@ -1,19 +1,17 @@
 import { ImagePreview } from ".";
 
-export interface CreateVendorRequest {
+export interface ProfileRequest {
   regNo?: string;
   email?: string;
   phone?: string;
   campus?: string;
   password?: string;
   retry_password?: string;
+  fname?: string;
 }
 
-export interface VendorProfileUpdateRequest extends CreateVendorRequest {
+export interface VendorProfileUpdateRequest extends ProfileRequest {
   store_logo?: ImagePreview;
   store_name?: string;
   store_description?: string;
-  fname?: string;
-
-  // retry_password: string;
 }

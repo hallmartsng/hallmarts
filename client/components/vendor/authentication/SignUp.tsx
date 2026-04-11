@@ -15,8 +15,11 @@ import PhoneInput, {
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import FilterCampuses from "@/components/FilterCampus";
-import { useVendorRegistrationMutation } from "@/lib/services/authentication/auth.api";
-import { VendorRegistrationRequest } from "@/types/auth.types";
+import {
+  useUserRegistrationMutation,
+  useVendorRegistrationMutation,
+} from "@/lib/services/authentication/auth.api";
+import { RegistrationRequest } from "@/types/auth.types";
 
 interface FormErrors {
   name?: string;
@@ -37,9 +40,10 @@ interface FormData {
 
 interface SignUpProps {
   setSelectedTabKey: (value: string) => void;
+  userRole: string;
 }
 
-const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
+const SignUp = ({ userRole, setSelectedTabKey }: SignUpProps) => {
   const allowedCountries: Country[] = ["NG", "GH", "ZA"];
 
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -59,6 +63,8 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   const [createVendor, { isLoading }] = useVendorRegistrationMutation();
+  const [createUser, { isLoading: isLoadingUser }] =
+    useUserRegistrationMutation();
 
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
@@ -105,7 +111,7 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
 
     const form = new FormData(e.currentTarget);
 
-    const payload: VendorRegistrationRequest = {
+    const payload: RegistrationRequest = {
       regNo: form.get("regNo") as string,
       email: form.get("email") as string,
       phone: form.get("phone") as string,
@@ -116,9 +122,10 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
     };
 
     try {
-      const res = await createVendor(payload).unwrap();
-      console.log(res);
-
+      const res =
+        userRole === "user"
+          ? await createUser(payload).unwrap()
+          : await createVendor(payload).unwrap();
       addToast({
         title: "Sign Up",
         description: res.message,
@@ -304,10 +311,13 @@ const SignUp = ({ setSelectedTabKey }: SignUpProps) => {
           <Button
             className="w-full flex items-center bg-[#ed1d3e] text-white"
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isLoadingUser}
           >
             <p>Sign Up</p>
-            {isLoading && <Spinner size="sm" variant="spinner" color="white" />}
+            {isLoading ||
+              (isLoadingUser && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              ))}
           </Button>
         </div>
       </div>

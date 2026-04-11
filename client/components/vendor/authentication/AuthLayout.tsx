@@ -8,7 +8,7 @@ import Image from "next/image";
 import Logo from "@/components/Logo";
 import Link from "next/link";
 
-const AuthLayout = () => {
+const AuthLayout = ({ page }: { page: string }) => {
   const params = useSearchParams();
 
   const authOptions = params.get("tab");
@@ -18,8 +18,8 @@ const AuthLayout = () => {
   );
 
   return (
-    <section className="flex justify-center min-h-screen">
-      <div>
+    <section className="flex w-full justify-center min-h-screen">
+      <div className={`${page === "store" && "hidden"}`}>
         <div className="w-1/2 bg-primary fixed sm:flex hidden flex-col justify-center gap-10 items-end pr-40 h-screen">
           <div className="flex items-center gap-16">
             <div className="flex flex-col gap-16">
@@ -137,9 +137,13 @@ const AuthLayout = () => {
         </div>
       </div>
 
-      <div className=" w-full flex flex-col items-end justify-center py-10 min-h-screen">
-        <div className="sm:w-1/2 flex flex-col items-center justify-center">
-          <div className=" flex mb-3 items-center justify-center">
+      <div className="w-full flex flex-col items-end justify-center py-10 min-h-screen">
+        <div
+          className={` ${page === "store" ? "w-full" : "sm:w-1/2"} flex flex-col items-center justify-center`}
+        >
+          <div
+            className={`${page === "store" && "hidden"} flex mb-3 items-center justify-center`}
+          >
             <Link href={"/"}>
               {" "}
               <Logo />
@@ -151,15 +155,6 @@ const AuthLayout = () => {
             onSelectionChange={(value) => setSelectedTabKey(String(value))}
             color={"primary"}
           >
-            <Tab key="register" title="Register">
-              <div className="flex justify-center my-4">
-                {" "}
-                <p className="text-sm  font-medium text-center w-[80%]">
-                  Enter campus details and connect with your csutomers.
-                </p>
-              </div>
-              <SignUp setSelectedTabKey={setSelectedTabKey} />
-            </Tab>
             <Tab key="login" title="Login">
               <div className="flex justify-center my-4">
                 {" "}
@@ -167,7 +162,19 @@ const AuthLayout = () => {
                   Log In to maage your campus business from anywhere.
                 </p>
               </div>
-              <Login />
+              <Login userRole={page === "store" ? "user" : "vendor"} />
+            </Tab>
+            <Tab key="register" title="Register">
+              <div className="flex justify-center my-4">
+                {" "}
+                <p className="text-sm  font-medium text-center w-[80%]">
+                  Enter campus details and connect with your csutomers.
+                </p>
+              </div>
+              <SignUp
+                setSelectedTabKey={setSelectedTabKey}
+                userRole={page === "store" ? "user" : "vendor"}
+              />
             </Tab>
           </Tabs>
         </div>

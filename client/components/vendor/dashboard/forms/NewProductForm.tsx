@@ -169,6 +169,7 @@ const NewProductForm = ({
           }
         }
       }
+      onOpenChange();
     } catch (err) {
       console.log("Product creation failed:", err);
       addToast({
@@ -178,7 +179,6 @@ const NewProductForm = ({
       });
     } finally {
       setIsLoading(false);
-      onOpenChange();
     }
 
     // ✅ success

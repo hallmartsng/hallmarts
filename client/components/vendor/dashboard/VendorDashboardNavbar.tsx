@@ -192,7 +192,7 @@ const VendorDashboardNavbar = () => {
               </Link>
             </NavbarItem>
           </ul>
-          <div className="absolute bottom-4 justify-start mt-3">
+          <div className=" justify-start mt-3">
             {" "}
             <button
               onClick={() => {

@@ -8,10 +8,11 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         regNo: {},
         password: {},
+        endpoint: {},
       },
       async authorize(credentials) {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/vendor/auth/login`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/${credentials?.endpoint}/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -49,6 +50,9 @@ export const authOptions: NextAuthOptions = {
           role: data.user.role,
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
+          phone: data.phone,
+          fname: data.fname,
+          name: data.role,
         };
       },
     }),
@@ -74,6 +78,9 @@ export const authOptions: NextAuthOptions = {
       session.user.role = token.role;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
+
+      console.log("session: ", session);
+
       return session;
     },
   },

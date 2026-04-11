@@ -10,6 +10,7 @@ export interface IUser extends Document {
   password: string;
   refreshToken?: string;
   role: UserRole;
+  fname?: string;
   isActive: boolean;
   wishList: mongoose.Types.ObjectId[];
   phone?: string;
@@ -56,6 +57,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: false,
       trim: true,
+    },
+    fname: {
+      type: String,
     },
 
     role: {

@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
-import VendorDashboardNavbar from "@/components/vendor/dashboard/VendorDashboardNavbar";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -24,15 +23,14 @@ export default async function DashboardLayout({
   const session = await getServerSession();
   console.log("Dashboard:", session);
 
-  if (!session?.user.email && session?.user.role !== "vendor") {
+  if (!session?.user.email && session?.user.role !== "user") {
     return redirect("/vendor/auth");
   }
-  console.log("session?.user.role: ", session?.user);
-
   return (
-    <section className="flex w-full bg-primary-50 flex-col items-center  min-h-screen ">
-      <VendorDashboardNavbar />
-      <div className="sm:w-[1240px] w-full sm:px-0 px-2 ">{children}</div>
+    <section className="flex items-center flex-col w-full gap-6 sm:pt-0 pt-10 ms:px-0 px-4">
+      <div className="sm:w-[1230px] mx-auto w-full gap-5 flex flex-col items-start justify-start">
+        {children}
+      </div>
     </section>
   );
 }

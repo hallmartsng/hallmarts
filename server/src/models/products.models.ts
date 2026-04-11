@@ -2,7 +2,8 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IProduct extends Document {
   vendor: mongoose.Types.ObjectId;
-  campus: mongoose.Types.ObjectId;
+  // campus: mongoose.Types.ObjectId;
+  campus: string;
   title: string;
   description: string;
   metaData?: string;
@@ -37,11 +38,12 @@ const productSchema = new Schema<IProduct>(
       ref: "Vendor",
       required: true,
     },
-    campus: {
-      type: Schema.Types.ObjectId,
-      ref: "Campus",
-      index: true,
-    },
+    // campus: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Campus",
+    //   index: true,
+    // },
+    campus: { type: String, trim: true, index: true, required: true },
     title: { type: String, trim: true, index: true },
     description: { type: String, trim: true },
     metaData: { type: String, trim: true },

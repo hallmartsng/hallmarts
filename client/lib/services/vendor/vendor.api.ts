@@ -1,6 +1,5 @@
 import { ApiResponse } from "@/types";
 import { api } from "../api";
-import { VendorRegistrationRequest } from "@/types/auth.types";
 import { VendorProfileUpdateRequest } from "@/types/vendor.types";
 
 export const vendorApi = api.injectEndpoints({

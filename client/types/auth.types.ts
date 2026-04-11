@@ -1,4 +1,4 @@
-export interface VendorRegistrationRequest {
+export interface RegistrationRequest {
   regNo: string;
   email: string;
   phone: string;

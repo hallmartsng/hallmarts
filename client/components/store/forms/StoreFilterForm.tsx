@@ -4,7 +4,6 @@ import React from "react";
 import {
   addToast,
   Button,
-  DatePicker,
   Form,
   Input,
   Modal,
@@ -15,10 +14,8 @@ import {
   NumberInput,
   Select,
   SelectItem,
-  Spinner,
   useDisclosure,
 } from "@heroui/react";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import FilterCampuses from "@/components/FilterCampus";
 import { StoreCategoryIconsTypes } from "../StoreCategoryIcons";
@@ -31,7 +28,6 @@ type CategoriesType = {
 const StoreFilterForm = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [errors, setErrors] = React.useState({});
-  const [searchSupervisor, setSearchSupervisor] = React.useState("");
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log("Submit...");

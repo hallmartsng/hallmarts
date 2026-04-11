@@ -11,6 +11,10 @@ import vendorAuth from "./routes/vendor/auth.routes";
 import vendorProfile from "./routes/vendor/profile.routes";
 import vendorProductRoutes from "./routes/vendor/product.routes";
 
+// user imports
+import userAuth from "./routes/user/auth.routes";
+import userProfile from "./routes/user/profile.routes";
+
 // General imports
 import generalAuth from "./routes/auth.routes";
 
@@ -48,6 +52,10 @@ app.use(
 app.use("/api/v1/vendor/auth", vendorAuth);
 app.use("/api/v1/vendor/profile", vendorProfile);
 app.use("/api/v1/vendor/product", vendorProductRoutes);
+
+// User Endpoints
+app.use("/api/v1/user/auth", userAuth);
+app.use("/api/v1/user/profile", userProfile);
 
 // General Endpoints
 app.use("/api/v1/auth", generalAuth);

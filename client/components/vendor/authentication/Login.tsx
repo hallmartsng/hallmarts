@@ -3,10 +3,10 @@ import React from "react";
 import { Form, Input, Button, addToast, Spinner, Link } from "@heroui/react";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-const Login = () => {
+const Login = ({ userRole }: { userRole: string }) => {
   const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
@@ -23,13 +23,13 @@ const Login = () => {
     const payload = {
       regNo: form.get("regNo") as string,
       password: form.get("password") as string,
+      endpoint: userRole === "user" ? "user" : "vendor",
       redirect: false,
     };
 
     try {
       setIsLoading(true);
       const res = await signIn("credentials", payload);
-      console.log(res);
 
       if (!res?.ok) {
         addToast({
@@ -40,7 +40,12 @@ const Login = () => {
       }
 
       if (res?.ok) {
-        router.push("/vendor/dashboard");
+        const session = await getSession();
+
+        if (session?.user.role === "vendor") {
+          return router.push("/vendor/dashboard");
+        }
+        return router.push("/store");
       }
     } catch (error: any) {
       addToast({
