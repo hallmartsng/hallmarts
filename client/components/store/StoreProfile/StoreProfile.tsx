@@ -23,7 +23,7 @@ import { useSession } from "next-auth/react";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
-} from "@/lib/services/user'/user.api";
+} from "@/lib/services/user/user.api";
 import { ProfileRequest } from "@/types/vendor.types";
 interface FormErrors {
   password?: string;

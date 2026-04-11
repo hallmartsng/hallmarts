@@ -8,6 +8,8 @@ export interface IUser extends Document {
   regNo?: string;
   email: string;
   password: string;
+  campus: string;
+  countryCode: string;
   refreshToken?: string;
   role: UserRole;
   fname?: string;
@@ -58,6 +60,8 @@ const userSchema = new Schema<IUser>(
       required: false,
       trim: true,
     },
+    campus: { type: String, required: true },
+    countryCode: { type: String, required: true },
     fname: {
       type: String,
     },

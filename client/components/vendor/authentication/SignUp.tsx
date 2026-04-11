@@ -196,7 +196,7 @@ const SignUp = ({ userRole, setSelectedTabKey }: SignUpProps) => {
           type="email"
         />
 
-        <div className="flex flex-col w-full gap-1">
+        <div className="flex flex-col flex-wrap w-full gap-1">
           <div className="">
             <label htmlFor="phone" className="text-sm text-black">
               Phone
@@ -224,7 +224,7 @@ const SignUp = ({ userRole, setSelectedTabKey }: SignUpProps) => {
               </p>
             )}
           </div>
-          <div className="w-full">
+          <div className="w-full ">
             <FilterCampuses
               code={countryCode}
               name={"campus"}

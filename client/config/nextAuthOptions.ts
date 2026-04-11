@@ -45,14 +45,15 @@ export const authOptions: NextAuthOptions = {
         console.log("data login data: ", data);
 
         return {
-          id: data.user.id,
+          id: data.user._id,
           email: data.user.email,
           role: data.user.role,
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
-          phone: data.phone,
-          fname: data.fname,
-          name: data.role,
+          phone: data.user.phone,
+          name: data.user.fname,
+          campus: data.user.campus,
+          country: data.user.countryCode,
         };
       },
     }),
@@ -65,28 +66,37 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        console.log("user jwt: ", user);
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.name = user.name;
+        token.phone = user.phone;
+        token.campus = user.campus;
+        token.country = user.country;
       }
+
       return token;
     },
 
     async session({ session, token }) {
+      console.log("token session: ", token);
       session.user.id = token.id;
       session.user.role = token.role;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
-
-      console.log("session: ", session);
+      session.user.name = token.name;
+      session.user.phone = token.phone;
+      session.user.campus = token.campus;
+      session.user.country = token.country;
 
       return session;
     },
   },
-  pages: {
-    signOut: "/vendor/auth",
-    signIn: "/vendor/auth",
-  },
+  // pages: {
+  //   signOut: "/vendor/auth",
+  //   signIn: "/vendor/auth",
+  // },
   secret: process.env["NEXTAUTH_SECRET"],
 };
