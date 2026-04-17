@@ -179,7 +179,7 @@ const StoreCheckout = () => {
 
         console.log("res.data: ", res.data);
         const initializePayStackPayment = payStackInline.newTransaction({
-          key: "pk_test_cdc660c60db4315e7288d11ffaf37b61fb85adfd",
+          key: process.env["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"]!,
           email: "ekonge903@gmail.com",
           amount: amount * 100,
           reference: paymentReference,
