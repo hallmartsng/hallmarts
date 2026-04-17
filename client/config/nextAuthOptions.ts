@@ -54,6 +54,7 @@ export const authOptions: NextAuthOptions = {
           name: data.user.fname,
           campus: data.user.campus,
           country: data.user.countryCode,
+          regNo: data.user.regNo,
         };
       },
     }),
@@ -75,6 +76,7 @@ export const authOptions: NextAuthOptions = {
         token.phone = user.phone;
         token.campus = user.campus;
         token.country = user.country;
+        token.regNo = user.regNo;
       }
 
       return token;
@@ -90,6 +92,7 @@ export const authOptions: NextAuthOptions = {
       session.user.phone = token.phone;
       session.user.campus = token.campus;
       session.user.country = token.country;
+      session.user.regNo = token.regNo;
 
       return session;
     },

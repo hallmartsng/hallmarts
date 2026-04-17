@@ -212,7 +212,7 @@ const StoreCart = () => {
                 </Button>
               }
               aria-label="discount code"
-              placeholder="Enter discoutn code"
+              placeholder="Enter discount code"
             />
           </div>
           <div className="sm:flex hidden flex-col gap-2 items-end">

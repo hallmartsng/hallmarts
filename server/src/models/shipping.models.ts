@@ -3,8 +3,8 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IShipping extends Document {
   user: mongoose.Types.ObjectId;
   //   campus: mongoose.Types.ObjectId;
-  campus: string;
-  name: string;
+  campus?: string;
+  name?: string;
   regNo?: string;
   email?: string;
   phone?: string;

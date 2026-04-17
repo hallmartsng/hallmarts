@@ -1,8 +1,16 @@
 "use client";
+import Paystack from "@paystack/inline-js";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
 import { useLazyGetUserShippingAddressQuery } from "@/lib/services/shipping/shipping.api";
-import { deleteFromCart } from "@/lib/slices/cartSlice";
+import {
+  useCheckoutMutation,
+  usePaymentWebhookMutation,
+} from "@/lib/services/store/checkout.api";
+import { clearCart, deleteFromCart } from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
+import { initializePayment } from "@/webhooks/initializePayment";
+import { BuildingLibraryIcon } from "@heroicons/react/24/outline";
 import {
   addToast,
   Button,
@@ -11,13 +19,15 @@ import {
   Input,
   Select,
   SelectItem,
+  Spinner,
   Switch,
 } from "@heroui/react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { skip } from "node:test";
 import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 interface FormErrors {
   name?: string;
@@ -41,6 +51,8 @@ interface FormData {
 const StoreCheckout = () => {
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   const { data: session, status } = useSession();
   const [useCampusAddress, setUseCampusAddress] = React.useState(false);
@@ -77,6 +89,14 @@ const StoreCheckout = () => {
   ];
 
   const [showLoginMsg, setShowLoginMsg] = React.useState<boolean>(false);
+  const [pendingPayment, setPendingPayment] = React.useState<{
+    reference: string;
+    amount: number;
+  } | null>(null);
+  const [checkout, { isLoading: isLoadingCheckout }] = useCheckoutMutation();
+  const [makePayment, { isLoading: isLoadingPayment }] =
+    usePaymentWebhookMutation();
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -106,18 +126,117 @@ const StoreCheckout = () => {
 
     try {
       // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
-      console.log(res);
-      addToast({
-        title: "Order completed",
-        description: "Your order has been completed",
-        color: "success",
-      });
+
+      const shippingAddress = useCampusAddress
+        ? {
+            campus: session.user.campus,
+            name: session.user.name,
+            regNo: session.user.regNo,
+            email: session.user.email,
+            phone: session.user.phone,
+            city: session.user.campus,
+            state: session.user.campus,
+            country: session.user.country,
+            address: session.user.campus,
+          }
+        : {
+            campus: session.user.campus,
+            name: data.name,
+            regNo: session.user.regNo,
+            email: data.email,
+            phone: data.phone,
+            city: data.city,
+            state: data.state,
+            country: data.country,
+            address: data.address,
+          };
+
+      const refCode = Math.floor(10000 + Math.random() * 90000).toString();
+      // const initializePayStackPayment = await initializePayment({
+      //   email: "ekonge903@gmail.com",
+      //
+      //   amount: cart.subtotal,
+      //   accessToken: session.accessToken || "",
+      // });
+
+      const payStackInline = new Paystack();
+      const reference = refCode + "testing";
+
+      const res = await checkout({
+        payload: {
+          cart: cart.items,
+          shippingAddress: shippingAddress,
+        },
+      }).unwrap();
+
+      if (res.success) {
+        addToast({
+          title: "Checkout initialized",
+          description: res.message,
+          color: "success",
+        });
+        const { paymentReference, amount } = res.data;
+
+        console.log("res.data: ", res.data);
+        const initializePayStackPayment = payStackInline.newTransaction({
+          key: process.env["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"]!,
+          email: "ekonge903@gmail.com",
+          amount: amount * 100,
+          reference: paymentReference,
+
+          onSuccess: async (transaction) => {
+            const { reference, message } = transaction;
+
+            const res = await makePayment({
+              payload: {
+                reference,
+                status: message === "Approved" ? 200 : 400,
+              },
+            });
+
+            dispatch(clearCart());
+
+            router.push("/store/checkout/completed");
+            return addToast({
+              title: "Payment received",
+              description: res.data?.message,
+              color: "success",
+            });
+          },
+          onLoad: (response) => {
+            console.log("onLoad: ", response);
+            return {
+              response,
+            };
+          },
+          onCancel: () => {
+            if (setPendingPayment) {
+              return setPendingPayment({
+                reference: reference,
+                amount: cart.subtotal,
+              });
+            }
+          },
+          onError: (error) => {
+            console.log("error: ", error);
+            console.log("Error: ", error);
+            setPendingPayment({
+              reference: reference,
+              amount: cart.subtotal,
+            });
+            return addToast({
+              title: "Payment failed",
+              description: error.message,
+              color: "success",
+            });
+          },
+        });
+
+        console.log("initializePayStackPayment: ", initializePayStackPayment);
+      }
     } catch (err: any) {
-      setErrors(err.message);
+      console.log("err.message: ", err);
+
       addToast({
         title: "Error occured",
         description: err.message,
@@ -137,6 +256,7 @@ const StoreCheckout = () => {
   //   fetchData();
   //   console.log("session: ", session);
   // }, [useCampusAddress, fetchShipping]);
+
   return (
     <section className="w-full flex sm:flex-row flex-col sm:justify-between items-start gap-4">
       <div className="flex sm:hidden flex-col gap-3">
@@ -147,9 +267,19 @@ const StoreCheckout = () => {
           isSelected={useCampusAddress}
           className="w-full"
           size="sm"
-          onValueChange={setUseCampusAddress}
+          onValueChange={() => {
+            if (session?.user.campus) {
+              return setUseCampusAddress(!useCampusAddress);
+            }
+
+            return signOut({
+              callbackUrl: "/store/auth",
+            });
+          }}
         >
-          My campus
+          <BuildingLibraryIcon
+            className={`size-6 ${useCampusAddress && "text-green-400"}`}
+          />
         </Switch>
       </div>
       <Form
@@ -178,7 +308,9 @@ const StoreCheckout = () => {
                 size="sm"
                 onValueChange={setUseCampusAddress}
               >
-                My campus
+                <BuildingLibraryIcon
+                  className={`size-6 ${useCampusAddress && "text-green-400"}`}
+                />
               </Switch>
             </div>
           </div>
@@ -351,6 +483,27 @@ const StoreCheckout = () => {
               </div>
             </div>
           )}
+          <div className="flex flex-col p-4 gap-4">
+            <small>
+              We keep your information to provide the best delivery experience
+              for you and to suggest the best products that improves your
+              experience on hallmarts.
+            </small>
+            <Button
+              // onPress={(e) => {
+              //   onSubmit(e as React.FormEvent<HTMLFormElement>);
+              // }}
+              type="submit"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold sm:flex hidden"
+            >
+              Pay now{" "}
+              {isLoadingCheckout && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              )}
+            </Button>
+          </div>
         </div>
       </Form>
 
@@ -427,17 +580,39 @@ const StoreCheckout = () => {
             </span>
           </span>
 
-          <Button
-            // onPress={(e) => {
-            //   onSubmit(e as React.FormEvent<HTMLFormElement>);
-            // }}
-            type="submit"
-            form="checkout-form"
-            disabled={showLoginMsg}
-            className="bg-primary text-white font-semibold"
-          >
-            Pay now
-          </Button>
+          {pendingPayment ? (
+            <button
+              type="button"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold"
+              onClick={() =>
+                initializePayment({
+                  email: session?.user.email || "",
+                  reference: pendingPayment.reference,
+                  amount: pendingPayment.amount,
+                  accessToken: session?.accessToken || "",
+                })
+              }
+            >
+              Resume Payment
+            </button>
+          ) : (
+            <Button
+              // onPress={(e) => {
+              //   onSubmit(e as React.FormEvent<HTMLFormElement>);
+              // }}
+              type="submit"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold"
+            >
+              Pay now{" "}
+              {isLoadingCheckout && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              )}
+            </Button>
+          )}
           {showLoginMsg && (
             <small className=" font-medium text-sm ">
               To proceed with payment,
