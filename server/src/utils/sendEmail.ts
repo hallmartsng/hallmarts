@@ -5,8 +5,8 @@ import { otpForgotPasswordTemplate } from "../templates/auth/otpForgotPassword.t
 import { newsLetterTemplate } from "../templates/user/newsLetter.template";
 import { staffInivitationEmailTemplate } from "../templates/staff/staffInivitationEmail";
 import { newProjectConfirmedTemplate } from "../templates/project/newProjectConfirmed";
-import { updateProjectTemplate } from "../templates/project/updateProjectTemplate";
-import { projectStages } from "../types/products.types";
+// import { updateProjectTemplate } from "../templates/project/updateProjectTemplate";
+// import { projectStages } from "../types/products.types";
 export const sendOtpEmail = async (
   to: string,
   otp: string,
@@ -76,16 +76,16 @@ export const sendProjectConfirmationEmail = async (
   });
 };
 
-export const sendProjectProgressEmail = async (
-  to: string,
-  project: string,
-  clientName: string,
-  stages: projectStages[],
-  phase: string,
-) => {
-  await sendEmail({
-    to,
-    subject: `${project} Confirmation`,
-    html: updateProjectTemplate({ project, clientName, stages, phase }),
-  });
-};
+// export const sendProjectProgressEmail = async (
+//   to: string,
+//   project: string,
+//   clientName: string,
+//   stages: projectStages[],
+//   phase: string,
+// ) => {
+//   await sendEmail({
+//     to,
+//     subject: `${project} Confirmation`,
+//     html: updateProjectTemplate({ project, clientName, stages, phase }),
+//   });
+// };

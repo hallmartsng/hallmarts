@@ -1,8 +1,11 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
 import { useLazyGetUserShippingAddressQuery } from "@/lib/services/shipping/shipping.api";
+import { useCheckoutMutation } from "@/lib/services/store/checkout.api";
 import { deleteFromCart } from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
+import { initializePayment } from "@/webhooks/initializePayment";
+import { BuildingLibraryIcon } from "@heroicons/react/24/outline";
 import {
   addToast,
   Button,
@@ -11,9 +14,10 @@ import {
   Input,
   Select,
   SelectItem,
+  Spinner,
   Switch,
 } from "@heroui/react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { skip } from "node:test";
 import React, { useEffect } from "react";
@@ -77,6 +81,12 @@ const StoreCheckout = () => {
   ];
 
   const [showLoginMsg, setShowLoginMsg] = React.useState<boolean>(false);
+  const [pendingPayment, setPendingPayment] = React.useState<{
+    reference: string;
+    amount: number;
+  } | null>(null);
+  const [checkout, { isLoading: isLoadingCheckout }] = useCheckoutMutation();
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -106,17 +116,65 @@ const StoreCheckout = () => {
 
     try {
       // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
-      console.log(res);
-      addToast({
-        title: "Order completed",
-        description: "Your order has been completed",
-        color: "success",
+
+      const shippingAddress = useCampusAddress
+        ? {
+            campus: session.user.campus,
+            name: session.user.name,
+            regNo: session.user.regNo,
+            email: session.user.email,
+            phone: session.user.phone,
+            city: session.user.campus,
+            state: session.user.campus,
+            country: session.user.country,
+            address: session.user.campus,
+          }
+        : {
+            campus: session.user.campus,
+            name: data.name,
+            regNo: session.user.regNo,
+            email: data.email,
+            phone: data.phone,
+            city: data.city,
+            state: data.state,
+            country: data.country,
+            address: data.address,
+          };
+      const initializePayStackPayment = await initializePayment({
+        email: "ekonge903@gmail.com",
+        reference: cart.subtotal + "testing",
+        amount: cart.subtotal,
       });
+      console.log("initializePayStackPayment : ", initializePayStackPayment);
+
+      // const res = await checkout({
+      //   payload: {
+      //     cart: cart.items,
+      //     shippingAddress: shippingAddress,
+      //   },
+      // }).unwrap();
+
+      // if (res.success) {
+      //   const { paymentReference, amount } = res.data;
+      //   console.log("res.data: ", res.data);
+
+      //   const initializePayStackPayment = await initializePayment({
+      //     email: shippingAddress.email,
+      //     reference: paymentReference,
+      //     amount: amount,
+      //   });
+
+      //   console.log("initializePayStackPayment : ", initializePayStackPayment);
+
+      //   addToast({
+      //     title: "Checkout initialized",
+      //     description: res.message,
+      //     color: "success",
+      //   });
+      // }
     } catch (err: any) {
+      console.log("err.message: ", err);
+
       setErrors(err.message);
       addToast({
         title: "Error occured",
@@ -137,6 +195,7 @@ const StoreCheckout = () => {
   //   fetchData();
   //   console.log("session: ", session);
   // }, [useCampusAddress, fetchShipping]);
+
   return (
     <section className="w-full flex sm:flex-row flex-col sm:justify-between items-start gap-4">
       <div className="flex sm:hidden flex-col gap-3">
@@ -147,9 +206,19 @@ const StoreCheckout = () => {
           isSelected={useCampusAddress}
           className="w-full"
           size="sm"
-          onValueChange={setUseCampusAddress}
+          onValueChange={() => {
+            if (session?.user.campus) {
+              return setUseCampusAddress(!useCampusAddress);
+            }
+
+            return signOut({
+              callbackUrl: "/store/auth",
+            });
+          }}
         >
-          My campus
+          <BuildingLibraryIcon
+            className={`size-6 ${useCampusAddress && "text-green-400"}`}
+          />
         </Switch>
       </div>
       <Form
@@ -178,7 +247,9 @@ const StoreCheckout = () => {
                 size="sm"
                 onValueChange={setUseCampusAddress}
               >
-                My campus
+                <BuildingLibraryIcon
+                  className={`size-6 ${useCampusAddress && "text-green-400"}`}
+                />
               </Switch>
             </div>
           </div>
@@ -351,6 +422,27 @@ const StoreCheckout = () => {
               </div>
             </div>
           )}
+          <div className="flex flex-col p-4 gap-4">
+            <small>
+              We keep your information to provide the best delivery experience
+              for you and to suggest the best products that improves your
+              experience on hallmarts.
+            </small>
+            <Button
+              // onPress={(e) => {
+              //   onSubmit(e as React.FormEvent<HTMLFormElement>);
+              // }}
+              type="submit"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold sm:flex hidden"
+            >
+              Pay now{" "}
+              {isLoadingCheckout && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              )}
+            </Button>
+          </div>
         </div>
       </Form>
 
@@ -427,17 +519,38 @@ const StoreCheckout = () => {
             </span>
           </span>
 
-          <Button
-            // onPress={(e) => {
-            //   onSubmit(e as React.FormEvent<HTMLFormElement>);
-            // }}
-            type="submit"
-            form="checkout-form"
-            disabled={showLoginMsg}
-            className="bg-primary text-white font-semibold"
-          >
-            Pay now
-          </Button>
+          {pendingPayment ? (
+            <button
+              type="button"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold"
+              onClick={() =>
+                initializePayment({
+                  email: session?.user.email || "",
+                  reference: pendingPayment.reference,
+                  amount: pendingPayment.amount,
+                })
+              }
+            >
+              Resume Payment
+            </button>
+          ) : (
+            <Button
+              // onPress={(e) => {
+              //   onSubmit(e as React.FormEvent<HTMLFormElement>);
+              // }}
+              type="submit"
+              form="checkout-form"
+              disabled={showLoginMsg}
+              className="bg-primary text-white font-semibold"
+            >
+              Pay now{" "}
+              {isLoadingCheckout && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              )}
+            </Button>
+          )}
           {showLoginMsg && (
             <small className=" font-medium text-sm ">
               To proceed with payment,

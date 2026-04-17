@@ -11,6 +11,7 @@ declare module "next-auth" {
       name: string;
       campus: string;
       country: string;
+      regNo: string;
     };
     refreshToken: string;
   }
@@ -23,6 +24,7 @@ declare module "next-auth" {
     name: string;
     campus: string;
     country: string;
+    regNo: string;
   }
 }
 
@@ -36,5 +38,6 @@ declare module "next-auth/jwt" {
     name: string;
     campus: string;
     country: string;
+    regNo: string;
   }
 }

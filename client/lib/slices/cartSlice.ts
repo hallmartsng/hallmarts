@@ -4,26 +4,12 @@ import {
   getCartLocalStorageItem,
   setCartLocalStorageItem,
 } from "../localStorage";
+import { CartItemType, CartStateType } from "@/types/cart.types";
 
-interface CartItem {
-  productId: string;
-  vendorId: string;
-  name: string;
-  price: number;
-  quantity: number;
-  imgUrl: ImagePreview[];
-}
-
-interface CartState {
-  items: CartItem[];
-  totalItems: number;
-  subtotal: number;
-}
-
-const calculateSubtotal = (items: CartItem[]): number =>
+const calculateSubtotal = (items: CartItemType[]): number =>
   items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-const initialState: CartState = getCartLocalStorageItem() || {
+const initialState: CartStateType = getCartLocalStorageItem() || {
   items: [],
   totalItems: 0,
   subtotal: 0,
@@ -33,7 +19,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItem>) => {
+    addToCart: (state, action: PayloadAction<CartItemType>) => {
       try {
         const existingItem = state.items.find(
           (item) => item.productId === action.payload.productId,

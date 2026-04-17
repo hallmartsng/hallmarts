@@ -20,6 +20,7 @@ import generalAuth from "./routes/auth.routes";
 
 // Store imports
 import storeProducts from "./routes/store/product.routes";
+import storeCheckOut from "./routes/store/checkout.routes";
 
 // shipping imports
 import shipping from "./routes/shipping/shipping.routes";
@@ -62,6 +63,7 @@ app.use("/api/v1/auth", generalAuth);
 
 // Store Endpoints
 app.use("/api/v1/store/product", storeProducts);
+app.use("/api/v1/store/checkout", storeCheckOut);
 
 // Shipping Endpoints
 app.use("/api/v1/shipping", shipping);

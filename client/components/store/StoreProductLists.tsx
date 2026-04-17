@@ -51,9 +51,9 @@ export default function StoreProductLists({
                   width="100%"
                 />
               </CardBody>
-              <CardFooter className="text-small flex flex-col items-end gap-2">
-                <div className="flex items-start flex-col justify-between w-full">
-                  <b>{product.title}</b>
+              <CardFooter className="text-small h-[62px] flex flex-col items-end gap-2">
+                <div className="flex items-start flex-col  text-left w-full">
+                  <b className="w-[125px] truncate">{product.title}</b>
                   <p className="text-default-500">{`${nairaSymbol()}${product.price.toLocaleString()}`}</p>
                 </div>
                 {/* <button
