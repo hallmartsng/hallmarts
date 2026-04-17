@@ -4,12 +4,10 @@ import { Order } from "../models/order.models";
 
 export const paymentWebhook = async (req: Request, res: Response) => {
   try {
-    const event = req.body;
+    const { reference, status } = req.body;
 
     // Only handle successful charge
-    if (event.event === "charge.success") {
-      const reference = event.data.reference;
-
+    if (status === 200) {
       const payment = await Payment.findOne({ reference });
 
       if (!payment) {
@@ -28,7 +26,7 @@ export const paymentWebhook = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
-      message: "Order processed",
+      message: "Order and payment completed",
       success: true,
     });
   } catch (error) {

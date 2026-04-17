@@ -1,8 +1,13 @@
 "use client";
+import Paystack from "@paystack/inline-js";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
 import { useLazyGetUserShippingAddressQuery } from "@/lib/services/shipping/shipping.api";
-import { useCheckoutMutation } from "@/lib/services/store/checkout.api";
-import { deleteFromCart } from "@/lib/slices/cartSlice";
+import {
+  useCheckoutMutation,
+  usePaymentWebhookMutation,
+} from "@/lib/services/store/checkout.api";
+import { clearCart, deleteFromCart } from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
 import { initializePayment } from "@/webhooks/initializePayment";
 import { BuildingLibraryIcon } from "@heroicons/react/24/outline";
@@ -22,6 +27,7 @@ import Link from "next/link";
 import { skip } from "node:test";
 import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 interface FormErrors {
   name?: string;
@@ -45,6 +51,8 @@ interface FormData {
 const StoreCheckout = () => {
   const cart = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   const { data: session, status } = useSession();
   const [useCampusAddress, setUseCampusAddress] = React.useState(false);
@@ -86,6 +94,8 @@ const StoreCheckout = () => {
     amount: number;
   } | null>(null);
   const [checkout, { isLoading: isLoadingCheckout }] = useCheckoutMutation();
+  const [makePayment, { isLoading: isLoadingPayment }] =
+    usePaymentWebhookMutation();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -140,42 +150,93 @@ const StoreCheckout = () => {
             country: data.country,
             address: data.address,
           };
-      const initializePayStackPayment = await initializePayment({
-        email: "ekonge903@gmail.com",
-        reference: cart.subtotal + "testing",
-        amount: cart.subtotal,
-      });
-      console.log("initializePayStackPayment : ", initializePayStackPayment);
 
-      // const res = await checkout({
-      //   payload: {
-      //     cart: cart.items,
-      //     shippingAddress: shippingAddress,
-      //   },
-      // }).unwrap();
+      const refCode = Math.floor(10000 + Math.random() * 90000).toString();
+      // const initializePayStackPayment = await initializePayment({
+      //   email: "ekonge903@gmail.com",
+      //
+      //   amount: cart.subtotal,
+      //   accessToken: session.accessToken || "",
+      // });
 
-      // if (res.success) {
-      //   const { paymentReference, amount } = res.data;
-      //   console.log("res.data: ", res.data);
+      const payStackInline = new Paystack();
+      const reference = refCode + "testing";
 
-      //   const initializePayStackPayment = await initializePayment({
-      //     email: shippingAddress.email,
-      //     reference: paymentReference,
-      //     amount: amount,
-      //   });
+      const res = await checkout({
+        payload: {
+          cart: cart.items,
+          shippingAddress: shippingAddress,
+        },
+      }).unwrap();
 
-      //   console.log("initializePayStackPayment : ", initializePayStackPayment);
+      if (res.success) {
+        addToast({
+          title: "Checkout initialized",
+          description: res.message,
+          color: "success",
+        });
+        const { paymentReference, amount } = res.data;
 
-      //   addToast({
-      //     title: "Checkout initialized",
-      //     description: res.message,
-      //     color: "success",
-      //   });
-      // }
+        console.log("res.data: ", res.data);
+        const initializePayStackPayment = payStackInline.newTransaction({
+          key: "pk_test_cdc660c60db4315e7288d11ffaf37b61fb85adfd",
+          email: "ekonge903@gmail.com",
+          amount: amount * 100,
+          reference: paymentReference,
+
+          onSuccess: async (transaction) => {
+            const { reference, message } = transaction;
+
+            const res = await makePayment({
+              payload: {
+                reference,
+                status: message === "Approved" ? 200 : 400,
+              },
+            });
+
+            dispatch(clearCart());
+
+            router.push("/store/checkout/completed");
+            return addToast({
+              title: "Payment received",
+              description: res.data?.message,
+              color: "success",
+            });
+          },
+          onLoad: (response) => {
+            console.log("onLoad: ", response);
+            return {
+              response,
+            };
+          },
+          onCancel: () => {
+            if (setPendingPayment) {
+              return setPendingPayment({
+                reference: reference,
+                amount: cart.subtotal,
+              });
+            }
+          },
+          onError: (error) => {
+            console.log("error: ", error);
+            console.log("Error: ", error);
+            setPendingPayment({
+              reference: reference,
+              amount: cart.subtotal,
+            });
+            return addToast({
+              title: "Payment failed",
+              description: error.message,
+              color: "success",
+            });
+          },
+        });
+
+        console.log("initializePayStackPayment: ", initializePayStackPayment);
+      }
     } catch (err: any) {
       console.log("err.message: ", err);
 
-      setErrors(err.message);
       addToast({
         title: "Error occured",
         description: err.message,
@@ -530,6 +591,7 @@ const StoreCheckout = () => {
                   email: session?.user.email || "",
                   reference: pendingPayment.reference,
                   amount: pendingPayment.amount,
+                  accessToken: session?.accessToken || "",
                 })
               }
             >

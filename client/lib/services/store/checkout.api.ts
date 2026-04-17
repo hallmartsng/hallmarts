@@ -25,7 +25,7 @@ export const checkoutApi = api.injectEndpoints({
         success: boolean;
       }>,
       {
-        payload: { event: string };
+        payload: { reference: string; status: number };
       }
     >({
       query: ({ payload }) => ({
@@ -37,4 +37,4 @@ export const checkoutApi = api.injectEndpoints({
   }),
 });
 
-export const { useCheckoutMutation } = checkoutApi;
+export const { useCheckoutMutation, usePaymentWebhookMutation } = checkoutApi;
