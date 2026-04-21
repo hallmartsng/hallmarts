@@ -44,17 +44,7 @@ const DashboardOrders = () => {
 
   const [filterBy, setFilterBy] = useState<string>("");
   const [search, setSearch] = React.useState<string>("");
-  const [selectedForm, setSelectedForm] = React.useState<{
-    title: string;
-    formId: string;
-    product?: {
-      productId: string;
-      productTitle: string;
-    };
-  }>({
-    title: "Add product",
-    formId: "add-product-form",
-  });
+
   const [page, setPage] = React.useState<number>(1);
 
   const debouncedSearch = useDebounce(search, 500);

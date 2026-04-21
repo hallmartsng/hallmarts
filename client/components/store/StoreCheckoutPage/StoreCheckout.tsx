@@ -9,7 +9,6 @@ import {
 } from "@/lib/services/store/checkout.api";
 import { clearCart, deleteFromCart } from "@/lib/slices/cartSlice";
 import nairaSymbol from "@/utils/symbols";
-import { initializePayment } from "@/webhooks/initializePayment";
 import { BuildingLibraryIcon } from "@heroicons/react/24/outline";
 import {
   addToast,
@@ -161,6 +160,7 @@ const StoreCheckout = () => {
 
       const payStackInline = new Paystack();
       const reference = refCode + "testing";
+      console.log("cart.items: ", cart.items);
 
       const res = await checkout({
         payload: {
@@ -194,9 +194,8 @@ const StoreCheckout = () => {
               },
             });
 
-            dispatch(clearCart());
-
             router.push("/store/checkout/completed");
+            dispatch(clearCart());
             return addToast({
               title: "Payment received",
               description: res.data?.message,
@@ -586,14 +585,14 @@ const StoreCheckout = () => {
               form="checkout-form"
               disabled={showLoginMsg}
               className="bg-primary text-white font-semibold"
-              onClick={() =>
-                initializePayment({
-                  email: session?.user.email || "",
-                  reference: pendingPayment.reference,
-                  amount: pendingPayment.amount,
-                  accessToken: session?.accessToken || "",
-                })
-              }
+              // onClick={() =>
+              //   initializePayment({
+              //     email: session?.user.email || "",
+              //     reference: pendingPayment.reference,
+              //     amount: pendingPayment.amount,
+              //     accessToken: session?.accessToken || "",
+              //   })
+              // }
             >
               Resume Payment
             </button>

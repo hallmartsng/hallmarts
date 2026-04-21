@@ -26,7 +26,7 @@ const orderSchema = new Schema<IOrder>(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
     },
 
     vendor: {
@@ -53,7 +53,7 @@ const orderSchema = new Schema<IOrder>(
     shippingAddress: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shipping",
-      require: true,
+      required: true,
     },
 
     paymentStatus: {

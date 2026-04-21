@@ -1,4 +1,3 @@
-import { ImagePreview } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   getCartLocalStorageItem,

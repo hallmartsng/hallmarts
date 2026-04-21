@@ -122,9 +122,9 @@ const StoreNavbar = () => {
       </NavbarContent>
 
       {/* DESKTOP SEARCH */}
-      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full">
+      <div className="hidden sm:flex basis-1/2 ">
         <SearchBar />
-      </NavbarContent>
+      </div>
 
       {/*  RIGHT */}
       <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">

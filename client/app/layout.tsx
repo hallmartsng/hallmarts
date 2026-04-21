@@ -12,11 +12,11 @@ import { HeroUIProviders } from "@/lib/providers/HeroUIProvider";
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    template: `%s - campus store`,
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
 };
 
