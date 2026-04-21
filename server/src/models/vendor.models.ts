@@ -18,7 +18,7 @@ export interface IVendor extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
-
+  customers?: [mongoose.Schema.Types.ObjectId];
   store_logo?: {
     url: string;
     public_id: string;
@@ -52,6 +52,9 @@ const vendorSchema = new Schema<IVendor>(
       lowercase: true,
     },
 
+    fname: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
@@ -88,9 +91,13 @@ const vendorSchema = new Schema<IVendor>(
     store_description: {
       type: String,
     },
-    fname: {
-      type: String,
-    },
+    customers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: false,
+      },
+    ],
   },
   { timestamps: true },
 );

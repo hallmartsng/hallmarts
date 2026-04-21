@@ -29,35 +29,24 @@ import {
 } from "@heroicons/react/24/outline";
 import { IoClose } from "react-icons/io5";
 import DashboardOrderModal from "./DashBoardOrderModal";
+import { useGetVendorOrdersQuery } from "@/lib/services/vendor/order.api";
+import { OrderRequest } from "@/types/order.types";
+import { formatDate } from "@/utils/dateFormat.utils";
+import nairaSymbol from "@/utils/symbols";
 
-type OrderType = {
-  _id: string;
-  total_price: string;
-  date_create: string;
-  status: string;
-  customer_name: string;
-  item: string;
-  payment_status: string;
-};
 const DashboardOrders = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const { data, isLoading } = useGetVendorOrdersQuery();
   const [filterBy, setFilterBy] = useState<string>("");
   const [search, setSearch] = React.useState<string>("");
-  const [selectedForm, setSelectedForm] = React.useState<{
-    title: string;
-    formId: string;
-    product?: {
-      productId: string;
-      productTitle: string;
-    };
-  }>({
-    title: "Add product",
-    formId: "add-product-form",
-  });
+
   const [page, setPage] = React.useState<number>(1);
 
   const debouncedSearch = useDebounce(search, 500);
+  const [selectedOrder, setSelectedOrder] = React.useState<OrderRequest | null>(
+    null,
+  );
 
   const filters = [
     { key: "", label: "All" },
@@ -66,27 +55,9 @@ const DashboardOrders = () => {
     { key: "cancelled", label: "Cancelled" },
   ];
 
-  const products: OrderType[] = [
-    {
-      _id: "7763393893033",
-      customer_name: "Nike Sportwears",
-      total_price: "$450",
-      item: "Balenciage",
-      payment_status: "approved",
-      date_create: "20 Mar,2026",
-      status: "approved",
-    },
-    {
-      _id: "7763390093033",
-      customer_name: "Adidas Terrex",
-      total_price: "$250",
-      item: "Balenciage",
-      payment_status: "approved",
-      date_create: "20 Mar,2026",
-      status: "pending",
-    },
-  ];
-  const renderCell = (order: OrderType, columnKey: React.Key) => {
+  console.log("data: ", data);
+
+  const renderCell = (order: OrderRequest, columnKey: React.Key) => {
     console.log("renderCell:", order);
 
     switch (columnKey) {
@@ -94,34 +65,65 @@ const DashboardOrders = () => {
         return <div className="text-sm ">{order._id}</div>;
 
       case "customer_name":
-        return <div className="text-sm ">{order.customer_name}</div>;
-      case "item":
-        return <div className="text-sm ">{order.item}</div>;
+        return (
+          <div className="text-sm ">
+            {order.user?.fname ?? order.user?.email}
+          </div>
+        );
+      case "address":
+        return (
+          <div className="text-sm w-[150px] truncate capitalize">
+            {order.shippingAddress.address ?? order.user?.campus}
+          </div>
+        );
 
-      case "total_price":
-        return <div className=" pl-4">{order.total_price}</div>;
+      case "totalPrice":
+        return (
+          <div>{`${nairaSymbol()}${order.totalPrice.toLocaleString()}`}</div>
+        );
       case "date_create":
-        return <div className="text-sm">{order.date_create}</div>;
-      case "status":
+        return (
+          <div className="text-sm w-[100px]">{`${formatDate(order.updatedAt)}`}</div>
+        );
+
+      case "orderStatus":
         return (
           <div
-            className={`${order.status === "approved" ? "bg-success-50 text-success" : order.status === "pending" ? "bg-warning-50 text-warning" : "bg-primary-50 text-primary"} capitalize w-[90px] rounded-lg py-1 px-2 flex gap-1 items-center justify-center text-xs`}
+            className={`${order.orderStatus === "accepted" ? "bg-success-50 text-success" : order.orderStatus === "processing" ? "bg-warning-50 text-warning" : "bg-primary-50 text-primary"} capitalize w-[90px] rounded-lg py-1 px-2 flex gap-1 items-center justify-center text-xs`}
           >
-            {order.status === "approved" ? (
+            {order.orderStatus === "accepted" ? (
               <CheckCircleIcon className="size-4" />
-            ) : order.status === "pending" ? (
+            ) : order.orderStatus === "processing" ? (
               <ClockIcon className="size-4" />
             ) : (
               <IoClose className="size-4" />
             )}{" "}
-            <span>{order.status}</span>
+            <span>{order.orderStatus}</span>
           </div>
         );
+
+      case "paymentStatus":
+        return (
+          <div
+            className={`${order.paymentStatus === "paid" ? "bg-success-50 text-success" : order.paymentStatus === "pending" ? "bg-warning-50 text-warning" : "bg-primary-50 text-primary"} capitalize w-[90px] rounded-lg py-1 px-2 flex gap-1 items-center justify-center text-xs`}
+          >
+            {order.paymentStatus === "paid" ? (
+              <CheckCircleIcon className="size-4" />
+            ) : order.paymentStatus === "pending" ? (
+              <ClockIcon className="size-4" />
+            ) : (
+              <IoClose className="size-4" />
+            )}{" "}
+            <span>{order.paymentStatus}</span>
+          </div>
+        );
+
       case "action":
         return (
           <div className="text-sm flex items-center gap-2">
             <button
               onClick={() => {
+                setSelectedOrder(order);
                 onOpen();
               }}
             >
@@ -131,7 +133,7 @@ const DashboardOrders = () => {
         );
 
       default:
-        return order[columnKey as keyof OrderType] as React.ReactNode;
+        return order[columnKey as keyof OrderRequest] as React.ReactNode;
     }
   };
   return (
@@ -173,12 +175,7 @@ const DashboardOrders = () => {
               ))}
             </Select>
           </div>
-          <Table
-            isHeaderSticky
-            aria-label="cart table"
-            aria-sort="other"
-            radius="sm"
-          >
+          <Table isHeaderSticky aria-label="vendor order table" radius="sm">
             <TableHeader>
               <TableColumn key="id" allowsSorting>
                 Order ID
@@ -187,42 +184,44 @@ const DashboardOrders = () => {
                 Customer Name
               </TableColumn>
 
-              <TableColumn key="item">Item</TableColumn>
-              <TableColumn key="total_price">Total Price</TableColumn>
+              <TableColumn key="address">Shipping address</TableColumn>
+              <TableColumn key="totalPrice">Total Price</TableColumn>
 
-              <TableColumn key="status">Status</TableColumn>
-              <TableColumn key="payment_status">Payment Status</TableColumn>
+              <TableColumn key="orderStatus">Status</TableColumn>
+              <TableColumn key="paymentStatus">Payment Status</TableColumn>
               <TableColumn key="date_create">Date</TableColumn>
               <TableColumn key="action">Action</TableColumn>
             </TableHeader>
 
-            {products.length > 0 || false ? (
-              <TableBody<OrderType>
-                items={products}
-                isLoading={false}
-                loadingContent={
-                  <Spinner
-                    label="Loading..."
-                    size="sm"
-                    variant="spinner"
-                    color="warning"
-                  />
-                }
-              >
-                {(item) => (
-                  <TableRow key={item._id}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody>
-            ) : (
-              <TableBody emptyContent={"No data to display."}>{[]}</TableBody>
-            )}
+            <TableBody<OrderRequest>
+              items={data?.data || []}
+              isLoading={isLoading}
+              loadingContent={
+                <Spinner
+                  label="Loading..."
+                  size="sm"
+                  variant="spinner"
+                  color="primary"
+                />
+              }
+            >
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </div>
-        <DashboardOrderModal isOpen={isOpen} onOpenChange={onOpenChange} />
+        {selectedOrder && (
+          <DashboardOrderModal
+            selectedOrder={selectedOrder}
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+          />
+        )}
       </div>
     </section>
   );

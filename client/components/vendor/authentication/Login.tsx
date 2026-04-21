@@ -45,7 +45,7 @@ const Login = ({ userRole }: { userRole: string }) => {
         if (session?.user.role === "vendor") {
           return router.push("/vendor/dashboard");
         }
-        return router.push("/store");
+        return router.push("/store/dashboard");
       }
     } catch (error: any) {
       addToast({

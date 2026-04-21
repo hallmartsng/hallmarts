@@ -159,7 +159,8 @@ const AuthLayout = ({ page }: { page: string }) => {
               <div className="flex justify-center my-4">
                 {" "}
                 <p className="text-sm  font-medium text-center w-[80%]">
-                  Log In to maage your campus business from anywhere.
+                  Log In to maage your campus{" "}
+                  {page === "store" ? "profile" : "business"} from anywhere.
                 </p>
               </div>
               <Login userRole={page === "store" ? "user" : "vendor"} />

@@ -57,6 +57,9 @@ const StoreProfile = () => {
   const [updateProfile, { isLoading: isLoadingUserProfileUpdate }] =
     useUpdateUserProfileMutation();
   const [fName, setFName] = React.useState<string>(data?.data.fname || "");
+  const [department, setDepartment] = React.useState<string>(
+    data?.data.department || "",
+  );
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
     if (value !== null) {
@@ -217,6 +220,20 @@ const StoreProfile = () => {
                               console.log(fName);
 
                               setFName(e.target.value);
+                            }}
+                          />
+                          <Input
+                            aria-label="user department"
+                            value={department || data?.data.department}
+                            placeholder="Enter Department"
+                            name="department"
+                            type="text"
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                              console.log(fName);
+
+                              setDepartment(e.target.value);
                             }}
                           />
                         </Form>

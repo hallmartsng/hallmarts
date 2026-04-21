@@ -8,6 +8,7 @@ export interface ProfileRequest {
   password?: string;
   retry_password?: string;
   fname?: string;
+  department?: string;
 }
 
 export interface VendorProfileUpdateRequest extends ProfileRequest {

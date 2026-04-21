@@ -2,13 +2,15 @@ import { Request, Response } from "express";
 import { Payment } from "../../models/payment.models";
 import { Order } from "../../models/order.models";
 import Shipping from "../../models/shipping.models";
+import { Vendor } from "../../models/vendor.models";
 
 export const checkout = async (req: Request, res: Response) => {
   try {
     const { cart, shippingAddress } = req.body;
+    console.log(cart);
+
     const userId = req.userId;
     let shippingAddressId;
-    console.log(shippingAddress);
 
     const checkShippingAddress = await Shipping.findOneAndUpdate(
       { user: userId },
@@ -18,7 +20,10 @@ export const checkout = async (req: Request, res: Response) => {
 
     shippingAddressId = checkShippingAddress?._id;
     if (!checkShippingAddress) {
-      shippingAddressId = await Shipping.create({ user: userId });
+      shippingAddressId = await Shipping.create({
+        user: userId,
+        ...shippingAddress,
+      });
     }
 
     if (!cart || cart.length === 0) {
@@ -43,10 +48,16 @@ export const checkout = async (req: Request, res: Response) => {
     for (const vendorId in vendorMap) {
       const vendorItems = vendorMap[vendorId];
 
-      const subtotal = vendorItems.reduce(
+      const totalPrice = vendorItems.reduce(
         (sum: number, item: (typeof cart)[0]) =>
           sum + item.price * item.quantity,
         0,
+      );
+
+      await Vendor.findByIdAndUpdate(
+        vendorId,
+        { $addToSet: { customers: userId } }, // 👈 key change
+        { new: true },
       );
 
       const order = await Order.create({
@@ -57,14 +68,14 @@ export const checkout = async (req: Request, res: Response) => {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          image: item.image,
+          image: item.imgUrl[0].url,
         })),
         shippingAddress: shippingAddressId,
-        subtotal,
+        totalPrice,
       });
 
       createdOrders.push(order._id);
-      totalAmount += subtotal;
+      totalAmount += totalPrice;
     }
 
     // 3. Generate payment reference
