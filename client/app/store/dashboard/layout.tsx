@@ -24,7 +24,7 @@ export default async function DashboardLayout({
   console.log("Dashboard:", session);
 
   if (!session?.user.email && session?.user.role !== "user") {
-    return redirect("/vendor/auth");
+    return redirect("/store/auth");
   }
   return (
     <section className="flex items-center flex-col w-full gap-6 sm:pt-0 pt-10 ms:px-0 px-4">

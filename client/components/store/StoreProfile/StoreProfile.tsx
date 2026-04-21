@@ -91,7 +91,7 @@ const StoreProfile = () => {
     console.log("handlePersonalInfoUpdate");
     try {
       const res = await updateProfile({
-        formData: { fname: fName },
+        formData: { fname: fName, department: department },
       }).unwrap();
 
       addToast({
@@ -177,6 +177,19 @@ const StoreProfile = () => {
                 <div>
                   <strong className="">Phone</strong>
                   <p>{data?.data?.phone}</p>
+                </div>
+                <div>
+                  <strong className="">Department</strong>
+                  <p>
+                    {data?.data.department ? (
+                      data?.data.department
+                    ) : (
+                      <span className="flex items-center text-primary">
+                        <ExclamationTriangleIcon className="size-4" />{" "}
+                        <span>Update name</span>
+                      </span>
+                    )}
+                  </p>
                 </div>
               </div>
               {/* Edit profile form  */}

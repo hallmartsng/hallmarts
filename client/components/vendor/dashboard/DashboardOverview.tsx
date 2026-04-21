@@ -18,12 +18,17 @@ import DashboardHeader from "./DashboardHeader";
 import LineChart from "@/components/charts/LineChart";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useGetVendorDashboardAnalyticsQuery } from "@/lib/services/vendor/dashboard.api";
 
 const DashboardOverview = () => {
   const { data: session } = useSession();
   const [filterBy, setFilterBy] = useState<"daily" | "weekly" | "monthly">(
     "weekly",
   );
+
+  const { data: analyticsData, isLoading: isLoadingAnalytics } =
+    useGetVendorDashboardAnalyticsQuery();
+  console.log("analyticsData: ", analyticsData);
 
   const chartData = {
     daily: {
@@ -88,7 +93,9 @@ const DashboardOverview = () => {
           <div className="flex items-center bg-white rounded-lg p-4 shadow justify-between">
             <div className="flex flex-col">
               <ChartBarIcon className="size-6 text-success" />
-              <p className="sm:text-3xl font-semibold">₦25,000</p>
+              <p className="sm:text-3xl font-semibold">
+                ₦{`${analyticsData?.data.revenue.toLocaleString()}` || 0.0}
+              </p>
               <small>Total Revenue</small>
             </div>
             <div className="flex flex-col gap-2">
@@ -102,24 +109,26 @@ const DashboardOverview = () => {
           <div className="flex items-center bg-white rounded-lg p-4 shadow justify-between">
             <div className="flex flex-col">
               <ShoppingBagIcon className="size-6" />
-              <p className="sm:text-3xl font-semibold">10</p>
+              <p className="sm:text-3xl font-semibold">
+                {analyticsData?.data.orders.total}
+              </p>
               <small>All orders</small>
             </div>
             <div className="flex flex-col gap-2">
               <span className="flex bg-success-50 rounded-lg text-success px-2 py-1 gap-1 items-center text-sm">
                 <CheckCircleIcon className="size-4" />
                 <span className="sm:text-sm text-xs">Completed:</span>
-                <span>5</span>
+                <span>{analyticsData?.data.orders.completed}</span>
               </span>
               <span className="flex bg-warning-50 rounded-lg text-warning px-2 py-1 gap-1 items-center text-sm">
                 <ClockIcon className="size-4" />
                 <span className="sm:text-sm text-xs">Pending:</span>
-                <span>3</span>
+                <span>{analyticsData?.data.orders.pending}</span>
               </span>
               <span className="flex bg-primary-50 rounded-lg text-primary px-2 py-1 gap-1 items-center text-sm">
                 <IoCloseCircleOutline className="size-4" />
                 <span className="sm:text-sm text-xs">Cancelled:</span>
-                <span>2</span>
+                <span>{analyticsData?.data.orders.cancelled}</span>
               </span>
             </div>
           </div>
@@ -127,20 +136,22 @@ const DashboardOverview = () => {
           <div className="flex items-center bg-white rounded-lg p-4 shadow justify-between">
             <div className="flex flex-col">
               <AiOutlineProduct className="size-6" />
-              <p className="sm:text-3xl font-semibold">26</p>
+              <p className="sm:text-3xl font-semibold">
+                {analyticsData?.data.products.total}
+              </p>
               <small>All products</small>
             </div>
             <div className="flex flex-col gap-2">
               <span className="flex bg-success-50 rounded-lg text-success px-2 py-1 gap-1 items-center text-sm">
                 <CheckCircleIcon className="size-4" />
                 <span className="sm:text-sm text-xs">Approved:</span>
-                <span>5</span>
+                <span> {analyticsData?.data.products.approved}</span>
               </span>
 
               <span className="flex bg-primary-50 rounded-lg text-primary px-2 py-1 gap-1 items-center text-sm">
                 <IoCloseCircleOutline className="size-4" />
                 <span className="sm:text-sm text-xs">Declined:</span>
-                <span>2</span>
+                <span> {analyticsData?.data.products.rejected}</span>
               </span>
             </div>
           </div>
@@ -149,18 +160,21 @@ const DashboardOverview = () => {
           <div className="flex items-center bg-white rounded-lg p-4 shadow justify-between">
             <div className="flex flex-col">
               <UsersIcon className="size-6" />
-              <p className="sm:text-3xl font-semibold">7</p>
+              <p className="sm:text-3xl font-semibold">
+                {" "}
+                {analyticsData?.data.customers.total}
+              </p>
               <small>Customers reached</small>
             </div>
             <div className="flex flex-col gap-2">
               <span className="flex gap-1 items-center text-sm">
-                <span className="sm:text-sm text-xs">Inbound:</span>
-                <span>5</span>
+                <span className="sm:text-sm text-xs">On-campus:</span>
+                <span> {analyticsData?.data.customers.onCampus}</span>
               </span>
 
               <span className="flex items-center gap-1 text-sm">
-                <span className="sm:text-sm text-xs">Outbound:</span>
-                <span>2</span>
+                <span className="sm:text-sm text-xs">Off-campus:</span>
+                <span> {analyticsData?.data.customers.offCampus}</span>
               </span>
             </div>
           </div>

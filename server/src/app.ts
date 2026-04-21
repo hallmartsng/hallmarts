@@ -12,6 +12,7 @@ import vendorProfileRoutes from "./routes/vendor/profile.routes";
 import vendorProductRoutes from "./routes/vendor/product.routes";
 import vendorOrdersRoutes from "./routes/vendor/order.routes";
 import vendorCustomerRoutes from "./routes/vendor/customer.routes";
+import vendorDashboardRoutes from "./routes/vendor/dashboard.routes";
 
 // user imports
 import userAuthRoutes from "./routes/user/auth.routes";
@@ -58,6 +59,7 @@ app.use("/api/v1/vendor/profile", vendorProfileRoutes);
 app.use("/api/v1/vendor/product", vendorProductRoutes);
 app.use("/api/v1/vendor/orders", vendorOrdersRoutes);
 app.use("/api/v1/vendor/customers", vendorCustomerRoutes);
+app.use("/api/v1/vendor/dashboard", vendorDashboardRoutes);
 
 // User Endpoints
 app.use("/api/v1/user/auth", userAuthRoutes);
