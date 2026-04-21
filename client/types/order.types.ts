@@ -23,4 +23,11 @@ export interface OrderRequest {
     name: string;
     phone: string;
   };
+  user?: {
+    name: string;
+    campus: string;
+    email: string;
+    address: string;
+    fname: string;
+  };
 }

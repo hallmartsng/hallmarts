@@ -11,8 +11,15 @@ export const userOrderApi = api.injectEndpoints({
       }),
       providesTags: ["Orders"],
     }),
-    // 🔹 upload Product Images
+    getVendorCustomer: builder.query<ApiResponse<OrderRequest[]>, void>({
+      query: () => ({
+        url: "/vendor/customers",
+        method: "GET",
+      }),
+      providesTags: ["Orders"],
+    }),
   }),
 });
 
-export const { useGetVendorOrdersQuery } = userOrderApi;
+export const { useGetVendorOrdersQuery, useGetVendorCustomerQuery } =
+  userOrderApi;

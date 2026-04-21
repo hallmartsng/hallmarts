@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import DashboardHeader from "./DashboardHeader";
-import ProductModal from "./forms/ProductModal";
 import {
-  Button,
-  Image,
   Input,
   Select,
   SelectItem,
@@ -19,16 +16,9 @@ import {
 } from "@heroui/react";
 import useDebounce from "@/hooks/useDebounceHook";
 import { SearchIcon } from "@/components/icons";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  EyeIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
-import { IoClose } from "react-icons/io5";
+
 import DashboardOrderModal from "./DashBoardOrderModal";
+import { useGetVendorCustomerQuery } from "@/lib/services/vendor/order.api";
 
 type CustomerType = {
   _id: string;
@@ -42,24 +32,15 @@ type CustomerType = {
 };
 
 const DashboardCustomers = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [filterBy, setFilterBy] = useState<string>("");
   const [search, setSearch] = React.useState<string>("");
-  const [selectedForm, setSelectedForm] = React.useState<{
-    title: string;
-    formId: string;
-    product?: {
-      productId: string;
-      productTitle: string;
-    };
-  }>({
-    title: "Add product",
-    formId: "add-product-form",
-  });
+
   const [page, setPage] = React.useState<number>(1);
 
   const debouncedSearch = useDebounce(search, 500);
+  const { data, isLoading } = useGetVendorCustomerQuery();
+
+  console.log("data: ", data);
 
   const filters = [
     { key: "", label: "All" },
@@ -189,33 +170,28 @@ const DashboardCustomers = () => {
               <TableColumn key="status">Status</TableColumn>
             </TableHeader>
 
-            {products.length > 0 || false ? (
-              <TableBody<CustomerType>
-                items={products}
-                isLoading={false}
-                loadingContent={
-                  <Spinner
-                    label="Loading..."
-                    size="sm"
-                    variant="spinner"
-                    color="warning"
-                  />
-                }
-              >
-                {(item) => (
-                  <TableRow key={item._id}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody>
-            ) : (
-              <TableBody emptyContent={"No data to display."}>{[]}</TableBody>
-            )}
+            <TableBody<CustomerType>
+              items={products}
+              isLoading={isLoading}
+              loadingContent={
+                <Spinner
+                  label="Loading..."
+                  size="sm"
+                  variant="spinner"
+                  color="warning"
+                />
+              }
+            >
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </div>
-        <DashboardOrderModal isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>
     </section>
   );

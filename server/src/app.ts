@@ -7,25 +7,26 @@ import swaggerUI from "swagger-ui-express";
 import swaggerOpenapiSpecification from "./config/swagger.config";
 
 // vendor imports
-import vendorAuth from "./routes/vendor/auth.routes";
-import vendorProfile from "./routes/vendor/profile.routes";
+import vendorAuthRoutes from "./routes/vendor/auth.routes";
+import vendorProfileRoutes from "./routes/vendor/profile.routes";
 import vendorProductRoutes from "./routes/vendor/product.routes";
-import vendorOrders from "./routes/vendor/order.routes";
+import vendorOrdersRoutes from "./routes/vendor/order.routes";
+import vendorCustomerRoutes from "./routes/vendor/customer.routes";
 
 // user imports
-import userAuth from "./routes/user/auth.routes";
-import userProfile from "./routes/user/profile.routes";
-import userOrders from "./routes/user/order.routes";
+import userAuthRoutes from "./routes/user/auth.routes";
+import userProfileRoutes from "./routes/user/profile.routes";
+import userOrdersRoutes from "./routes/user/order.routes";
 
 // General imports
-import generalAuth from "./routes/auth.routes";
+import generalAuthRoutes from "./routes/auth.routes";
 
 // Store imports
-import storeProducts from "./routes/store/product.routes";
-import storeCheckOut from "./routes/store/checkout.routes";
+import storeProductsRoutes from "./routes/store/product.routes";
+import storeCheckOutRoutes from "./routes/store/checkout.routes";
 
 // shipping imports
-import shipping from "./routes/shipping/shipping.routes";
+import shippingRoutes from "./routes/shipping/shipping.routes";
 
 dotenv.config();
 
@@ -52,25 +53,26 @@ app.use(
 );
 
 // Vendors Endpoints
-app.use("/api/v1/vendor/auth", vendorAuth);
-app.use("/api/v1/vendor/profile", vendorProfile);
+app.use("/api/v1/vendor/auth", vendorAuthRoutes);
+app.use("/api/v1/vendor/profile", vendorProfileRoutes);
 app.use("/api/v1/vendor/product", vendorProductRoutes);
-app.use("/api/v1/vendor/orders", vendorOrders);
+app.use("/api/v1/vendor/orders", vendorOrdersRoutes);
+app.use("/api/v1/vendor/customers", vendorCustomerRoutes);
 
 // User Endpoints
-app.use("/api/v1/user/auth", userAuth);
-app.use("/api/v1/user/profile", userProfile);
-app.use("/api/v1/user/orders", userOrders);
+app.use("/api/v1/user/auth", userAuthRoutes);
+app.use("/api/v1/user/profile", userProfileRoutes);
+app.use("/api/v1/user/orders", userOrdersRoutes);
 
 // General Endpoints
-app.use("/api/v1/auth", generalAuth);
+app.use("/api/v1/auth", generalAuthRoutes);
 
 // Store Endpoints
-app.use("/api/v1/store/product", storeProducts);
-app.use("/api/v1/store/checkout", storeCheckOut);
+app.use("/api/v1/store/product", storeProductsRoutes);
+app.use("/api/v1/store/checkout", storeCheckOutRoutes);
 
 // Shipping Endpoints
-app.use("/api/v1/shipping", shipping);
+app.use("/api/v1/shipping", shippingRoutes);
 
 const PORT = process.env["PORT"]!;
 

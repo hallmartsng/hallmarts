@@ -9,6 +9,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   campus: string;
+  department: string;
   countryCode: string;
   refreshToken?: string;
   role: UserRole;
@@ -26,6 +27,10 @@ const userSchema = new Schema<IUser>(
     name: {
       type: String,
       // required: true,
+      trim: true,
+    },
+    fname: {
+      type: String,
       trim: true,
     },
     regNo: {
@@ -57,14 +62,16 @@ const userSchema = new Schema<IUser>(
     },
     phone: {
       type: String,
+      required: true,
+      trim: true,
+    },
+    department: {
+      type: String,
       required: false,
       trim: true,
     },
     campus: { type: String, required: true },
     countryCode: { type: String, required: true },
-    fname: {
-      type: String,
-    },
 
     role: {
       type: String,

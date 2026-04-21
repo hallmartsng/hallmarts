@@ -1,4 +1,6 @@
 import Logo from "@/components/Logo";
+import { OrderRequest } from "@/types/order.types";
+import nairaSymbol from "@/utils/symbols";
 import { UserIcon } from "@heroicons/react/24/outline";
 import {
   Modal,
@@ -15,10 +17,12 @@ import {
 interface DashboardOrderModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
+  selectedOrder: OrderRequest;
 }
 const DashboardOrderModal = ({
   isOpen,
   onOpenChange,
+  selectedOrder,
 }: DashboardOrderModalProps) => {
   return (
     <>
@@ -26,8 +30,13 @@ const DashboardOrderModal = ({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex text-sm flex-col gap-1">
-                Delivery status : Pending
+              <ModalHeader className="flex text-sm  gap-1">
+                Delivery status :{" "}
+                <span
+                  className={`${selectedOrder.orderStatus === "accepted" ? "bg-success-50 text-success" : selectedOrder.orderStatus === "processing" ? "bg-warning-50 text-warning" : "bg-primary-50 text-primary"} capitalize w-[90px] rounded-lg py-1 px-2 flex gap-1 items-center justify-center text-xs`}
+                >
+                  {selectedOrder.orderStatus}
+                </span>{" "}
               </ModalHeader>
               <ModalBody>
                 <Accordion defaultExpandedKeys={["1"]}>
@@ -42,15 +51,21 @@ const DashboardOrderModal = ({
                     <div className="text-sm flex flex-col gap-4">
                       <div>
                         <strong className="">Name</strong>
-                        <p>John doe</p>
+                        <p>
+                          {selectedOrder.user?.name ??
+                            selectedOrder.user?.email}
+                        </p>
                       </div>
                       <div>
                         <strong className="">Campus</strong>
-                        <p>University of Lagos</p>
+                        <p>{selectedOrder.user?.campus}</p>
                       </div>
                       <div>
                         <strong className="">Address</strong>
-                        <p>13 Alhaji way opposite akoka, unilag, lagos.</p>
+                        <p>
+                          {selectedOrder.shippingAddress.address ??
+                            selectedOrder.shippingAddress.campus}
+                        </p>
                       </div>
                     </div>
                   </AccordionItem>
@@ -62,41 +77,56 @@ const DashboardOrderModal = ({
                   >
                     <div className=" bg-white rounded-lg shadow p-4 flex flex-col gap-4">
                       {/* Items  */}
-                      <div className="flex items-end justify-between border-b-1 border-gray-200 pb-5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-[80px]">
-                            <Image
-                              alt={`check out product`}
-                              className="w-full object-cover h-[70px]"
-                              radius="lg"
-                              shadow="sm"
-                              src={"/max-payne.jpg"}
-                              width="100%"
-                            />
-                          </div>
-                          <div className="text-sm">
-                            <p>Nike Sportwear</p>
-                            <span className="text-gray-500 ">Qty : 2</span>
-                          </div>
+                      <div className=" bg-white rounded-lg shadow p-4 flex flex-col gap-4">
+                        {/* Items  */}
+                        {selectedOrder.items.map((item, key) => {
+                          return (
+                            <div
+                              key={key}
+                              className="flex items-end justify-between border-b-1 border-gray-200 pb-5"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-[80px]">
+                                  <Image
+                                    alt={`check out product`}
+                                    className="w-full object-cover h-[70px]"
+                                    radius="lg"
+                                    shadow="sm"
+                                    src={item.image}
+                                    width="100%"
+                                  />
+                                </div>
+                                <div className="text-sm">
+                                  <p>{item.name}</p>
+                                  <span className="text-gray-500 ">
+                                    Qty : {item.quantity}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex text-gray-500 flex-col gap-2 items-end">
+                                <p>{`${nairaSymbol()}${item.price.toLocaleString()}`}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {/* Checkout summary  */}
+                        <div className="flex flex-col gap-2 text-sm w-full font-medium">
+                          <span className="flex text-gray-500 items-center justify-between w-full">
+                            <span>Sub total:</span>
+                            <span>{`${nairaSymbol()}${selectedOrder.totalPrice.toLocaleString()}`}</span>
+                          </span>
+                          <span className="flex text-gray-500 items-center justify-between w-full">
+                            <span>Discount</span>
+                            <span>
+                              {`${nairaSymbol()}${selectedOrder?.discount ? selectedOrder?.discount?.toLocaleString() : 0}` ||
+                                0}
+                            </span>
+                          </span>
+                          <span className="flex items-center justify-between w-full">
+                            <span>Total:</span>
+                            <span>{`${nairaSymbol()}${selectedOrder.totalPrice.toLocaleString()}`}</span>
+                          </span>
                         </div>
-                        <div className="flex text-gray-500 flex-col gap-2 items-end">
-                          <p>$40.00</p>
-                        </div>
-                      </div>
-                      {/* Checkout summary  */}
-                      <div className="flex flex-col gap-2 text-sm w-full font-medium">
-                        <span className="flex text-gray-500 items-center justify-between w-full">
-                          <span>Sub total:</span>
-                          <span>$80.00</span>
-                        </span>
-                        <span className="flex text-gray-500 items-center justify-between w-full">
-                          <span>Discount</span>
-                          <span>$60</span>
-                        </span>
-                        <span className="flex items-center justify-between w-full">
-                          <span>Total:</span>
-                          <span>$80.00</span>
-                        </span>
                       </div>
                     </div>
                   </AccordionItem>

@@ -20,7 +20,6 @@ import StoreProfileOrderModal from "./StoreProfileOrderModal";
 import { useGetUserOrdersQuery } from "@/lib/services/user/order.api";
 import { OrderRequest } from "@/types/order.types";
 import nairaSymbol from "@/utils/symbols";
-import Link from "next/link";
 import { formatDate } from "@/utils/dateFormat.utils";
 
 const StoreProfileOrders = () => {
