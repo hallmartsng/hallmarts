@@ -1,6 +1,7 @@
 import { ApiResponse } from "@/types";
 import { api } from "../api";
 import { OrderRequest } from "@/types/order.types";
+import { CustomerResponse } from "@/types/customer.types";
 
 export const userOrderApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,7 +12,7 @@ export const userOrderApi = api.injectEndpoints({
       }),
       providesTags: ["Orders"],
     }),
-    getVendorCustomer: builder.query<ApiResponse<OrderRequest[]>, void>({
+    getVendorCustomer: builder.query<ApiResponse<CustomerResponse[]>, void>({
       query: () => ({
         url: "/vendor/customers",
         method: "GET",

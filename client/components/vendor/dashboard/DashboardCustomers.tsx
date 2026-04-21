@@ -12,24 +12,13 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@heroui/react";
 import useDebounce from "@/hooks/useDebounceHook";
 import { SearchIcon } from "@/components/icons";
 
-import DashboardOrderModal from "./DashBoardOrderModal";
 import { useGetVendorCustomerQuery } from "@/lib/services/vendor/order.api";
-
-type CustomerType = {
-  _id: string;
-  total_spent: string;
-  orders: string;
-  department: string;
-  customer_name: string;
-  item: string;
-  campus: string;
-  isNew: boolean;
-};
+import nairaSymbol from "@/utils/symbols";
+import { CustomerResponse } from "@/types/customer.types";
 
 const DashboardCustomers = () => {
   const [filterBy, setFilterBy] = useState<string>("");
@@ -48,29 +37,7 @@ const DashboardCustomers = () => {
     { key: "new", label: "New" },
   ];
 
-  const products: CustomerType[] = [
-    {
-      _id: "7763393893033",
-      customer_name: "James Udoh",
-      total_spent: "$450",
-      item: "Balenciage",
-      campus: "Babcock univeristy",
-      orders: "2",
-      department: "Mass Comm.",
-      isNew: false,
-    },
-    {
-      _id: "7763390093033",
-      customer_name: "Alice Henry",
-      total_spent: "$250",
-      item: "Balenciage",
-      campus: "Nile univeristy",
-      orders: "10",
-      department: "Business Admin.",
-      isNew: true,
-    },
-  ];
-  const renderCell = (customer: CustomerType, columnKey: React.Key) => {
+  const renderCell = (customer: CustomerResponse, columnKey: React.Key) => {
     console.log("renderCell:", customer);
 
     switch (columnKey) {
@@ -78,30 +45,38 @@ const DashboardCustomers = () => {
         return <div className="text-sm ">{customer._id}</div>;
 
       case "customer_name":
-        return <div className="text-sm ">{customer.customer_name}</div>;
+        return <div className="text-sm capitalize">{customer.name}</div>;
       case "department":
-        return <div className="text-sm ">{customer.department}</div>;
+        return (
+          <div className="text-sm w-[100px] truncate capitalize">
+            {customer.department ?? "Not avail."}
+          </div>
+        );
       case "campus":
-        return <div className="text-sm ">{customer.campus}</div>;
-      case "item":
-        return <div className="text-sm ">{customer.item}</div>;
+        return (
+          <div className="text-sm w-[150px] truncate capitalize">
+            {customer.campus}
+          </div>
+        );
 
       case "total_spent":
-        return <div className=" pl-4">{customer.total_spent}</div>;
+        return (
+          <div className=" pl-4">{`${nairaSymbol()}${customer.totalSpent.toLocaleString()}`}</div>
+        );
       case "orders":
         return <div className="text-sm">{customer.orders}</div>;
       case "status":
         return (
           <div className="text-sm flex items-center gap-2">
-            {customer.isNew ? (
+            {customer.orders === 1 ? (
               <span
-                className={`bg-gray-500 text-white rounded-lg flex justify-center p-1 px-2`}
+                className={`bg-success text-white rounded-lg flex justify-center p-1 px-2`}
               >
                 New
               </span>
             ) : (
               <span
-                className={`bg-success text-white rounded-lg flex justify-center p-1 px-2`}
+                className={`bg-gray-500 text-white rounded-lg flex justify-center p-1 px-2`}
               >
                 Active
               </span>
@@ -110,7 +85,7 @@ const DashboardCustomers = () => {
         );
 
       default:
-        return customer[columnKey as keyof CustomerType] as React.ReactNode;
+        return customer[columnKey as keyof CustomerResponse] as React.ReactNode;
     }
   };
   return (
@@ -170,15 +145,15 @@ const DashboardCustomers = () => {
               <TableColumn key="status">Status</TableColumn>
             </TableHeader>
 
-            <TableBody<CustomerType>
-              items={products}
+            <TableBody<CustomerResponse>
+              items={data?.data || []}
               isLoading={isLoading}
               loadingContent={
                 <Spinner
                   label="Loading..."
                   size="sm"
                   variant="spinner"
-                  color="warning"
+                  color="primary"
                 />
               }
             >

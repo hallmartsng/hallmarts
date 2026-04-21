@@ -9,7 +9,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   campus: string;
-  department: string;
+  department?: string;
   countryCode: string;
   refreshToken?: string;
   role: UserRole;
