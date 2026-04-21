@@ -3,7 +3,7 @@ import { api } from "../api";
 import { OrderRequest } from "@/types/order.types";
 import { CustomerResponse } from "@/types/customer.types";
 
-export const userOrderApi = api.injectEndpoints({
+export const vendorOrderApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getVendorOrders: builder.query<ApiResponse<OrderRequest[]>, void>({
       query: () => ({
@@ -23,4 +23,4 @@ export const userOrderApi = api.injectEndpoints({
 });
 
 export const { useGetVendorOrdersQuery, useGetVendorCustomerQuery } =
-  userOrderApi;
+  vendorOrderApi;
