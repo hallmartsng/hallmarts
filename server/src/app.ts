@@ -70,7 +70,7 @@ app.use("/api/v1/user/orders", userOrdersRoutes);
 app.use("/api/v1/auth", generalAuthRoutes);
 
 // Store Endpoints
-app.use("/api/v1/store/product", storeProductsRoutes);
+app.use("/api/v1/store/products", storeProductsRoutes);
 app.use("/api/v1/store/checkout", storeCheckOutRoutes);
 
 // Shipping Endpoints

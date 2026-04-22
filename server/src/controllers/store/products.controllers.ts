@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { filteredProducts, homePageProducts } from "../../utils/helpers";
+import Product from "../../models/products.models";
 
 // Home page
 export const getHomepageProducts = async (_req: Request, res: Response) => {
@@ -59,6 +60,32 @@ export const getFilteredproducts = async (req: Request, res: Response) => {
     res.status(500).json({
       message: "Product filter failed",
       success: false,
+    });
+  }
+};
+
+export const getProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch product",
+      error,
     });
   }
 };

@@ -96,6 +96,68 @@ const StoreCheckout = () => {
   const [makePayment, { isLoading: isLoadingPayment }] =
     usePaymentWebhookMutation();
 
+  const handPaystackPayment = async (
+    email: string,
+    amount: number,
+    paymentReference: string,
+  ) => {
+    const payStackInline = new Paystack();
+
+    payStackInline.newTransaction({
+      key: process.env["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"]!,
+      email: email,
+      amount: amount * 100,
+      reference: paymentReference,
+
+      onSuccess: async (transaction) => {
+        const { reference, message } = transaction;
+
+        const res = await makePayment({
+          payload: {
+            reference,
+            status: message === "Approved" ? 200 : 400,
+          },
+        });
+
+        router.push("/store/checkout/completed");
+        dispatch(clearCart());
+        return addToast({
+          title: "Payment received",
+          description: res.data?.message,
+          color: "success",
+        });
+      },
+      onLoad: (response) => {
+        console.log("onLoad: ", response);
+        return {
+          response,
+        };
+      },
+      onCancel: () => {
+        if (setPendingPayment) {
+          return setPendingPayment({
+            reference: paymentReference,
+            amount: cart.subtotal,
+          });
+        }
+      },
+      onError: (error) => {
+        console.log("error: ", error);
+        console.log("Error: ", error);
+        setPendingPayment({
+          reference: paymentReference,
+          amount: cart.subtotal,
+        });
+        return addToast({
+          title: "Payment failed",
+          description: error.message,
+          color: "success",
+        });
+      },
+    });
+  };
+
+  // Submit form
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -150,18 +212,6 @@ const StoreCheckout = () => {
             address: data.address,
           };
 
-      const refCode = Math.floor(10000 + Math.random() * 90000).toString();
-      // const initializePayStackPayment = await initializePayment({
-      //   email: "ekonge903@gmail.com",
-      //
-      //   amount: cart.subtotal,
-      //   accessToken: session.accessToken || "",
-      // });
-
-      const payStackInline = new Paystack();
-      const reference = refCode + "testing";
-      console.log("cart.items: ", cart.items);
-
       const res = await checkout({
         payload: {
           cart: cart.items,
@@ -178,60 +228,12 @@ const StoreCheckout = () => {
         const { paymentReference, amount } = res.data;
 
         console.log("res.data: ", res.data);
-        const initializePayStackPayment = payStackInline.newTransaction({
-          key: process.env["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"]!,
-          email: "ekonge903@gmail.com",
-          amount: amount * 100,
-          reference: paymentReference,
 
-          onSuccess: async (transaction) => {
-            const { reference, message } = transaction;
-
-            const res = await makePayment({
-              payload: {
-                reference,
-                status: message === "Approved" ? 200 : 400,
-              },
-            });
-
-            router.push("/store/checkout/completed");
-            dispatch(clearCart());
-            return addToast({
-              title: "Payment received",
-              description: res.data?.message,
-              color: "success",
-            });
-          },
-          onLoad: (response) => {
-            console.log("onLoad: ", response);
-            return {
-              response,
-            };
-          },
-          onCancel: () => {
-            if (setPendingPayment) {
-              return setPendingPayment({
-                reference: reference,
-                amount: cart.subtotal,
-              });
-            }
-          },
-          onError: (error) => {
-            console.log("error: ", error);
-            console.log("Error: ", error);
-            setPendingPayment({
-              reference: reference,
-              amount: cart.subtotal,
-            });
-            return addToast({
-              title: "Payment failed",
-              description: error.message,
-              color: "success",
-            });
-          },
-        });
-
-        console.log("initializePayStackPayment: ", initializePayStackPayment);
+        await handPaystackPayment(
+          data.email ?? session.user.email,
+          amount,
+          paymentReference,
+        );
       }
     } catch (err: any) {
       console.log("err.message: ", err);
@@ -579,39 +581,18 @@ const StoreCheckout = () => {
             </span>
           </span>
 
-          {pendingPayment ? (
-            <button
-              type="button"
-              form="checkout-form"
-              disabled={showLoginMsg}
-              className="bg-primary text-white font-semibold"
-              // onClick={() =>
-              //   initializePayment({
-              //     email: session?.user.email || "",
-              //     reference: pendingPayment.reference,
-              //     amount: pendingPayment.amount,
-              //     accessToken: session?.accessToken || "",
-              //   })
-              // }
-            >
-              Resume Payment
-            </button>
-          ) : (
-            <Button
-              // onPress={(e) => {
-              //   onSubmit(e as React.FormEvent<HTMLFormElement>);
-              // }}
-              type="submit"
-              form="checkout-form"
-              disabled={showLoginMsg}
-              className="bg-primary text-white font-semibold"
-            >
-              Pay now{" "}
-              {isLoadingCheckout && (
-                <Spinner size="sm" variant="spinner" color="white" />
-              )}
-            </Button>
-          )}
+          <Button
+            type="submit"
+            form="checkout-form"
+            disabled={showLoginMsg}
+            className="bg-primary text-white font-semibold"
+          >
+            {pendingPayment ? " Resume Payment" : "Pay now"}
+            {isLoadingCheckout && (
+              <Spinner size="sm" variant="spinner" color="white" />
+            )}
+          </Button>
+
           {showLoginMsg && (
             <small className=" font-medium text-sm ">
               To proceed with payment,
