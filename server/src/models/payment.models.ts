@@ -55,7 +55,7 @@ const paymentSchema = new Schema<IPayment>(
   },
   { timestamps: true },
 );
-
+paymentSchema.index({ user: 1, status: 1 });
 export const Payment: Model<IPayment> = mongoose.model<IPayment>(
   "Payment",
   paymentSchema,

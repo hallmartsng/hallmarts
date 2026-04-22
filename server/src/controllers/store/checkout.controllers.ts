@@ -10,6 +10,22 @@ export const checkout = async (req: Request, res: Response) => {
     console.log(cart);
 
     const userId = req.userId;
+    // Prevent duplicate checkout
+    const existingPayment = await Payment.findOne({
+      user: userId,
+      status: "pending",
+    }).sort({ createdAt: -1 });
+
+    if (existingPayment) {
+      return res.status(200).json({
+        message: "Existing payment found",
+        data: {
+          paymentReference: existingPayment.reference,
+          amount: existingPayment.amount,
+        },
+        success: true,
+      });
+    }
     let shippingAddressId;
 
     const checkShippingAddress = await Shipping.findOneAndUpdate(

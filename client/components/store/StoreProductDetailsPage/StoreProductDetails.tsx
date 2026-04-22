@@ -8,13 +8,18 @@ import ProductVendor from "./ProductVendor";
 import StoreProductLists from "../StoreProductLists";
 import ProductImageGallery from "./ProductImageGallery";
 import ProductDescription from "./ProductDescription";
+import { useGetProductByIdQuery } from "@/lib/services/store/product.api";
 
-const StoreProductDetails = () => {
+const StoreProductDetails = ({ productId }: { productId: string }) => {
+  const { data, isLoading } = useGetProductByIdQuery(productId);
+
+  console.log(data);
+
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="flex justify-start w-full">
         <h1>
-          Product details: <strong>Nike Sportware</strong>{" "}
+          <strong>{data?.data.title}</strong>{" "}
         </h1>
       </div>
       {/* <div className="flex sm:flex-row flex-col gap-5 item-start w-full justify-between">
@@ -24,24 +29,19 @@ const StoreProductDetails = () => {
       </div> */}
       <div className="flex lg:flex-row flex-col gap-10 items-start">
         <div className="lg:w-[400px] w-full">
-          <ProductImageGallery />
+          <ProductImageGallery productImages={data?.data.images || []} />
         </div>
         <ProductOverView />
         <div className="p-4 w-[200px] text-sm border-gray-300 border-1 rounded-lg sm:flex hidden flex-col gap-5">
           <ul>
             <li>
-              <strong>Campus:</strong> Babcock univeristy
+              <strong>Campus:</strong> {data?.data.vendor}
             </li>
             <li>
-              <strong>Department:</strong> Sociology
+              <strong>Department:</strong> {data?.data.vendor}
             </li>
           </ul>
-          <p>
-            {" "}
-            Mercy Anulla is a student of Babcock univeristy, in the department
-            of Sociology, that provides quality fashion pieces for campus
-            students at affordable prices.
-          </p>
+          <p> {data?.data.vendor}</p>
         </div>
       </div>
 

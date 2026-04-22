@@ -2,6 +2,7 @@
 import { useAppDispatch } from "@/hooks/useReduxHook";
 import { addToCart } from "@/lib/slices/cartSlice";
 import { ProductRequest } from "@/types/product.types";
+import { slugify } from "@/utils/slugify";
 import nairaSymbol from "@/utils/symbols";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import {
@@ -38,7 +39,9 @@ export default function StoreProductLists({
               shadow="sm"
               className="rounded-md mb-2 w-full"
               onPress={() =>
-                router.push(`/store/product/${product._id}/${product.title}`)
+                router.push(
+                  `/store/product/${slugify(product.title)}-${product._id}`,
+                )
               }
             >
               <CardBody className="overflow-visible p-0">
