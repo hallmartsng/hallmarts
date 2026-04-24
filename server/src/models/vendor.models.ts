@@ -8,6 +8,7 @@ export interface IVendor extends Document {
   email: string;
   phone: string;
   campus: string;
+  department?: string;
   countryCode: string;
   address?: string;
   password: string;
@@ -54,6 +55,11 @@ const vendorSchema = new Schema<IVendor>(
 
     fname: {
       type: String,
+    },
+    department: {
+      type: String,
+      required: false,
+      trim: true,
     },
     password: {
       type: String,

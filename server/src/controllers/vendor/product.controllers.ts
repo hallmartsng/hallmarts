@@ -133,7 +133,9 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
 // ✅ Upload booking Images
 export async function uploadProductImages(req: Request, res: Response) {
-  const productId = req.params["id"];
+  const { id } = req.params;
+  console.log(id);
+
   try {
     const files = req.files as Express.Multer.File[];
 
@@ -148,7 +150,7 @@ export async function uploadProductImages(req: Request, res: Response) {
       };
     });
     // Optionally store image URLs in product record
-    await Product.findByIdAndUpdate(productId, {
+    await Product.findByIdAndUpdate(id, {
       $push: { images: { $each: images } },
     });
 
@@ -156,7 +158,7 @@ export async function uploadProductImages(req: Request, res: Response) {
       .status(200)
       .json({ message: "Images uploaded successfully", images, success: true });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Image upload failed", error });
   }
 }
