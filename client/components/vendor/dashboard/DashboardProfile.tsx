@@ -70,6 +70,9 @@ const DashboardProfile = () => {
   const [storeDesc, setStoreDesc] = React.useState<string>(
     data?.data.store_description || "",
   );
+  const [department, setDepartment] = React.useState<string>(
+    data?.data.department || "",
+  );
 
   const [isLoadingPersonalInfo, setIsLoadingPersonalInfo] =
     React.useState<boolean>(false);
@@ -157,7 +160,7 @@ const DashboardProfile = () => {
     try {
       setIsLoadingPersonalInfo(isLoadingVendorProfileUpdate);
       const res = await updateProfile({
-        formData: { fname: fName },
+        formData: { fname: fName, department: department },
       }).unwrap();
 
       addToast({
@@ -361,6 +364,18 @@ const DashboardProfile = () => {
                     value={data?.data.phone}
                     name="phone"
                     type="text"
+                  />
+                  <Input
+                    aria-label="vendor department"
+                    value={department || data?.data.department}
+                    placeholder="Enter Department"
+                    name="department"
+                    type="text"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      console.log(fName);
+
+                      setDepartment(e.target.value);
+                    }}
                   />
 
                   <div className="flex gap-4">

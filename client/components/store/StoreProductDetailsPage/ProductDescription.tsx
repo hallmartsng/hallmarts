@@ -1,33 +1,51 @@
 import React from "react";
 
-const ProductDescription = () => {
+interface ProductDescriptionProps {
+  data: {
+    description: string;
+    features?: string[];
+    brand?: string;
+    colors?: string[];
+    sizes?: string[];
+  };
+}
+const ProductDescription = ({ data }: ProductDescriptionProps) => {
   return (
     <div className="px-4 flex flex-col gap-4">
-      <p>
-        Made with your favourite high-end mid-rise pants in mind. This cropped
-        hoddie is a perfectly cozy option for everyday wear. The curved
-        overlovked stitched and ribbed panels at the hem put a fresh spin on
-        this layering staple.
-      </p>
+      <p>{data.description}</p>
       <div className="flex sm:flex-row flex-col gap-4 items-start justify-between sm:w-1/2">
         <div>
           <h3 className="font-semibold">Key features</h3>
-          <ul className="list-disc list-outside pl-5">
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-            <li>Stable connection</li>
-          </ul>
+          {data.features?.length ? (
+            <ul className="list-disc list-outside pl-5">
+              {data.features.map((feature, key) => {
+                return <li key={key}>{feature}</li>;
+              })}
+            </ul>
+          ) : (
+            "N/A"
+          )}
         </div>
         <div>
           <h3 className="font-semibold">Specifications</h3>
           <ul className="list-disc list-outside pl-5">
-            <li>Brand : Apple</li>
-            <li>Color : White</li>
-            <li>Size : Extra large</li>
+            <li>Brand : {data.brand || "N/A"}</li>
+            <li>
+              Colors :{" "}
+              {data.colors?.length
+                ? data.colors.map((color, key) => {
+                    return <span key={key}>{color}</span>;
+                  })
+                : "N/A"}
+            </li>
+            <li>
+              Sizes :{" "}
+              {data.sizes?.length
+                ? data.sizes.map((size, key) => {
+                    return <span key={key}>{size}</span>;
+                  })
+                : "N/A"}
+            </li>
           </ul>
         </div>
       </div>

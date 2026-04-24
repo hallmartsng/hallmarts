@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHook";
 import {
   addToCart,
+  clearCart,
   deleteFromCart,
   removeFromCart,
 } from "@/lib/slices/cartSlice";
@@ -199,6 +200,17 @@ const StoreCart = () => {
         }
       </Table>
 
+      {cart.items.length && (
+        <div className="w-full flex justify-end">
+          <Button
+            onPress={() => {
+              dispatch(clearCart());
+            }}
+          >
+            Clear cart
+          </Button>
+        </div>
+      )}
       {/* Cart Summary   */}
       {cart.subtotal > 0 && (
         <div className="w-full flex sm:flex-row flex-col gap-8 mt-3 justify-between items-start">

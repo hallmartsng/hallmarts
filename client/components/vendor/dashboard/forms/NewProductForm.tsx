@@ -64,12 +64,10 @@ const NewProductForm = ({
   const [uploadedImages, setUploadedImages] = useState<ImagePreview[]>([]);
   const [productCategories, setProductCategories] = useState<string[]>([]);
 
-  const [createProduct, { isLoading: isLoadingCreateProduct }] =
-    useCreateProductMutation();
-  const [uploadImages, { isLoading: isLoadingImageUpload }] =
-    useUploadProductImagesMutation();
+  const [createProduct] = useCreateProductMutation();
+  const [uploadImages] = useUploadProductImagesMutation();
 
-  const [deleteProduct, { isLoading }] = useDeleteProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
 
   const handleSelect = (files: FileList | null) => {
     console.log("handleSelect: ", files);
@@ -115,21 +113,10 @@ const NewProductForm = ({
       // 1️⃣ create product
       setIsLoading(true);
       const productUploadRes = await createProduct(payload).unwrap();
-      if (productUploadRes.success) {
-        addToast({
-          title: "Product upload",
-          description: productUploadRes.message,
-          color: "success",
-        });
-        setUploadedImages([]);
-        // setProductCategories([]);
-      }
 
       const productId = productUploadRes.data._id;
       try {
         // 2️⃣ upload images
-
-        setIsLoading(isLoadingImageUpload);
         const formData = new FormData();
         uploadedImages.forEach((img) => {
           if (!img.file) return;
@@ -149,12 +136,21 @@ const NewProductForm = ({
           uploadedImages: formData, // just pass the FormData
         }).unwrap();
 
-        if (imageUploadRes.success) {
+        // if (imageUploadRes.success) {
+        //   addToast({
+        //     title: "Images upload",
+        //     description: imageUploadRes.message,
+        //     color: "success",
+        //   });
+        // }
+        if (productUploadRes.success && imageUploadRes.success) {
           addToast({
-            title: "Images upload",
-            description: imageUploadRes.message,
+            title: "Product upload",
+            description: productUploadRes.message,
             color: "success",
           });
+          setUploadedImages([]);
+          // setProductCategories([]);
         }
       } catch (error) {
         if (productId) {
@@ -169,6 +165,7 @@ const NewProductForm = ({
           }
         }
       }
+
       onOpenChange();
     } catch (err) {
       console.log("Product creation failed:", err);

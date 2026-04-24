@@ -68,7 +68,10 @@ export const getProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate(
+      "vendor",
+      "fname campus department store_name",
+    );
 
     if (!product) {
       return res.status(404).json({
@@ -88,4 +91,19 @@ export const getProduct = async (req: Request, res: Response) => {
       error,
     });
   }
+};
+
+export const getVendorProducts = async (req: Request, res: Response) => {
+  const { vendorId } = req.params;
+
+  console.log("vendorId: ", vendorId);
+
+  const products = await Product.find({ vendor: vendorId }).sort({
+    createdAt: -1,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: products,
+  });
 };
