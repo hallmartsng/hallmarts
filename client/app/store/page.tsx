@@ -1,15 +1,15 @@
-import SectionHeader from "@/components/store/SectionHeader";
+// import SectionHeader from "@/components/store/SectionHeader";
 import StoreHero from "@/components/store/StoreLandingPage/StoreHero";
 import StoreProductLists from "@/components/store/StoreProductLists";
-import StoreTrends from "@/components/store/StoreTrends";
+// import StoreTrends from "@/components/store/StoreTrends";
 import {
   ArrowRightIcon,
-  CalendarDaysIcon,
-  ShoppingBagIcon,
+  // CalendarDaysIcon,
+  // ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
-import CampusMerch from "@/components/store/CampusMerch";
+// import CampusMerch from "@/components/store/CampusMerch";
 import { getHomepageFeed } from "@/lib/services/ssr/products.api";
 import StoreCalendarBanner from "@/components/store/StoreLandingPage/StoreCalendarBanner";
 
@@ -22,27 +22,28 @@ export default async function StorePage() {
       <StoreHero />
 
       {/* Uniport Merch  */}
-      <CampusMerch
+      {/* <CampusMerch
         headerText={"Steeze : Uniport launched their merch"}
         subHeaderText={"Come in your merch for 2027 Campus THRILL!"}
         headline={"Campus Merch"}
         products={products.data.newArrivals}
-      />
+      /> */}
 
       {/* New Arrival  */}
-      {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
+      <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-left w-full font-semibold ">Food & provisions</h3>
+          {/* <h3 className="text-left w-full font-semibold ">Food & provisions</h3> */}
+          <h3 className="text-left w-full font-semibold ">New Arrival</h3>
           <Link
-            href={"/store"}
+            href={"/store/product-list/new-arrival"}
             className="w-[70px] text-primary font-semibold flex items-center gap-1"
           >
             <span>More</span>
             <ArrowRightIcon className="size-4" />
           </Link>
         </div>
-        <StoreProductLists />
-      </div> */}
+        <StoreProductLists products={products.data.newArrivals} />
+      </div>
 
       {/* Campus trendz  */}
       {/* <div className="w-full sm:max-w-[1230px] sm:px-0 px-2">

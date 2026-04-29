@@ -16,7 +16,7 @@ const ProductVendorBio = ({ data }: ProductVendorProps) => {
       </ul>
       <p>
         {" "}
-        {data.fName} is a student of {data.campus}, in the department of
+        {data.fName} is a student of {data.campus}, in the department of{" "}
         {data.department}, that provides quality fashion pieces for campus
         students at affordable prices.
       </p>
