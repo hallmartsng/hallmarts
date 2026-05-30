@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 // import CampusMerch from "@/components/store/CampusMerch";
 import { getHomepageFeed } from "@/lib/services/ssr/products.api";
-import StoreCalendarBanner from "@/components/store/StoreLandingPage/StoreCalendarBanner";
+// import StoreCalendarBanner from "@/components/store/StoreLandingPage/StoreCalendarBanner";
 
 export default async function StorePage() {
   const products = await getHomepageFeed(); // SSR fetch
@@ -176,7 +176,7 @@ export default async function StorePage() {
       </div> */}
 
       {/* Calendar  */}
-      <StoreCalendarBanner />
+      {/* <StoreCalendarBanner />  */}
     </section>
   );
 }
