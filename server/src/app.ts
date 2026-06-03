@@ -35,7 +35,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://hallmarts-omega.vercel.app", "http://localhost:3000"],
+    origin: ["https://www.hallmarts.com", "http://localhost:3000"],
     credentials: true,
   }),
 );
