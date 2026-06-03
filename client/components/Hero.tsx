@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 
 import GlobeNetworkPro from "@/components/GlobeNetworkPro";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -143,6 +144,17 @@ const Hero = () => {
               </DropdownMenu>
             </Dropdown>
           </motion.div>
+          <small className="hidden sm:block">
+            Read through{" "}
+            <Link href={"/terms-and-condition"} className="text-primary">
+              Terms and conditions
+            </Link>{" "}
+            &
+            <Link href={"/privacy-policy"} className="text-primary">
+              {" "}
+              Privacy policy
+            </Link>
+          </small>
         </div>
         <div className="w-full flex flex-col items-center sm:justify-center">
           <div className="w-full sm:flex hidden">
@@ -168,6 +180,17 @@ const Hero = () => {
             </div>
           </motion.div>
         </div>
+        <small className="sm:hidden block">
+          Read through{" "}
+          <Link href={"/terms-and-condition"} className="text-primary">
+            Terms and conditions
+          </Link>{" "}
+          &
+          <Link href={"/privacy-policy"} className="text-primary">
+            {" "}
+            Privacy policy
+          </Link>
+        </small>
       </div>
     </section>
   );
