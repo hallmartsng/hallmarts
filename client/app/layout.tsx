@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/config/nextAuthOptions";
 import { ReduxProvider } from "@/lib/providers/ReduxProvider";
 import { HeroUIProviders } from "@/lib/providers/HeroUIProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -58,7 +59,8 @@ export default async function RootLayout({
           async
           defer
           src="//js-na1.hs-scripts.com/48927544.js"
-        ></script> */}
+          ></script> */}
+        <Analytics />
       </body>
     </html>
   );
