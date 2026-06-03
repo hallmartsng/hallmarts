@@ -20,6 +20,7 @@ import {
   useVendorRegistrationMutation,
 } from "@/lib/services/authentication/auth.api";
 import { RegistrationRequest } from "@/types/auth.types";
+import Link from "next/link";
 
 interface FormErrors {
   name?: string;
@@ -300,8 +301,21 @@ const SignUp = ({ userRole, setSelectedTabKey }: SignUpProps) => {
           value={term ? "true" : "false"}
           onValueChange={setTerm}
         >
-          I agree to the terms and conditions
+          I agree to the{" "}
+          <Link href={"/terms-and-conditions"}>terms and conditions</Link>
         </Checkbox>
+
+        <small>
+          Read through{" "}
+          <Link href={"/terms-and-condition"} className="text-primary">
+            Terms and conditions
+          </Link>{" "}
+          &
+          <Link href={"/privacy-policy"} className="text-primary">
+            {" "}
+            Privacy policy
+          </Link>
+        </small>
 
         {errors.terms && (
           <span className="text-danger text-small">{errors.terms}</span>
