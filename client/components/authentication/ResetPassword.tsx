@@ -5,7 +5,9 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { addToast, Spinner } from "@heroui/react";
+import { useResetPasswordMutation } from "@/lib/services/authentication/auth.api";
 
 interface FormErrors {
   password?: string;
@@ -15,9 +17,11 @@ interface FormErrors {
 interface FormData {
   retryPassword: string;
   password: string;
+  email: string;
 }
 
 const ResetPassword = () => {
+  const router = useRouter();
   const params = useSearchParams();
   const getUserEmail = params.get("email");
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -26,13 +30,9 @@ const ResetPassword = () => {
     React.useState<boolean>(false);
   const [password, setPassword] = React.useState("");
   const [retryPassword, setRetryPassword] = React.useState("");
-  const [submitted, setSubmitted] = React.useState<FormData>({
-    password: "",
-    retryPassword: "",
-  });
 
   const [errors, setErrors] = React.useState<FormErrors>({});
-
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   // Real-time password validation
   const getPasswordError = (value: string) => {
     if (value.length < 4) {
@@ -55,7 +55,7 @@ const ResetPassword = () => {
     return null;
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(
       new FormData(e.currentTarget),
@@ -76,11 +76,34 @@ const ResetPassword = () => {
     if (Object.keys(newErrors).length > 0) {
       return setErrors(newErrors);
     }
+    try {
+      // 1️⃣ Register user
+      const res = await resetPassword({
+        password: retryPassword,
+        email: getUserEmail || "",
+      }).unwrap();
 
-    // Clear errors and submit
-    setErrors({});
-    setSubmitted(data);
-    console.log(submitted);
+      console.log(res);
+      console.log("res: ", res);
+      if (res.success) {
+        addToast({
+          title: "Password updated",
+          description: res.message,
+          color: "success",
+        });
+      }
+      if (res.data.role === "user") {
+        router.push(`/store/auth`);
+      } else {
+        router.push(`/vendor/auth`);
+      }
+    } catch (err: any) {
+      addToast({
+        title: "Error occured",
+        description: err?.data.message,
+        color: "danger",
+      });
+    }
   };
 
   return (
@@ -160,9 +183,12 @@ const ResetPassword = () => {
             <Button
               className="w-full flex items-center bg-[#ed1d3e] text-white"
               type="submit"
+              disabled={isLoading}
             >
               <p>Update password</p>
-              {/* <Spinner size="sm" variant="spinner" color="white" /> */}
+              {isLoading && (
+                <Spinner size="sm" variant="spinner" color="white" />
+              )}
             </Button>
           </div>
         </div>

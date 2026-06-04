@@ -7,3 +7,11 @@ export interface RegistrationRequest {
   password: string;
   term: boolean;
 }
+
+export interface OTPResponse {
+  email: string;
+}
+
+export interface ResetPasswordResponse {
+  role: string;
+}

@@ -2,13 +2,15 @@
 import React from "react";
 import { Form, Input, Button, addToast, Spinner } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useSendOTPMutation } from "@/lib/services/authentication/auth.api";
 
 interface FormData {
   email: string;
 }
 const ForGotPassword = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const [sendOTP, { isLoading }] = useSendOTPMutation();
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(
@@ -16,30 +18,26 @@ const ForGotPassword = () => {
     ) as unknown as FormData;
 
     try {
-      setIsLoading(true);
       // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
-      console.log(data);
-      addToast({
-        title: "Sign Up",
-        description: res.message,
-        color: "success",
-      });
+      const res = await sendOTP(data).unwrap();
 
-      setIsLoading(false);
-      // const {email} = data
-      router.push(`/authentication/otp?email=${data.email}`);
+      console.log(res);
+      console.log("res: ", res);
+      if (res.success) {
+        addToast({
+          title: "OTP sent",
+          description: res.message,
+          color: "success",
+        });
+        return router.push(`/authentication/otp?email=${data.email}`);
+      }
     } catch (err: any) {
       addToast({
         title: "Error occured",
-        description: err.message,
+        description: err?.data.message,
         color: "danger",
       });
     }
-    setIsLoading(false);
   };
   return (
     <section>
@@ -75,6 +73,15 @@ const ForGotPassword = () => {
             name="email"
             placeholder="Enter your email"
             type="email"
+          />
+          <Input
+            isRequired
+            label=""
+            labelPlacement="outside"
+            name="purpose"
+            value={"password_reset"}
+            className="hidden"
+            type="text"
           />
           <div className="flex gap-4">
             <Button

@@ -5,6 +5,7 @@ import { Vendor } from "../../models/vendor.models";
 import { generateOTP } from "../../utils/generateOTP";
 import Otp from "../../models/otp.models";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
+import { sendOtpEmail } from "../../utils/sendEmail";
 
 // register a new vendor
 export const vendorRegistration = async (req: Request, res: Response) => {
@@ -59,13 +60,7 @@ export const vendorRegistration = async (req: Request, res: Response) => {
     });
 
     // Send OTP to user (email/SMS)
-    // await sendOtpEmail(
-    //   email,
-    //   otp,
-    //   `${
-    //     role === "vendor" ? "Vendor" : role === "admin" ? "Admin" : "User"
-    //   } account creation`,
-    // );
+    await sendOtpEmail(email, otp, `Vendor account creation`);
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       vendor.id,
       vendor.role,
