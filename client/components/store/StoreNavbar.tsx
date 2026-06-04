@@ -181,17 +181,27 @@ const StoreNavbar = () => {
               >
                 Profile
               </DropdownItem>
-              <DropdownItem
-                onPress={() => {
-                  signOut({
-                    callbackUrl: "/store/auth",
-                  });
-                }}
-                key="logout"
-                startContent={icons.logout}
-              >
-                Logout
-              </DropdownItem>
+              {session?.user.email ? (
+                <DropdownItem
+                  onPress={() => {
+                    signOut({
+                      callbackUrl: "/store/auth",
+                    });
+                  }}
+                  key="logout"
+                  startContent={icons.logout}
+                >
+                  Logout
+                </DropdownItem>
+              ) : (
+                <DropdownItem
+                  href="/store/auth"
+                  key="login"
+                  startContent={icons.logout}
+                >
+                  Log In
+                </DropdownItem>
+              )}
             </DropdownMenu>
           </Dropdown>
         </ul>

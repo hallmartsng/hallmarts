@@ -1,4 +1,7 @@
-export const otpEmailTemplate = (otp :string, purpose:string = "Verification") => `
+export const otpEmailTemplate = (
+  otp: string,
+  purpose: string = "Verification",
+) => `
   <div style="font-family: Arial, sans-serif; color: #333;">
     <h2>🔐 ${purpose} Code</h2>
     <p>Hello,</p>
@@ -7,6 +10,6 @@ export const otpEmailTemplate = (otp :string, purpose:string = "Verification") =
     <p>This code is valid for <strong>10 minutes</strong>.</p>
     <p>If you didn’t request this, please ignore this email.</p>
     <br/>
-    <p>— The Booking Team</p>
+    <p>— The campus Team</p>
   </div>
 `;

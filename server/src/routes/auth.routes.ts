@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { getRefreshAccessToken } from "../controllers/auth.controllers";
+import {
+  getRefreshAccessToken,
+  sendOtp,
+  upDatePassword,
+  verifyOtp,
+} from "../controllers/auth.controllers";
 
 const router = Router();
 
@@ -54,5 +59,8 @@ const router = Router();
  *               message: Invalid refresh token
  */
 router.post("/refresh", getRefreshAccessToken);
+router.post("/send-opt", sendOtp);
+router.post("/verify-otp", verifyOtp);
+router.post("/reset-password", upDatePassword);
 
 export default router;

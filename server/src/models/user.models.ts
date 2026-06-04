@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
 
-export type UserRole = "user" | "student" | "admin";
+export type UserRole = "user" | "vendor" | "admin";
 
 export interface IUser extends Document {
   name?: string;
@@ -15,6 +15,7 @@ export interface IUser extends Document {
   role: UserRole;
   fname?: string;
   isActive: boolean;
+  isVerified: boolean;
   wishList: mongoose.Types.ObjectId[];
   phone?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -83,6 +84,10 @@ const userSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     wishList: [{ type: Schema.Types.ObjectId, ref: "Product" }],
   },

@@ -5,6 +5,7 @@ import { generateOTP } from "../../utils/generateOTP";
 import Otp from "../../models/otp.models";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { User } from "../../models/user.models";
+import { sendOtpEmail } from "../../utils/sendEmail";
 
 // register a new user
 export const userRegistration = async (req: Request, res: Response) => {
@@ -58,13 +59,7 @@ export const userRegistration = async (req: Request, res: Response) => {
     });
 
     // Send OTP to user (email/SMS)
-    // await sendOtpEmail(
-    //   email,
-    //   otp,
-    //   `${
-    //     role === "vendor" ? "Vendor" : role === "admin" ? "Admin" : "User"
-    //   } account creation`,
-    // );
+    await sendOtpEmail(email, otp, ` User account creation`);
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       user.id,
       user.role,

@@ -1,10 +1,10 @@
-import { sendEmail } from "../config/sendGrid.config";
 import { paymentSuccessTemplate } from "../templates/project/paymentSuccessful";
 import { otpEmailTemplate } from "../templates/auth/otpEmail.template";
 import { otpForgotPasswordTemplate } from "../templates/auth/otpForgotPassword.template";
 import { newsLetterTemplate } from "../templates/user/newsLetter.template";
 import { staffInivitationEmailTemplate } from "../templates/staff/staffInivitationEmail";
 import { newProjectConfirmedTemplate } from "../templates/project/newProjectConfirmed";
+import { sendEmail } from "../config/resend.config";
 // import { updateProjectTemplate } from "../templates/project/updateProjectTemplate";
 // import { projectStages } from "../types/products.types";
 export const sendOtpEmail = async (
