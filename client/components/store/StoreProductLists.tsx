@@ -14,9 +14,10 @@ import {
   CardBody,
   CardFooter,
   Image,
+  Spinner,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { HeartFilledIcon } from "../icons";
 import { useSession } from "next-auth/react";
 
@@ -31,7 +32,9 @@ export default function StoreProductLists({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
-
+  const [wishListProductId, setWishListProductId] = useState<string | null>(
+    null,
+  );
   const { data: user } = useGetUserProfileQuery();
 
   const [toggleWishList, { isLoading }] = useToggleWishlistMutation();
@@ -45,18 +48,24 @@ export default function StoreProductLists({
       });
     }
     try {
-      const res = await toggleWishList({
-        productId,
-      }).unwrap();
+      setWishListProductId(productId);
 
-      if (res.success) {
-        addToast({
-          title: `${res.data.wishlisted ? "Item added" : "Item removed"}`,
-          description: `${res.data.product.title} ${res.data.wishlisted ? "added to" : "removed from"} cart`,
-          color: "success",
-        });
-      }
-    } catch (error) {}
+      const res = await toggleWishList({ productId }).unwrap();
+
+      addToast({
+        title: res.data.wishlisted ? "Item added" : "Item removed",
+        description: res.message,
+        color: "success",
+      });
+    } catch {
+      addToast({
+        title: "Error occurred",
+        description: "An error occurred, try again",
+        color: "danger",
+      });
+    } finally {
+      setWishListProductId(null);
+    }
   };
 
   return (
@@ -103,10 +112,14 @@ export default function StoreProductLists({
               </Card>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleWishListToggle(product._id || "")}
+                  onClick={() => {
+                    handleWishListToggle(product._id || "");
+                  }}
                   className="w-8 h-8 border-1 border-primary/30 text-primary flex items-center justify-center p-2 shadow rounded-md"
                 >
-                  {!isWishlisted ? (
+                  {wishListProductId === product._id ? (
+                    <Spinner size="sm" variant="spinner" color="primary" />
+                  ) : !isWishlisted ? (
                     <HeartIcon className="size-5" />
                   ) : (
                     <HeartFilledIcon className="size-5" />

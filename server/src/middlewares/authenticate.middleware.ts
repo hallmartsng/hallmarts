@@ -68,13 +68,13 @@ export const userAuthenticateMiddleWare = async (
   try {
     const header = req.headers.authorization;
     if (!header?.startsWith("Bearer ")) {
-      res.status(401).json({ message: "User is not logged in." });
+      res.status(404).json({ message: "User is not logged in." });
       return;
     }
 
     const token = header.split(" ")[1];
     if (!token) {
-      res.status(401).json({ message: "Unauthorized: Token missing" });
+      res.status(404).json({ message: "Unauthorized: Token missing" });
       return;
     }
 
@@ -93,14 +93,14 @@ export const userAuthenticateMiddleWare = async (
     console.log(decoded);
 
     if (!decoded || !decoded.userId) {
-      res.status(401).json({ message: "Unauthorized: Invalid token payload" });
+      res.status(404).json({ message: "Unauthorized: Invalid token payload" });
       return;
     }
 
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
-      res.status(401).json({
+      res.status(404).json({
         success: false,
         message: "User not found",
       });

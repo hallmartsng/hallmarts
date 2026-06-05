@@ -3,40 +3,34 @@ import mongoose from "mongoose";
 import Product from "../../models/products.models";
 import { User } from "../../models/user.models";
 
-export const toggleWishlist = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
+export const toggleWishlist = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
     const { productId } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Invalid product ID",
       });
-      return;
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Product not found",
       });
-      return;
     }
 
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "User not found",
       });
-      return;
     }
 
     const alreadyWishlisted = user.wishList.some(
@@ -48,32 +42,46 @@ export const toggleWishlist = async (
 
       await user.save();
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
-        message: "Product removed from wishlist",
-        data: product,
-        wishlisted: false,
+        message: `${product.title} removed from wishlist`,
+        data: { product: product, wishlisted: false },
       });
-
-      return;
     }
 
     user.wishList.push(new mongoose.Types.ObjectId(productId));
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Product added to wishlist",
-      data: product,
-      wishlisted: true,
+      message: `${product.title} added to wishlist`,
+      data: { product: product, wishlisted: true },
     });
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Something went wrong",
     });
+  }
+};
+
+export const getWishlist = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId)
+      .select("wishList")
+      .populate("wishList");
+
+    return res.status(200).json({
+      success: true,
+      data: user?.wishList ?? [],
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong", success: false, error: error });
   }
 };

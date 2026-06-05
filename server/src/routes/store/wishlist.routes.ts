@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { toggleWishlist } from "../../controllers/store/wishlist.controllers";
+import {
+  getWishlist,
+  toggleWishlist,
+} from "../../controllers/store/wishlist.controllers";
+import { userAuthenticateMiddleWare } from "../../middlewares/authenticate.middleware";
 
 const router = Router();
 
-router.post("/toggle-wishlist", toggleWishlist);
+router.get("/", userAuthenticateMiddleWare, getWishlist);
+router.patch("/toggle-wishlist", userAuthenticateMiddleWare, toggleWishlist);
 
 export default router;
