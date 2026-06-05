@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
           campus: data.user.campus,
           country: data.user.countryCode,
           regNo: data.user.regNo,
+          wishlist: data.user.wishlist,
         };
       },
     }),
@@ -77,6 +78,7 @@ export const authOptions: NextAuthOptions = {
         token.campus = user.campus;
         token.country = user.country;
         token.regNo = user.regNo;
+        token.wishlist = user.wishlist;
       }
 
       return token;
@@ -93,6 +95,7 @@ export const authOptions: NextAuthOptions = {
       session.user.campus = token.campus;
       session.user.country = token.country;
       session.user.regNo = token.regNo;
+      session.user.wishlist = token.wishlist;
 
       return session;
     },

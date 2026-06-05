@@ -180,7 +180,7 @@ const Hero = () => {
             </div>
           </motion.div>
         </div>
-        <div className="w-full  mb-20">
+        <div className="w-full mb-20">
           <small className="sm:hidden block">
             Read through{" "}
             <Link href={"/terms-and-condition"} className="text-primary">
