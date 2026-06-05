@@ -7,6 +7,7 @@ export interface ProductRequest {
   description: string;
   features?: string[];
   brand?: string;
+  campus?: string;
   colors?: string[];
   sizes?: string[];
   price: number;

@@ -17,6 +17,7 @@ import Link from "next/link";
 import SearchBar from "./SearchBar";
 import {
   CalendarIcon,
+  HeartIcon,
   ShoppingBagIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
@@ -47,6 +48,7 @@ const StoreNavbar = () => {
   const icons = {
     dashboard: <IoGridOutline className="size-5" />,
     order: <ShoppingBagIcon className="size-5" />,
+    wishlist: <HeartIcon className="size-5" />,
     profile: <UserIcon className="size-5" />,
     logout: <IoExitOutline className="size-5" />,
   };
@@ -173,6 +175,13 @@ const StoreNavbar = () => {
                 startContent={icons.order}
               >
                 Orders
+              </DropdownItem>
+              <DropdownItem
+                key="wishlist"
+                href="/store/dashboard/wishlist"
+                startContent={icons.wishlist}
+              >
+                WishList
               </DropdownItem>
               <DropdownItem
                 key="profile"

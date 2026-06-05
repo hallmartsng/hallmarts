@@ -2,18 +2,23 @@
 import React, { useState } from "react";
 import {
   BuildingLibraryIcon,
+  HeartIcon,
   MinusIcon,
   PlusIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 
 import Link from "next/link";
-import { addToast, Button } from "@heroui/react";
+import { addToast, Button, Spinner } from "@heroui/react";
 import { ProductDetailRequest } from "@/types/product.types";
 import nairaSymbol from "@/utils/symbols";
 import { slugify } from "@/utils/slugify";
 import { useAppDispatch } from "@/hooks/useReduxHook";
 import { addToCart } from "@/lib/slices/cartSlice";
+import { useSession } from "next-auth/react";
+import { useGetUserProfileQuery } from "@/lib/services/user/user.api";
+import { useToggleWishlistMutation } from "@/lib/services/store/wishlist.api";
+import { HeartFilledIcon } from "@/components/icons";
 
 interface ProductOverViewProps {
   data: ProductDetailRequest;
@@ -21,6 +26,41 @@ interface ProductOverViewProps {
 const ProductOverView = ({ data }: ProductOverViewProps) => {
   const dispatch = useAppDispatch();
   const [totalQty, setTotalQty] = useState<number>(0);
+  const { data: session } = useSession();
+  const [wishListProductId, setWishListProductId] = useState<string | null>(
+    null,
+  );
+  const { data: user } = useGetUserProfileQuery();
+
+  const [toggleWishList, { isLoading }] = useToggleWishlistMutation();
+
+  const isWishlisted = user?.data.wishList?.includes(data._id || "");
+  const handleWishListToggle = async () => {
+    if (!session?.user.id) {
+      return addToast({
+        title: "Not authenticated",
+        description: "Login to add item to wishlist",
+        color: "danger",
+      });
+    }
+    try {
+      const res = await toggleWishList({ productId: data._id || "" }).unwrap();
+
+      addToast({
+        title: res.data.wishlisted ? "Item added" : "Item removed",
+        description: res.message,
+        color: "success",
+      });
+    } catch {
+      addToast({
+        title: "Error occurred",
+        description: "An error occurred, try again",
+        color: "danger",
+      });
+    } finally {
+      setWishListProductId(null);
+    }
+  };
   return (
     <div className="sm:w-1/2 flex flex-col gap-5 items-start">
       <div className="w-full flex sm:flex-row flex-col sm:items-center items-start gap-3 justify-between">
@@ -119,30 +159,48 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
           </button>
         </div>
       </div>
-      {/* Buy now  */}
-      <Button
-        onPress={() => {
-          dispatch(
-            addToCart({
-              productId: data._id ? data._id : "",
-              vendorId: data.vendor._id ? data.vendor._id : "",
-              quantity: totalQty,
-              name: data.title,
-              price: data.price,
-              imgUrl: data.images ?? [],
-            }),
-          );
-          addToast({
-            title: `Cart Updated`,
-            description: `${data.title} added to cart`,
-            color: "success",
-          });
-        }}
-        disabled={totalQty === 0}
-        className="bg-primary text-white sm:w-auto w-full font-semibold"
-      >
-        Add to cart
-      </Button>
+
+      <div className="flex items-center gap-2">
+        {/* Buy now  */}
+        <Button
+          onPress={() => {
+            dispatch(
+              addToCart({
+                productId: data._id ? data._id : "",
+                vendorId: data.vendor._id ? data.vendor._id : "",
+                quantity: totalQty,
+                name: data.title,
+                price: data.price,
+                imgUrl: data.images ?? [],
+              }),
+            );
+            addToast({
+              title: `Cart Updated`,
+              description: `${data.title} added to cart`,
+              color: "success",
+            });
+          }}
+          disabled={totalQty === 0}
+          className="bg-primary text-white sm:w-auto w-full font-semibold"
+        >
+          Add to cart
+        </Button>
+
+        <button
+          onClick={() => {
+            handleWishListToggle();
+          }}
+          className="w-9 h-9 border-1 border-primary/30 text-primary flex items-center justify-center p-2 shadow rounded-md"
+        >
+          {isLoading ? (
+            <Spinner size="sm" variant="spinner" color="primary" />
+          ) : !isWishlisted ? (
+            <HeartIcon className="size-5" />
+          ) : (
+            <HeartFilledIcon className="size-5" />
+          )}
+        </button>
+      </div>
     </div>
   );
 };

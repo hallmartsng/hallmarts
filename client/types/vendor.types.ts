@@ -9,6 +9,7 @@ export interface ProfileRequest {
   retry_password?: string;
   fname?: string;
   department?: string;
+  wishList?: string[];
 }
 
 export interface VendorProfileUpdateRequest extends ProfileRequest {

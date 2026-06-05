@@ -19,6 +19,9 @@ import userAuthRoutes from "./routes/user/auth.routes";
 import userProfileRoutes from "./routes/user/profile.routes";
 import userOrdersRoutes from "./routes/user/order.routes";
 
+// Wishlist imports
+import wishListRoutes from "./routes/store/wishlist.routes";
+
 // General imports
 import generalAuthRoutes from "./routes/auth.routes";
 
@@ -65,6 +68,9 @@ app.use("/api/v1/vendor/dashboard", vendorDashboardRoutes);
 app.use("/api/v1/user/auth", userAuthRoutes);
 app.use("/api/v1/user/profile", userProfileRoutes);
 app.use("/api/v1/user/orders", userOrdersRoutes);
+
+// wishlist Endpoints
+app.use("/api/v1/wishlist", wishListRoutes);
 
 // General Endpoints
 app.use("/api/v1/auth", generalAuthRoutes);

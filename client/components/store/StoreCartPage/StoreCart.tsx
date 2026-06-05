@@ -77,7 +77,7 @@ const StoreCart = () => {
           <div className="flex items-center gap-4 w-[200px] sm:w-auto">
             <div className="w-[80px]">
               <Image
-                alt={`check out product`}
+                alt={product.name}
                 className="w-full object-cover h-[70px]"
                 radius="lg"
                 shadow="sm"
