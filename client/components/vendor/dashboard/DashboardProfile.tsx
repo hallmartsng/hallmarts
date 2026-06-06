@@ -8,8 +8,10 @@ import {
   Input,
   Spinner,
   Textarea,
+  Tooltip,
 } from "@heroui/react";
 import {
+  ArrowRightIcon,
   CloudArrowDownIcon,
   EyeIcon,
   EyeSlashIcon,
@@ -22,6 +24,10 @@ import {
   useUploadStoreLogoMutation,
 } from "@/lib/services/vendor/vendor.api";
 import { VendorProfileUpdateRequest } from "@/types/vendor.types";
+import { IoCopyOutline } from "react-icons/io5";
+import { useSession } from "next-auth/react";
+import { slugify } from "@/utils/slugify";
+import Link from "next/link";
 
 interface StoreInfoFormErrors {
   store_name?: string;
@@ -39,6 +45,15 @@ type ImagePreview = {
   public_id?: string;
 };
 const DashboardProfile = () => {
+  const { data: session } = useSession();
+
+  const domain = window.location.origin; // Gets 'https://yourdomain.com' or 'http://localhost:3000'
+  const slugifiedName = slugify(session?.user?.name || "store");
+  const vendorId = session?.user?.id || "";
+
+  // Combines everything into an absolute, clickable URL
+  const absoluteUrl = `${domain}/store/store-front/${slugifiedName}-${vendorId}`;
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [errors, setErrors] = React.useState<StoreInfoFormErrors>({});
@@ -81,7 +96,7 @@ const DashboardProfile = () => {
   const [isLoadingPasswordChange, setIsLoadingPasswordChange] =
     React.useState<boolean>(false);
 
-  console.log("Data: ", data?.data);
+  const [copied, setCopied] = React.useState<boolean>(false);
 
   // Real-time password validation
   const getPasswordError = (value: string | null) => {
@@ -245,12 +260,49 @@ const DashboardProfile = () => {
     }
   };
 
+  // 1. How to Copy
+  const handleCopy = async () => {
+    try {
+      if (typeof window !== "undefined") {
+        await navigator.clipboard.writeText(absoluteUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 4000);
+      }
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
   return (
     <section className="sm:max-w-7xl w-full py-5 flex flex-col gap-4">
       <DashboardHeader
         header="Profile Settings"
         subHeader="Manage your account and store details."
       />
+      <div className="flex items-start gap-2 bg-white rounded-lg shadow p-4 sm:w-max">
+        <div className="flex flex-col gap-4">
+          <p className="sm:text-sm text-xs">
+            Share storefront link with customers or other social media
+            platforms{" "}
+          </p>
+          <Link
+            href={absoluteUrl}
+            className="text-primary flex items-center gap-2 text-sm"
+          >
+            <span>Visit store</span>
+            <ArrowRightIcon className="size-4" />
+          </Link>
+        </div>
+        <Tooltip content="Copy link">
+          <button onClick={handleCopy}>
+            {copied ? (
+              <small className="font-semibold">Copied</small>
+            ) : (
+              <IoCopyOutline className="size-5" />
+            )}
+          </button>
+        </Tooltip>
+      </div>
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
         {!isLoadingProfile && (
           <>

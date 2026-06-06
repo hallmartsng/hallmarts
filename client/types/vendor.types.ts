@@ -1,6 +1,7 @@
 import { ImagePreview } from ".";
 
 export interface ProfileRequest {
+  _id?: string;
   regNo?: string;
   email?: string;
   phone?: string;

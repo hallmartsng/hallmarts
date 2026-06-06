@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getVendorProfile,
+  getVendorPublicProfile,
   storeLogoUpload,
   updateVendorProfile,
   updateVendorStoreLogo,
@@ -10,6 +11,7 @@ import { vendorAuthenticateMiddleWare } from "../../middlewares/authenticate.mid
 const router = Router();
 
 router.get("/", vendorAuthenticateMiddleWare, getVendorProfile);
+router.get("/:id/public", getVendorPublicProfile);
 router.post("/update", vendorAuthenticateMiddleWare, updateVendorProfile);
 
 router.post(

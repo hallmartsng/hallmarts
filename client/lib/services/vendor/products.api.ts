@@ -18,6 +18,19 @@ export const productsApi = api.injectEndpoints({
             ]
           : [{ type: "Product", id: "LIST" }],
     }),
+    getPublicProducts: builder.query<ApiResponse<ProductRequest[]>, string>({
+      query: (vendorId) => `/vendor/product/${vendorId}/public`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ _id }) => ({
+                type: "Product" as const,
+                id: _id,
+              })),
+              { type: "Product", id: "LIST" },
+            ]
+          : [{ type: "Product", id: "LIST" }],
+    }),
 
     // 🔹 Get single product
     getProductById: builder.query<ApiResponse<ProductRequest>, string>({
@@ -149,6 +162,7 @@ export const productsApi = api.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetPublicProductsQuery,
   useGetProductByIdQuery,
   useCreateProductMutation,
   useUploadProductImagesMutation,

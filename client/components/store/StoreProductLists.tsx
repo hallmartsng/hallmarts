@@ -24,11 +24,15 @@ import { useSession } from "next-auth/react";
 interface StoreProductListsProps {
   gridColsDesktop?: string;
   products: ProductRequest[];
+  displayActionBtn?: boolean;
 }
 export default function StoreProductLists({
   products,
   gridColsDesktop = "sm:grid-cols-8",
+  displayActionBtn,
 }: StoreProductListsProps) {
+  console.log("displayActionBtn: ", displayActionBtn);
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
@@ -110,45 +114,49 @@ export default function StoreProductLists({
             </button> */}
                 </CardFooter>
               </Card>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    handleWishListToggle(product._id || "");
-                  }}
-                  className="w-8 h-8 border-1 border-primary/30 text-primary flex items-center justify-center p-2 shadow rounded-md"
-                >
-                  {wishListProductId === product._id ? (
-                    <Spinner size="sm" variant="spinner" color="primary" />
-                  ) : !isWishlisted ? (
-                    <HeartIcon className="size-5" />
-                  ) : (
-                    <HeartFilledIcon className="size-5" />
-                  )}
-                </button>
-                <Button
-                  size="sm"
-                  onPress={() => {
-                    dispatch(
-                      addToCart({
-                        productId: product._id ? product._id : "",
-                        vendorId: product.vendor ? product.vendor : "",
-                        quantity: 1,
-                        name: product.title,
-                        price: product.price,
-                        imgUrl: product.images ?? [],
-                      }),
-                    );
-                    addToast({
-                      title: `Cart Updated`,
-                      description: `${product.title} added to cart`,
-                      color: "success",
-                    });
-                  }}
-                  className="bg-primary w-full text-xs font-semibold rounded-md px-4 py-2 text-white"
-                >
-                  Add to cart
-                </Button>
-              </div>
+              {displayActionBtn ? (
+                ""
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      handleWishListToggle(product._id || "");
+                    }}
+                    className="w-8 h-8 border-1 border-primary/30 text-primary flex items-center justify-center p-2 shadow rounded-md"
+                  >
+                    {wishListProductId === product._id ? (
+                      <Spinner size="sm" variant="spinner" color="primary" />
+                    ) : !isWishlisted ? (
+                      <HeartIcon className="size-5" />
+                    ) : (
+                      <HeartFilledIcon className="size-5" />
+                    )}
+                  </button>
+                  <Button
+                    size="sm"
+                    onPress={() => {
+                      dispatch(
+                        addToCart({
+                          productId: product._id ? product._id : "",
+                          vendorId: product.vendor ? product.vendor : "",
+                          quantity: 1,
+                          name: product.title,
+                          price: product.price,
+                          imgUrl: product.images ?? [],
+                        }),
+                      );
+                      addToast({
+                        title: `Cart Updated`,
+                        description: `${product.title} added to cart`,
+                        color: "success",
+                      });
+                    }}
+                    className="bg-primary w-full text-xs font-semibold rounded-md px-4 py-2 text-white"
+                  >
+                    Add to cart
+                  </Button>
+                </div>
+              )}
             </div>
           );
         })}
