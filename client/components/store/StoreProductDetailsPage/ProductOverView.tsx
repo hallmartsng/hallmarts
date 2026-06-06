@@ -61,6 +61,7 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
       setWishListProductId(null);
     }
   };
+
   return (
     <div className="sm:w-1/2 flex flex-col gap-5 items-start">
       <div className="w-full flex sm:flex-row flex-col sm:items-center items-start gap-3 justify-between">
@@ -98,7 +99,7 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
         <UserIcon className="size-5" /> <span>{data.vendor.fname}</span>
       </p>
       <Link
-        href={`/store/${slugify(data.vendor.fname)}-${data.vendor._id}`}
+        href={`/store/store-front/${slugify(data.vendor.fname)}-${data.vendor._id}`}
         className="flex text-primary items-center gap-2"
       >
         <svg
