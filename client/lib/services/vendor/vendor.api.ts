@@ -14,6 +14,16 @@ export const vendorApi = api.injectEndpoints({
       }),
       providesTags: ["Vendor"],
     }),
+    getVendorPublicProfile: builder.query<
+      ApiResponse<VendorProfileUpdateRequest>,
+      string
+    >({
+      query: (vendorId) => ({
+        url: `/vendor/profile/${vendorId}/public/`,
+        method: "GET",
+      }),
+      providesTags: ["Vendor"],
+    }),
     // 🔹 upload Product Images
     updateVendorProfile: builder.mutation<
       ApiResponse<VendorProfileUpdateRequest>,
@@ -46,6 +56,7 @@ export const vendorApi = api.injectEndpoints({
 
 export const {
   useGetVendorProfileQuery,
+  useGetVendorPublicProfileQuery,
   useUploadStoreLogoMutation,
   useUpdateVendorProfileMutation,
 } = vendorApi;

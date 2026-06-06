@@ -5,6 +5,7 @@ import {
   deleteProduct,
   getProductById,
   getVendorProducts,
+  getVendorPublicProducts,
   productImagesUpload,
   updateProduct,
   uploadProductImages,
@@ -27,6 +28,7 @@ const router = Router();
  *         description: Unauthorized
  */
 router.get("/", vendorAuthenticateMiddleWare, getVendorProducts);
+router.get("/:id/public", getVendorPublicProducts);
 
 /**
  * @openapi

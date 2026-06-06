@@ -23,6 +23,22 @@ export const getVendorProducts = async (req: Request, res: Response) => {
     data: products,
   });
 };
+export const getVendorPublicProducts = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const products = await Product.find({ vendor: id }).sort({
+    createdAt: -1,
+  });
+  console.log("req.params: ", req.params);
+  console.log("id: ", id);
+
+  console.log(products);
+
+  res.status(200).json({
+    success: true,
+    data: products,
+  });
+};
 
 /**
  * GET /products/:id

@@ -26,6 +26,17 @@ export const getVendorProfile = async (req: Request, res: Response) => {
     success: true,
   });
 };
+export const getVendorPublicProfile = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const vendorProfile = await Vendor.findById({ _id: id });
+
+  return res.status(200).json({
+    message: "Vendor profile found",
+    data: vendorProfile,
+    success: true,
+  });
+};
 
 export const updateVendorProfile = async (req: Request, res: Response) => {
   const id = req.userId;
