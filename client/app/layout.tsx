@@ -61,6 +61,15 @@ export default async function RootLayout({
           src="//js-na1.hs-scripts.com/48927544.js"
           ></script> */}
         <Analytics />
+        {/* Start of HubSpot Embed Code  */}
+        <script
+          type="text/javascript"
+          id="hs-script-loader"
+          async
+          defer
+          src="//js-eu1.hs-scripts.com/148665991.js"
+        ></script>
+        {/* End of HubSpot Embed Code  */}
       </body>
     </html>
   );
