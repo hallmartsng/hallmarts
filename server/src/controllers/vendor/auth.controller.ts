@@ -13,8 +13,7 @@ export const vendorRegistration = async (req: Request, res: Response) => {
     const { regNo, email, password, terms, campus, phone, countryCode } =
       req.body;
 
-    console.log(password);
-
+    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
     const role = "vendor";
 
     if (!email || !password) {
@@ -34,14 +33,14 @@ export const vendorRegistration = async (req: Request, res: Response) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const vendor = await Vendor.create({
-      regNo,
-      role,
       email,
+      role,
       campus,
-      password: hashPassword,
       terms,
       phone,
       countryCode,
+      password: hashPassword,
+      regNo: normalizedRegNo,
     });
 
     const otp = generateOTP();
@@ -85,7 +84,10 @@ export const vendorLogin = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "regNo and password required" });
     }
 
-    const vendor = await Vendor.findOne({ regNo }).select("+password");
+    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
+    const vendor = await Vendor.findOne({ normalizedRegNo }).select(
+      "+password",
+    );
 
     if (!vendor) {
       return res.status(401).json({ message: "Vendor not found" });
