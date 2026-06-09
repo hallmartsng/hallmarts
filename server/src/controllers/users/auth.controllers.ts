@@ -13,7 +13,7 @@ export const userRegistration = async (req: Request, res: Response) => {
     const { regNo, email, password, terms, campus, phone, countryCode } =
       req.body;
 
-    console.log(password);
+    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
 
     const role = "user";
 
@@ -34,14 +34,14 @@ export const userRegistration = async (req: Request, res: Response) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      regNo,
       role,
       email,
       campus,
-      password: hashPassword,
       terms,
       phone,
       countryCode,
+      password: hashPassword,
+      regNo: normalizedRegNo,
     });
 
     const otp = generateOTP();
@@ -83,8 +83,9 @@ export const userLogin = async (req: Request, res: Response) => {
     if (!regNo || !password) {
       return res.status(400).json({ message: "regNo and password required" });
     }
+    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
 
-    const user = await User.findOne({ regNo }).select("+password");
+    const user = await User.findOne({ normalizedRegNo }).select("+password");
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
