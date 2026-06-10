@@ -17,7 +17,7 @@ type Node = {
 const nodes: Node[] = [
   {
     id: "uniabuja",
-    logo: "nile.png",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109381/nile_iwkvaz.png",
     name: "UNIABUJA",
     lat: 12,
     lon: 6,
@@ -25,7 +25,7 @@ const nodes: Node[] = [
   },
   {
     id: "unilag",
-    logo: "unilag.jpg",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109382/unilag_u5u34j.jpg",
     name: "UNILAG",
     lat: 5,
     lon: -2.3792,
@@ -33,7 +33,7 @@ const nodes: Node[] = [
   },
   {
     id: "uniport",
-    logo: "uniport.png",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109381/uniport_prqhbt.png",
     name: "UNIPORT",
     lat: 1.3775,
     lon: 5.947,
@@ -41,7 +41,7 @@ const nodes: Node[] = [
   },
   {
     id: "lmu",
-    logo: "lmu.jpg",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109382/lmu_bxdaha.jpg",
     name: "LMU",
     lat: 10.5855,
     lon: 0.0199,
@@ -49,7 +49,7 @@ const nodes: Node[] = [
   },
   {
     id: "enugu",
-    logo: "unical.jpg",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109383/unical_nwq6zv.jpg",
     name: "ENUGU",
     lat: 6.864,
     lon: 7.4085,
@@ -57,7 +57,7 @@ const nodes: Node[] = [
   },
   {
     id: "adamawa",
-    logo: "adamawa.png",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109382/adamawa_rxyizd.png",
     name: "ADAMAWA",
     lat: 7.5227,
     lon: 13.522,
@@ -65,7 +65,7 @@ const nodes: Node[] = [
   },
   {
     id: "cu",
-    logo: "cu.jpg",
+    logo: "https://res.cloudinary.com/dno4rbyve/image/upload/v1781109383/cu_avuqoj.jpg",
     name: "cu",
     lat: 4.5227,
     lon: 16.4,
@@ -255,7 +255,7 @@ export default function GlobeNetworkPro() {
                 className="w-10 sm:-ml-3"
               >
                 <Image
-                  src={`/campus_logo/${node.logo}`}
+                  src={node.logo}
                   width={40}
                   height={30}
                   alt={`${node.name} campus logo`}
