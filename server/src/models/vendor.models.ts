@@ -16,6 +16,7 @@ export interface IVendor extends Document {
   term: boolean;
   refreshToken?: string;
   isActive: boolean;
+  isVerified: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;
@@ -86,6 +87,10 @@ const vendorSchema = new Schema<IVendor>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     store_logo: {
       url: { type: String },
