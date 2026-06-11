@@ -6,8 +6,13 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-const Login = ({ userRole }: { userRole: string }) => {
+const Login = ({ userRole }: { userRole: "user" | "vendor" }) => {
   const router = useRouter();
+
+  const forgotPasswordLink =
+    userRole === "user"
+      ? "/authentication/forgot-password"
+      : "/authentication/vendor/forgot-password";
   const [isPasswordVisible, setIsPasswordVisible] =
     React.useState<boolean>(false);
   const [password, setPassword] = React.useState("");
@@ -106,10 +111,7 @@ const Login = ({ userRole }: { userRole: string }) => {
           onValueChange={setPassword}
         />{" "}
         <div className="flex justify-end ">
-          <Link
-            href="/authentication/vendor/forgot-password"
-            className="text-sm"
-          >
+          <Link href={forgotPasswordLink} className="text-sm">
             Forgot password?{" "}
           </Link>
         </div>

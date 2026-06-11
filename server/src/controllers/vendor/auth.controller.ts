@@ -57,9 +57,8 @@ export const vendorRegistration = async (req: Request, res: Response) => {
       expiresAt,
       purpose: otpPurpose,
     });
-
-    // Send OTP to user (email/SMS)
-    await sendOtpEmail(email, otp, `Vendor account creation`);
+    // Send OTP to user (email)
+    // await sendOtpEmail(email, otp, `Vendor account creation`);
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       vendor.id,
       vendor.role,
@@ -84,10 +83,7 @@ export const vendorLogin = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "regNo and password required" });
     }
 
-    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
-    const vendor = await Vendor.findOne({ normalizedRegNo }).select(
-      "+password",
-    );
+    const vendor = await Vendor.findOne({ regNo }).select("+password");
 
     if (!vendor) {
       return res.status(401).json({ message: "Vendor not found" });
@@ -316,7 +312,7 @@ export const sendOtp = async (req: Request, res: Response) => {
     });
 
     // Send OTP to user (email/SMS)
-    await sendOtpEmail(vendor.email, otp, purpose)
+    await sendOtpEmail(vendor.email, otp, vendor.regNo, purpose)
       .then(() => {
         console.log("email sent to:", vendor.email);
       })

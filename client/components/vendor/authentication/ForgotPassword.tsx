@@ -29,7 +29,7 @@ const ForGotPassword = () => {
           description: res.message,
           color: "success",
         });
-        return router.push(`/authentication/otp?email=${data.email}`);
+        return router.push(`/authentication/vendor/otp?email=${data.email}`);
       }
     } catch (err: any) {
       addToast({

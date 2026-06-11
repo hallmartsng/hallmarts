@@ -92,11 +92,7 @@ const ResetPassword = () => {
           color: "success",
         });
       }
-      if (res.data.role === "user") {
-        router.push(`/store/auth`);
-      } else {
-        router.push(`/vendor/auth`);
-      }
+      return router.push(`/store/auth`);
     } catch (err: any) {
       addToast({
         title: "Error occured",

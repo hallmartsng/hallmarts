@@ -37,7 +37,9 @@ const Otp = () => {
           description: res.message,
           color: "success",
         });
-        router.push(`/authentication/reset-password?email=${getUserEmail}`);
+        router.push(
+          `/authentication/vendor/reset-password?email=${getUserEmail}`,
+        );
       }
     } catch (err: any) {
       addToast({

@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { HeartFilledIcon } from "../icons";
 import { useSession } from "next-auth/react";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 interface StoreProductListsProps {
   gridColsDesktop?: string;
@@ -39,7 +40,9 @@ export default function StoreProductLists({
   const [wishListProductId, setWishListProductId] = useState<string | null>(
     null,
   );
-  const { data: user } = useGetUserProfileQuery();
+  const { data: user } = useGetUserProfileQuery(
+    (session?.user.id as void) ?? skipToken,
+  );
 
   const [toggleWishList, { isLoading }] = useToggleWishlistMutation();
 

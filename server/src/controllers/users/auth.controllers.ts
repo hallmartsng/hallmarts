@@ -5,7 +5,6 @@ import { generateOTP } from "../../utils/generateOTP";
 import Otp from "../../models/otp.models";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { User } from "../../models/user.models";
-import { sendOtpEmail } from "../../utils/sendEmail";
 
 // register a new user
 export const userRegistration = async (req: Request, res: Response) => {
@@ -59,7 +58,7 @@ export const userRegistration = async (req: Request, res: Response) => {
     });
 
     // Send OTP to user (email/SMS)
-    await sendOtpEmail(email, otp, ` User account creation`);
+    // await sendOtpEmail(email, otp, ` User account creation`);
     const { accessToken, refreshAccessToken } = generateAuthTokens(
       user.id,
       user.role,
@@ -80,12 +79,13 @@ export const userLogin = async (req: Request, res: Response) => {
   try {
     const { regNo, password } = req.body as { regNo: string; password: string };
 
+    console.log(regNo, password);
+
     if (!regNo || !password) {
       return res.status(400).json({ message: "regNo and password required" });
     }
-    const normalizedRegNo = regNo ? regNo.trim().toLowerCase() : "";
 
-    const user = await User.findOne({ normalizedRegNo }).select("+password");
+    const user = await User.findOne({ regNo }).select("+password");
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });

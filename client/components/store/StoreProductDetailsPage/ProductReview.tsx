@@ -1,23 +1,50 @@
 "use client";
 import React from "react";
 import { Rating } from "react-simple-star-rating";
-import { addToast, Button, Form, Input, Textarea } from "@heroui/react";
+import {
+  addToast,
+  Button,
+  Form,
+  Input,
+  Spinner,
+  Textarea,
+} from "@heroui/react";
+import {
+  useCreateCommentMutation,
+  useGetCommentsQuery,
+} from "@/lib/services/store/comment.api";
+import { CommentResponse } from "@/types/comment.types";
+import { useSession } from "next-auth/react";
 interface FormErrors {
   name?: string;
   email?: string;
   review?: string;
+  ratings?: number;
 }
 
 interface FormData {
   name: string;
   email: string;
   review?: string;
+  ratings?: number;
 }
-const ProductReview = () => {
+interface ProductReviewProps {
+  vendorId: string;
+  productId: string;
+}
+const ProductReview = ({ vendorId, productId }: ProductReviewProps) => {
+  const { data: session } = useSession();
   const [errors, setErrors] = React.useState<FormErrors>({});
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const [rating, setRating] = React.useState(0);
+  const [rating, setRating] = React.useState<number>(0);
+
+  const [createComment, { isLoading: isLoadingCreateComment }] =
+    useCreateCommentMutation();
+
+  const { data: comments, isLoading: isLoadingComments } =
+    useGetCommentsQuery(productId);
+  console.log(comments);
+
   // Catch Rating value
   const handleRating = (rate: number) => {
     setRating(rate);
@@ -32,17 +59,24 @@ const ProductReview = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!session?.user.id) {
+      return addToast({
+        title: "Not authenticated",
+        description: "Log In to comment",
+        color: "danger",
+      });
+    }
     const data = Object.fromEntries(
       new FormData(e.currentTarget),
-    ) as unknown as FormData;
+    ) as unknown as CommentResponse;
+
+    data.ratings = rating;
+    data.productId = productId;
+    data.vendorId = vendorId;
 
     // Custom validation checks
     const newErrors: FormErrors = {};
-
-    // Username validation
-    if (data.name === "admin") {
-      newErrors.name = "Nice try! Choose a different username";
-    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -54,29 +88,23 @@ const ProductReview = () => {
     setErrors({});
 
     try {
-      setIsLoading(true);
-      // 1️⃣ Register user
-      //  const res = await registerUser(data);
-      const res = {
-        message: "Registration successful",
-      };
-      console.log(res);
-      addToast({
-        title: "Review submitted",
-        description: "Your review has been submitted",
-        color: "success",
-      });
+      const res = await createComment({ payload: data }).unwrap();
 
-      setIsLoading(false);
+      if (res.success) {
+        addToast({
+          title: "Review submitted",
+          description: "Your review has been submitted",
+          color: "success",
+        });
+      }
     } catch (err: any) {
       setErrors(err.message);
-      addToast({
+      return addToast({
         title: "Error occured",
         description: err.message,
         color: "danger",
       });
     }
-    setIsLoading(false);
   };
   return (
     <div className="flex sm:flex-row flex-col items-start sm:gap-32 gap-10">
@@ -86,38 +114,30 @@ const ProductReview = () => {
         <small className="text-gray-600">Overall ratings</small>
 
         <div className="flex flex-col gap-10 mt-5">
-          <div>
-            <Rating
-              initialValue={4.5}
-              onClick={handleRating}
-              SVGclassName="inline-block size-4"
-              readonly
-              allowFraction
-              // className="size-20"
-            />
-            <h4 className="font-semibold">Paul Felix</h4>
-            <p className="text-sm text-gray-600">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Consequatur quia quis excepturi minus autem. Iste totam et alias
-              voluptatem quaerat modi laudantium praesentium?
-            </p>
-          </div>
-          <div>
-            <Rating
-              initialValue={4.5}
-              onClick={handleRating}
-              SVGclassName="inline-block size-4"
-              readonly
-              allowFraction
-              // className="size-20"
-            />
-            <h4 className="font-semibold">Paul Felix</h4>
-            <p className="text-sm text-gray-600">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Consequatur quia quis excepturi minus autem. Iste totam et alias
-              voluptatem quaerat modi laudantium praesentium?
-            </p>
-          </div>
+          {isLoadingComments ? (
+            <Spinner size="sm" variant="spinner" color="white" />
+          ) : comments?.data.length ? (
+            comments.data.map((comment) => {
+              return (
+                <div key={comment._id}>
+                  <Rating
+                    initialValue={comment.ratings}
+                    onClick={handleRating}
+                    SVGclassName="inline-block size-4"
+                    readonly
+                    allowFraction
+                    // className="size-20"
+                  />
+                  <h4 className="font-semibold">
+                    {comment.user ? comment.user.fname : ""}
+                  </h4>
+                  <p className="text-sm text-gray-600">{comment.content}</p>
+                </div>
+              );
+            })
+          ) : (
+            "No comments"
+          )}
         </div>
       </div>
 
@@ -181,15 +201,34 @@ const ProductReview = () => {
               type="email"
             />
           </div>
-          <Textarea placeholder="Your review" />
+          <Textarea
+            isRequired
+            errorMessage={({
+              validationDetails,
+            }: {
+              validationDetails: ValidityState;
+            }) => {
+              if (validationDetails.valueMissing) {
+                return "Please enter review message";
+              }
+
+              return;
+            }}
+            placeholder="Your review"
+            name="content"
+          />
           <Button
             type="submit"
             onPress={() => {
-              console.log("Pay now");
+              console.log("Comment posted");
             }}
-            className="bg-primary text-white font-semibold"
+            disabled={isLoadingCreateComment}
+            className="bg-primary text-white flex items-center font-semibold"
           >
             Submit review
+            {isLoadingCreateComment && (
+              <Spinner size="sm" variant="spinner" color="white" />
+            )}
           </Button>
         </Form>
       </div>

@@ -4,7 +4,7 @@ import { WishListResponse } from "@/types/wishlist.types";
 import { userApi } from "../user/user.api";
 import { ProductRequest } from "@/types/product.types";
 
-export const checkoutApi = api.injectEndpoints({
+export const wishListApi = api.injectEndpoints({
   endpoints: (builder) => ({
     toggleWishlist: builder.mutation<
       ApiResponse<WishListResponse>,
@@ -50,4 +50,4 @@ export const checkoutApi = api.injectEndpoints({
   }),
 });
 
-export const { useToggleWishlistMutation, useGetWishlistQuery } = checkoutApi;
+export const { useToggleWishlistMutation, useGetWishlistQuery } = wishListApi;

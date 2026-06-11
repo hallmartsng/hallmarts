@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-import { Tab, Tabs } from "@heroui/react";
+import { Spinner, Tab, Tabs } from "@heroui/react";
 import ProductOverView from "./ProductOverView";
 import ProductReview from "./ProductReview";
 import ProductVendorBio from "./ProductVendorBio";
@@ -20,7 +20,11 @@ const StoreProductDetails = ({ productId }: { productId: string }) => {
     useGetVendorProductsQuery(data?.data.vendor._id || "");
 
   if (isLoading || !data?.data) {
-    return "Loading product...";
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Spinner size="sm" variant="spinner" color="primary" />
+      </div>
+    );
   }
 
   return (
@@ -68,7 +72,10 @@ const StoreProductDetails = ({ productId }: { productId: string }) => {
             />
           </Tab>
           <Tab key="reviews" title="Reviews">
-            <ProductReview />
+            <ProductReview
+              vendorId={data?.data.vendor._id || ""}
+              productId={productId}
+            />
           </Tab>
           <Tab key="about" title="About Vendor">
             <ProductVendorBio
