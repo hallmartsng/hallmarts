@@ -63,6 +63,7 @@ export const sendOtp = async (req: Request, res: Response) => {
     const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
     console.log("hashedOtp: ", hashedOtp);
+    console.log("generateOTP: ", otp);
 
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
@@ -74,7 +75,7 @@ export const sendOtp = async (req: Request, res: Response) => {
     });
 
     // Send OTP to user (email/SMS)
-    await sendOtpEmail(user.email, otp, purpose)
+    await sendOtpEmail(user.email, otp, user.regNo, purpose)
       .then(() => {
         console.log("email sent to:", user.email);
       })
@@ -83,7 +84,7 @@ export const sendOtp = async (req: Request, res: Response) => {
       });
 
     return res.status(201).json({
-      message: `OTP sent to ${user.email}`,
+      message: `OTP sent to ${user.email} : ${otp} : ${user.regNo}`,
       success: true,
       status: 200,
     });
@@ -100,6 +101,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
   const user = await User.findOne({ email });
   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+  console.log("otp", otp);
+  console.log("hashedOtp", hashedOtp);
 
   if (!user) return res.status(404).json({ message: "User not found" });
 

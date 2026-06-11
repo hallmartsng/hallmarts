@@ -5,7 +5,7 @@ export type UserRole = "user" | "vendor" | "admin";
 
 export interface IUser extends Document {
   name?: string;
-  regNo?: string;
+  regNo: string;
   email: string;
   password: string;
   campus: string;

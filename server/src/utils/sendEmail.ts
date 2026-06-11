@@ -10,12 +10,13 @@ import { sendEmail } from "../config/resend.config";
 export const sendOtpEmail = async (
   to: string,
   otp: string,
+  regNo: string,
   purpose: string,
 ) => {
   await sendEmail({
     to,
     subject: `${purpose} Code`,
-    html: otpEmailTemplate(otp, purpose),
+    html: otpEmailTemplate(otp, regNo, purpose),
   });
 };
 
