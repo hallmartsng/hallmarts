@@ -4,38 +4,23 @@ import useEmblaCarousel from "embla-carousel-react";
 import { EmblaOptionsType } from "embla-carousel";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
+import Link from "next/link";
 
-interface FeaturedProjectProps {
-  header: string;
+interface FeaturedVendorsProps {
+  insta_mart: string;
   image_link: string;
-  category: string;
-  filter: string;
 }
 
-const FEATURED_PROJECT: FeaturedProjectProps[] = [
+const FEATURED_VENDORS: FeaturedVendorsProps[] = [
   {
-    header: "Northside Commerce (Commercial Office - Kaduna)",
-    image_link: "/banner.png",
-    category: "Commercial",
-    filter: "smart-homes",
+    insta_mart: "",
+    image_link:
+      "https://res.cloudinary.com/dno4rbyve/image/upload/v1780913587/vendors/6a26935e3e5f707a7802d8fb/logo/1780913587811-Untitled%20design%20%282%29.png",
   },
   {
-    header: "Warm Nest (Boho homes)",
-    image_link: "/banner.png",
-    category: "home",
-    filter: "smart-homes",
-  },
-  {
-    header: "Vintage Barrel (Wine Store)",
-    image_link: "/banner.png",
-    category: "Vintage",
-    filter: "smart-homes",
-  },
-  {
-    header: "Project Haven (3 Bed Shortlet)",
-    image_link: "/banner.png",
-    category: "Shortlet",
-    filter: "smart-homes",
+    insta_mart: "",
+    image_link:
+      "https://res.cloudinary.com/dno4rbyve/image/upload/v1778787212/vendors/6a06210663b9806f77758df5/logo/1778787211832-IMG_0471.png",
   },
 ];
 const StoreHeroCarousel = () => {
@@ -52,7 +37,7 @@ const StoreHeroCarousel = () => {
     <div className="overflow-hidden sm:w-[700px] w-[30rem]  " ref={emblaRef}>
       <div className="flex gap-5">
         {emblaApi &&
-          FEATURED_PROJECT.map((project, index) => (
+          FEATURED_VENDORS.map((vendor, index) => (
             <div key={index} className=" sm:min-w-full ">
               <button
                 className={`group relative sm:h-[350px] h-[280px] sm:w-full w-[20rem]  overflow-hidden rounded-lg transition`}
@@ -62,7 +47,7 @@ const StoreHeroCarousel = () => {
                 <Image
                   alt="Card example background"
                   className="z-0 w-full h-full scale-125 -translate-y-6 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-                  src={project.image_link}
+                  src={vendor.image_link || ""}
                   fill
                 />
                 {/* Dark Gradient Overlay */}
@@ -71,14 +56,14 @@ const StoreHeroCarousel = () => {
                 {/* Content */}
                 <div className="relative z-10 flex h-full flex-col items-start justify-between sm:p-6 pb-6 p-4 text-white transition-all duration-500 ease-in-out ">
                   {/* Title */}
-                  <h3 className="text-xl text-left leading-tight font-bold capitalize transition-transform duration-500 ease-in-out group-hover:translate-y-2">
-                    {project.header}
-                  </h3>
 
                   {/* Tagline */}
-                  <p className="mt-2 translate-y-4 text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100">
-                    {project.category}
-                  </p>
+                  <Link
+                    href={vendor.insta_mart}
+                    className="mt-2 translate-y-4 text-left text-xs opacity-80 transition-all duration-500 ease-in-out group-hover:translate-y-0 group-hover:opacity-100"
+                  >
+                    Visit store
+                  </Link>
                 </div>
               </button>
             </div>
