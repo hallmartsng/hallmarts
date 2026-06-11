@@ -106,7 +106,10 @@ const Login = ({ userRole }: { userRole: string }) => {
           onValueChange={setPassword}
         />{" "}
         <div className="flex justify-end ">
-          <Link href="/authentication/forgot-password" className="text-sm">
+          <Link
+            href="/authentication/vendor/forgot-password"
+            className="text-sm"
+          >
             Forgot password?{" "}
           </Link>
         </div>

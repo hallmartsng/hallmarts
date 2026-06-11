@@ -27,7 +27,7 @@ export const vendorRegistration = async (req: Request, res: Response) => {
     if (existingUser) {
       console.log("existing user: ", existingUser);
 
-      return res.status(400).json({ message: "User already exist." });
+      return res.status(400).json({ message: "Vendor already exist." });
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -65,7 +65,7 @@ export const vendorRegistration = async (req: Request, res: Response) => {
       vendor.role,
     );
     return res.status(201).json({
-      message: "User created successfully!",
+      message: "Vendor created successfully!",
       accessToken: accessToken,
       refreshToken: refreshAccessToken,
       vendor: { id: String(vendor._id), email, role },
@@ -115,7 +115,7 @@ export const vendorLogin = async (req: Request, res: Response) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: passwordHash, ...safeUser } = userObj;
     return res.json({
-      message: "User logged in successfully!",
+      message: "Vendor logged in successfully!",
       user: safeUser,
       accessToken: accessToken,
       refreshToken: refreshAccessToken,
@@ -191,7 +191,7 @@ export const vendorLogin = async (req: Request, res: Response) => {
 
 //   const user = await User.findOne({ email });
 
-//   if (!user) return res.status(404).json({ message: "User not found" });
+//   if (!user) return res.status(404).json({ message: "Vendor not found" });
 
 //   // Generate OTP
 //   const otp = generateOTP();
@@ -225,9 +225,9 @@ export const vendorLogin = async (req: Request, res: Response) => {
 //   const user = await User.findOne({ email });
 //   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
-//   console.log("user: ", user);
+//   console.log("Vendor: ", user);
 //   console.log("hashedOtp: ", hashedOtp);
-//   if (!user) return res.status(404).json({ message: "User not found" });
+//   if (!user) return res.status(404).json({ message: "Vendor not found" });
 
 //   const otpRecords = await Otp.find({ email }).sort({ createdAt: -1 }).limit(1);
 
@@ -263,7 +263,7 @@ export const vendorLogin = async (req: Request, res: Response) => {
 
 //     const user = await User.findOne({ email });
 //     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
+//       return res.status(404).json({ message: "Vendor not found" });
 //     }
 
 //     // Hash new password
@@ -283,3 +283,124 @@ export const vendorLogin = async (req: Request, res: Response) => {
 //     return res.status(500).json({ message: "Error updating password" });
 //   }
 // };
+
+// Generate Auth OTP
+export const sendOtp = async (req: Request, res: Response) => {
+  try {
+    const { email, purpose } = req.body;
+
+    console.log(email);
+
+    const vendor = await Vendor.findOne({ email });
+
+    if (!vendor) {
+      return res
+        .status(404)
+        .json({ message: "Vendor with email not found", success: false });
+    }
+    // Generate OTP
+    const otp = generateOTP();
+
+    // Hash OTP before saving (for security)
+    const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+    console.log("hashedOtp: ", hashedOtp);
+
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    await Otp.create({
+      email: vendor.email,
+      otp: hashedOtp,
+      expiresAt,
+      purpose: purpose,
+    });
+
+    // Send OTP to user (email/SMS)
+    await sendOtpEmail(vendor.email, otp, purpose)
+      .then(() => {
+        console.log("email sent to:", vendor.email);
+      })
+      .catch((emailError) => {
+        console.error("Email failed ", emailError);
+      });
+
+    return res.status(201).json({
+      message: `OTP sent to ${vendor.email}`,
+      success: true,
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: `Server error: ${error}` });
+  }
+};
+
+// Verify OTP
+export const verifyOtp = async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+
+  const vendor = await Vendor.findOne({ email });
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+
+  if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+
+  const otpRecords = await Otp.find({ email }).sort({ createdAt: -1 }).limit(1);
+
+  const getOTP = otpRecords[0];
+  if (!getOTP) {
+    return res.status(404).json({ message: "OTP not found." });
+  }
+
+  if (getOTP.otp !== hashedOtp) {
+    return res.status(400).json({ message: "OTP is invalid." });
+  }
+
+  if (getOTP.expiresAt.getTime() < Date.now()) {
+    await Otp.deleteMany({ email });
+    return res.status(400).json({ message: "OTP has expired." });
+  }
+
+  if (!vendor.isVerified) {
+    vendor.isVerified = true;
+  }
+  await vendor.save();
+
+  await Otp.deleteMany({ email });
+
+  return res.status(200).json({
+    message: "OTP verified successfully",
+    status: 200,
+    success: true,
+  });
+};
+
+// Update password
+export const upDatePassword = async (req: Request, res: Response) => {
+  try {
+    const { password, email } = req.body;
+
+    const vendor = await Vendor.findOne({ email });
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    // Hash new password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    vendor.password = passwordHash;
+
+    // IMPORTANT: Save changes
+    await vendor.save();
+
+    return res.status(200).json({
+      message: "Password updated successfully",
+      status: 200,
+      success: true,
+      data: { role: vendor.role },
+    });
+  } catch (error) {
+    console.error("Password update error:", error);
+    return res.status(500).json({ message: "Error updating password" });
+  }
+};

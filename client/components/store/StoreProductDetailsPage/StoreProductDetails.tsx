@@ -20,10 +20,8 @@ const StoreProductDetails = ({ productId }: { productId: string }) => {
     useGetVendorProductsQuery(data?.data.vendor._id || "");
 
   if (isLoading || !data?.data) {
-    return null;
+    return "Loading product...";
   }
-
-  console.log(data);
 
   return (
     <div className="flex w-full flex-col gap-4">

@@ -1,7 +1,10 @@
 import { Router } from "express";
 import {
+  sendOtp,
+  upDatePassword,
   vendorLogin,
   vendorRegistration,
+  verifyOtp,
 } from "../../controllers/vendor/auth.controller";
 
 const router = Router();
@@ -20,5 +23,8 @@ const router = Router();
 
 router.post("/register", vendorRegistration);
 router.post("/login", vendorLogin);
+router.post("/send-opt", sendOtp);
+router.post("/verify-otp", verifyOtp);
+router.post("/reset-password", upDatePassword);
 
 export default router;
