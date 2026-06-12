@@ -51,7 +51,7 @@ const StoreHeroCarousel = () => {
                   fill
                 />
                 {/* Dark Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" />
+                {/* <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 transition-opacity duration-500 ease-in-out group-hover:from-black/60 group-hover:via-black/70 group-hover:to-black/90" /> */}
 
                 {/* Content */}
                 <div className="relative z-10 flex h-full flex-col items-start justify-between sm:p-6 pb-6 p-4 text-white transition-all duration-500 ease-in-out ">
