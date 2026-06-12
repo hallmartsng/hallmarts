@@ -1,6 +1,10 @@
 import { ApiResponse } from "@/types";
 import { api } from "../api";
-import { ProductDetailRequest, ProductRequest } from "@/types/product.types";
+import {
+  ProductDetailRequest,
+  ProductFiltersTypes,
+  ProductRequest,
+} from "@/types/product.types";
 
 export const productsApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,8 +18,24 @@ export const productsApi = api.injectEndpoints({
       query: (vendorId) => `/store/products/vendor/${vendorId}`,
       providesTags: [{ type: "Product", id: "LIST" }],
     }),
+
+    // Search and filter products
+    filterProducts: builder.query<
+      ApiResponse<ProductRequest[]>,
+      ProductFiltersTypes
+    >({
+      query: (filters) => ({
+        url: "store/products/filter",
+        method: "POST",
+        body: filters,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductByIdQuery, useGetVendorProductsQuery } =
-  productsApi;
+export const {
+  useGetProductByIdQuery,
+  useGetVendorProductsQuery,
+  useFilterProductsQuery,
+  useLazyFilterProductsQuery,
+} = productsApi;

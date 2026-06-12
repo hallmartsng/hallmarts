@@ -1,14 +1,34 @@
 "use client";
 import React from "react";
 import StoreCategories from "../StoreCategories";
-import { Input, NumberInput } from "@heroui/react";
+import { Input, NumberInput, Spinner } from "@heroui/react";
 import FilterCampuses from "@/components/FilterCampus";
 import StoreFilterForm from "../forms/StoreFilterForm";
+import useDebounce from "@/hooks/useDebounceHook";
+import { useFilterProductsQuery } from "@/lib/services/store/product.api";
+import StoreProductLists from "../StoreProductLists";
 
-const StoreProductsPage = () => {
+const StoreProductsPage = ({ slug }: { slug: string }) => {
+  const [search, setSearch] = React.useState<string>(slug);
+  const [vendor, setVendor] = React.useState("");
+  const [campus, setCampus] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [minPrice, setMinPrice] = React.useState<number | undefined>();
+  const [maxPrice, setMaxPrice] = React.useState<number | undefined>();
+  const debouncedSearch = useDebounce(search, 900);
+  const { data, isLoading } = useFilterProductsQuery({
+    search: debouncedSearch,
+
+    campus,
+    categories: category ? [category] : [],
+    minPrice,
+    maxPrice,
+    limit: 10,
+  });
+
   return (
     <div className="flex items-center flex-col gap-6">
-      <div className="flex gap-14">
+      <div className="flex sm:gap-14">
         <div className="sm:flex flex-col gap-5 hidden">
           <StoreCategories />
           {/* Vendor */}
@@ -19,51 +39,70 @@ const StoreProductsPage = () => {
               labelPlacement="outside"
               name="vendor"
               placeholder="Enter vendor name"
+              value={vendor}
+              onValueChange={setVendor}
             />
           </div>
           {/* campus */}
           <div className="bg-white rounded-md shadow p-4 w-[250px]">
             <FilterCampuses isRequired={false} code={"NG"} name={"campus"} />
           </div>
+
           {/* Budget */}
           <div className="bg-white rounded-md shadow p-4 w-[250px]">
-            {/* Budget */}
             <NumberInput
               hideStepper
-              type="number"
-              label="Budget"
+              label="Min Price"
               labelPlacement="outside"
-              name="budget"
-              formatOptions={{
-                style: "currency",
-                currency: "NGN",
-              }}
-              placeholder="Enter product budget"
-              min={1500}
-              defaultValue={0}
+              placeholder="Min price"
+              onValueChange={(val) => setMinPrice(Number(val))}
+            />
+          </div>
+
+          <div className="bg-white rounded-md shadow p-4 w-[250px]">
+            <NumberInput
+              hideStepper
+              label="Max Price"
+              labelPlacement="outside"
+              placeholder="Max price"
+              onValueChange={(val) => setMaxPrice(Number(val))}
             />
           </div>
         </div>
-        <div>
-          {" "}
-          <div className="flex mb-4 flex-col gap-3 w-full sm:mt-0 mt-5">
-            <p>
-              120 <strong>results</strong> found for Oraimo{" "}
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="w-full">Filter by:</div>
-              <StoreFilterForm />
+
+        {/* Products list  */}
+        <div className="w-full sm:w-[920px]">
+          {isLoading ? (
+            <div className="w-full h-1/2 mt-10 flex flex-col gap-3 items-center justify-center">
+              <Spinner size="sm" variant="spinner" color="primary" />
+              <small>Loading search results for {slug}</small>
             </div>
-          </div>
-          {/*Serch result  */}
-          <div>
-            {/* <StoreProductLists gridColsDesktop="sm:grid-cols-6" /> */}
-          </div>
-          <div className="my-5 flex justify-center">
-            <button className="bg-white px-4 py-2 rounded-lg shadow text-xs font-semibold">
-              Load more products
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="flex mb-4 flex-col w-full gap-3 sm:mt-0 mt-5">
+                <p>
+                  {data?.data.length} <strong>results</strong> found for{" "}
+                  {slug}{" "}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="w-full">Filter by:</div>
+                  <StoreFilterForm />
+                </div>
+              </div>
+              {/*Serch result  */}
+
+              <StoreProductLists
+                products={data?.data || []}
+                gridColsDesktop="sm:grid-cols-6"
+              />
+
+              <div className="my-5 flex justify-center">
+                <button className="bg-white px-4 py-2 rounded-lg shadow text-xs font-semibold">
+                  Load more products
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {/* Top vendors  */}

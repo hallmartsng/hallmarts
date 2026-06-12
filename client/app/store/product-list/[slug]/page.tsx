@@ -1,0 +1,16 @@
+import StoreProductsPage from "@/components/store/StoreProductsPage/StoreProductsPage";
+
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+export default async function StoreSearchPage({ params }: PageProps) {
+  const { slug } = await params;
+
+  return (
+    <section className="flex items-center flex-col gap-6 sm:pt-0 pt-8 w-full">
+      <StoreProductsPage slug={decodeURIComponent(slug)} />
+    </section>
+  );
+}

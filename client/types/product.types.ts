@@ -41,3 +41,30 @@ export interface ProductDetailRequest {
   createdAt?: string;
   discount: number;
 }
+
+export interface ProductFiltersTypes {
+  search?: string;
+  campus?: string;
+  visible?: boolean;
+  isVerified?: boolean;
+
+  productType?: string;
+
+  categories?: string[];
+  colors?: string[];
+  sizes?: string[];
+
+  isBid?: boolean;
+  isSwap?: boolean;
+
+  minPrice?: number;
+  maxPrice?: number;
+
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+
+  skip?: number;
+  limit?: number;
+
+  extraConditions?: Record<string, any>;
+}
