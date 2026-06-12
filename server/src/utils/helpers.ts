@@ -1,39 +1,94 @@
 import Product from "../models/products.models";
 import { ProductFiltersTypes } from "../types/products.types";
 
+// export const filteredProducts = async (filters: ProductFiltersTypes) => {
+//   // const query: any = { status: "approved" };
+//   const query: any = {}; // only approved products
+
+//   // Basic filters
+//   if (filters.visible !== undefined) query.visible = filters.visible;
+//   if (filters.isVerified !== undefined) query.isVerified = filters.isVerified;
+//   if (filters.productType) query.productType = filters.productType;
+//   if (filters.categories && filters.categories.length > 0)
+//     query.categories = { $in: filters.categories };
+//   if (filters.colors && filters.colors.length > 0)
+//     query.colors = { $in: filters.colors };
+//   if (filters.sizes && filters.sizes.length > 0)
+//     query.sizes = { $in: filters.sizes };
+//   if (filters.isBid !== undefined) query.isBid = filters.isBid;
+//   if (filters.isSwap !== undefined) query.isSwap = filters.isSwap;
+
+//   // Price filters (sellingPrice)
+//   if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+//     query.sellingPrice = {};
+//     if (filters.minPrice !== undefined)
+//       query.sellingPrice.$gte = filters.minPrice;
+//     if (filters.maxPrice !== undefined)
+//       query.sellingPrice.$lte = filters.maxPrice;
+//   }
+
+//   // Merge extra dynamic conditions
+//   if (filters.extraConditions) {
+//     Object.assign(query, filters.extraConditions);
+//   }
+
+//   // Search text
+//   if (filters.search) {
+//     const searchRegex = new RegExp(filters.search, "i");
+//     query.$or = [
+//       { title: searchRegex },
+//       { description: searchRegex },
+//       { metaData: searchRegex },
+//     ];
+//   }
+
+//   // Sorting
+//   const sort: any = {};
+//   if (filters.sortBy)
+//     sort[filters.sortBy] = filters.sortOrder === "asc" ? 1 : -1;
+//   else sort.createdAt = -1; // default: newest first
+
+//   // Execute query
+//   const products = await Product.find(query)
+//     .sort(sort)
+//     .skip(filters.skip || 0)
+//     .limit(filters.limit || 20)
+//     .lean();
+
+//   return products;
+// };
+
 export const filteredProducts = async (filters: ProductFiltersTypes) => {
-  const query: any = { status: "approved" }; // only approved products
+  const query: any = {};
 
   // Basic filters
   if (filters.visible !== undefined) query.visible = filters.visible;
   if (filters.isVerified !== undefined) query.isVerified = filters.isVerified;
   if (filters.productType) query.productType = filters.productType;
-  if (filters.categories && filters.categories.length > 0)
+  if (filters.categories?.length)
     query.categories = { $in: filters.categories };
-  if (filters.colors && filters.colors.length > 0)
-    query.colors = { $in: filters.colors };
-  if (filters.sizes && filters.sizes.length > 0)
-    query.sizes = { $in: filters.sizes };
+  if (filters.colors?.length) query.colors = { $in: filters.colors };
+  if (filters.sizes?.length) query.sizes = { $in: filters.sizes };
   if (filters.isBid !== undefined) query.isBid = filters.isBid;
   if (filters.isSwap !== undefined) query.isSwap = filters.isSwap;
 
-  // Price filters (sellingPrice)
+  // Price filters
   if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
     query.sellingPrice = {};
-    if (filters.minPrice !== undefined)
+
+    if (filters.minPrice !== undefined) {
       query.sellingPrice.$gte = filters.minPrice;
-    if (filters.maxPrice !== undefined)
+    }
+
+    if (filters.maxPrice !== undefined) {
       query.sellingPrice.$lte = filters.maxPrice;
+    }
   }
 
-  // Merge extra dynamic conditions
-  if (filters.extraConditions) {
-    Object.assign(query, filters.extraConditions);
-  }
+  // Search
+  if (filters.search?.trim()) {
+    const searchRegex = new RegExp(filters.search.trim(), "i");
 
-  // Search text
-  if (filters.search) {
-    const searchRegex = new RegExp(filters.search, "i");
     query.$or = [
       { title: searchRegex },
       { description: searchRegex },
@@ -41,20 +96,25 @@ export const filteredProducts = async (filters: ProductFiltersTypes) => {
     ];
   }
 
+  // Extra conditions
+  if (filters.extraConditions) {
+    Object.assign(query, filters.extraConditions);
+  }
+
   // Sorting
   const sort: any = {};
-  if (filters.sortBy)
-    sort[filters.sortBy] = filters.sortOrder === "asc" ? 1 : -1;
-  else sort.createdAt = -1; // default: newest first
 
-  // Execute query
-  const products = await Product.find(query)
+  if (filters.sortBy) {
+    sort[filters.sortBy] = filters.sortOrder === "asc" ? 1 : -1;
+  } else {
+    sort.createdAt = -1;
+  }
+
+  return Product.find(query)
     .sort(sort)
     .skip(filters.skip || 0)
     .limit(filters.limit || 20)
     .lean();
-
-  return products;
 };
 
 export const homePageProducts = async () => {

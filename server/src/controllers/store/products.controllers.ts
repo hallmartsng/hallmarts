@@ -28,28 +28,8 @@ export const getHomepageProducts = async (_req: Request, res: Response) => {
 
 // product filters
 export const getFilteredproducts = async (req: Request, res: Response) => {
-  const {
-    productType,
-    categories,
-    colors,
-    minPrice,
-    maxPrice,
-    sortBy,
-    sortOrder,
-    limit,
-  } = req.body;
-
   try {
-    const products = await filteredProducts({
-      productType,
-      categories,
-      colors,
-      minPrice,
-      maxPrice,
-      sortBy,
-      sortOrder,
-      limit,
-    });
+    const products = await filteredProducts(req.body);
 
     res.status(200).json({
       data: products,
