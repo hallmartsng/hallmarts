@@ -98,7 +98,11 @@ export default function StoreProductLists({
                     className="sm:w-[150px] w-full object-cover sm:h-[140px] h-[150px]"
                     radius="md"
                     shadow="sm"
-                    src={product.images ? product.images[0].url : ""}
+                    src={
+                      product.images
+                        ? product.images[0].url
+                        : "/image-upload-image-fallback.png"
+                    }
                     width="100%"
                   />
                 </CardBody>
