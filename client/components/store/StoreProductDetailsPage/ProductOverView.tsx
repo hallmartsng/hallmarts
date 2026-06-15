@@ -95,10 +95,10 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
       </p>
 
       {/* vendor details  */}
-      <p className="flex items-center gap-2 sm:-mb-0 -mb-3">
+      {data.vendor.fname && <p className="flex items-center gap-2 sm:-mb-0 -mb-3">
         <UserIcon className="size-5" /> <span>{data.vendor.fname}</span>
-      </p>
-      <Link
+      </p> }
+      {data.vendor.fname && <Link
         href={`/store/store-front/${slugify(data.vendor.fname)}-${data.vendor._id}`}
         className="flex text-primary items-center gap-2"
       >
@@ -117,10 +117,10 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
           />
         </svg>{" "}
         <span className="mt-1">InstaMart</span>
-      </Link>
+      </Link>}
 
       {/* Sizes  */}
-      <div>
+   {/*    <div>
         <p className="font-semibold">Sizes</p>
         <div className="flex gap-2 items-center">
           <span className="w-10 h-10 font-semibold rounded-lg bg-white flex items-center justify-center p-2">
@@ -133,7 +133,7 @@ const ProductOverView = ({ data }: ProductOverViewProps) => {
             LG
           </span>
         </div>
-      </div>
+      </div> */}
 
       {/* quantity */}
       <div>
