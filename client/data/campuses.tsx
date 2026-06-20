@@ -25,6 +25,13 @@ export const campuses = [
         website: "http://www.buk.edu.ng",
       },
       {
+        id: 169,
+        name: "Federal polytechnic ilaro",
+        address: " Ilaro/Oja-Odan Road in Ilaro, Ogun State, Nigeria",
+        type: "poltechnic",
+        website: "https://www.federalpolyilaro.edu.ng/",
+      },
+      {
         id: 4,
         name: "Federal University Gashua, Yobe",
         address: "Sabon Gari, Nguru-Gashua-Damasak Road, Gashua",
