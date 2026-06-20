@@ -26,7 +26,7 @@ const Login = ({ userRole }: { userRole: "user" | "vendor" }) => {
     const form = new FormData(e.currentTarget);
 
     const payload = {
-      regNo: form.get("regNo") as string,
+      email: form.get("email") as string,
       password: form.get("password") as string,
       endpoint: userRole === "user" ? "user" : "vendor",
       redirect: false,
@@ -78,13 +78,13 @@ const Login = ({ userRole }: { userRole: "user" | "vendor" }) => {
             validationDetails: ValidityState;
           }) => {
             if (validationDetails.valueMissing) {
-              return "Reg No. / Matric No. can not be empty ";
+              return "Email can not be empty ";
             }
           }}
-          label="Reg No. / Matric No."
+          label="Email"
           labelPlacement="outside"
-          name="regNo"
-          placeholder="Enter student registration or matric number"
+          name="email"
+          placeholder="Enter valid email"
         />
         <Input
           isRequired

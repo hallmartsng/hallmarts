@@ -77,15 +77,15 @@ export const userRegistration = async (req: Request, res: Response) => {
 // login user
 export const userLogin = async (req: Request, res: Response) => {
   try {
-    const { regNo, password } = req.body as { regNo: string; password: string };
+    const { email, password } = req.body as { email: string; password: string };
 
-    console.log(regNo, password);
+    console.log(email, password);
 
-    if (!regNo || !password) {
-      return res.status(400).json({ message: "regNo and password required" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "email and password required" });
     }
 
-    const user = await User.findOne({ regNo }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
