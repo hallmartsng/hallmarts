@@ -74,12 +74,12 @@ const DashboardOverview = () => {
         <Alert
           icon={<IoMail className="size-4" />}
           color={"warning"}
-          title={`You are almost done, verify your email to get started with sales
+          title={`You are almost done, update your profile to get started with sales
               on Hallmarts.`}
           endContent={
-            <button>
+            <Link href={"/vendor/dashboard/profile"}>
               <ArrowRightIcon className="size-4" />
-            </button>
+            </Link>
           }
         />
         {/* Greetings  */}
