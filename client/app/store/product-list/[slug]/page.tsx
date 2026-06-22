@@ -9,7 +9,7 @@ export default async function StoreSearchPage({ params }: PageProps) {
   const { slug } = await params;
 
   return (
-    <section className="flex items-center flex-col gap-6 sm:pt-0 pt-8 w-full">
+    <section className="flex items-center flex-col gap-6 sm:pt-0 pt-8 w-full px-4">
       <StoreProductsPage slug={decodeURIComponent(slug)} />
     </section>
   );

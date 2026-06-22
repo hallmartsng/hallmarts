@@ -31,7 +31,7 @@ const StoreFront = ({ vendorId }: { vendorId: string }) => {
           <p className="font-semibold">{vendorData?.data.fname}</p>
           <small>{vendorData?.data.store_name}</small>
           <Rating
-            initialValue={4.5}
+            initialValue={1}
             SVGclassName="inline-block size-4"
             readonly
             allowFraction

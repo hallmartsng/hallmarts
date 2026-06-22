@@ -23,7 +23,7 @@ export async function generateMetadata({
   ).then((res) => res.json());
 
   return {
-    title: `${vendor.title} | My Store`,
+    title: `${vendor?.data?.fname} | My Store`,
     description: vendor.description,
   };
 }
