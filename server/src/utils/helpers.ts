@@ -121,13 +121,13 @@ export const homePageProducts = async () => {
   const trendingQuery = Product.aggregate([
     { $match: { status: "approved", clicks: { $gt: 10 } } },
     { $sort: { clicks: -1 } },
-    { $limit: 10 },
+    { $limit: 20 },
   ]);
 
   const newArrivalsQuery = Product.aggregate([
     { $match: { status: "pending" } },
     { $sort: { createdAt: -1 } },
-    { $limit: 10 },
+    { $limit: 20 },
     // {
     //   $lookup: {
     //     from: "vendors", // The collection to join
@@ -152,7 +152,7 @@ export const homePageProducts = async () => {
     { $addFields: { isDiscounted: { $lt: ["$sellingPrice", "$price"] } } },
     { $match: { isDiscounted: true } },
     { $sort: { discount: -1 } },
-    { $limit: 10 },
+    { $limit: 20 },
   ]);
 
   const electronicsQuery = Product.aggregate([
@@ -165,7 +165,7 @@ export const homePageProducts = async () => {
       },
     },
     { $sort: { createdAt: -1 } },
-    { $limit: 10 },
+    { $limit: 20 },
   ]);
 
   const [trending, newArrivals, topDeals, electronics] = await Promise.all([
