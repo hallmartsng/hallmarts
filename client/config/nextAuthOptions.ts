@@ -6,7 +6,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        regNo: {},
+        email: {},
         password: {},
         endpoint: {},
       },
@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              regNo: credentials?.regNo,
+              email: credentials?.email,
               password: credentials?.password,
             }),
           },
