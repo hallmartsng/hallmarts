@@ -10,8 +10,7 @@ export interface IProduct extends Document {
   price: number;
   discount?: number;
   productType?: string;
-  //   categories: mongoose.Types.ObjectId[];
-  categories: string[];
+  categories: mongoose.Types.ObjectId[];
   images?: { url: string; public_id: string; coverImage: boolean }[];
   isVerified?: boolean;
   stock?: number;

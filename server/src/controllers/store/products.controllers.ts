@@ -28,11 +28,17 @@ export const getHomepageProducts = async (_req: Request, res: Response) => {
 
 // product filters
 export const getFilteredproducts = async (req: Request, res: Response) => {
+  console.log("body: ", req.body);
+  console.log("params: ", req.params);
+
   try {
-    const products = await filteredProducts(req.body);
+    const { products, total } = await filteredProducts(req.body);
 
     res.status(200).json({
-      data: products,
+      data: {
+        products,
+        total,
+      },
       message: "Product filter results",
       success: true,
     });

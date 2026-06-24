@@ -17,7 +17,7 @@ export type StoreCategoryIconsTypes =
   | "fashion"
   | "bid";
 
-type Type = {
+export type Type = {
   value: StoreCategoryIconsTypes;
 };
 export const StoreCategoryIcons = ({ value }: Type) => {

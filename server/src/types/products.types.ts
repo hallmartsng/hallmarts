@@ -1,10 +1,15 @@
 export type ProductFiltersTypes = {
   productType?: string;
+  // Single category (from query string)
+  category?: string;
+
+  // Multiple categories (internal use)
   categories?: string[];
   colors?: string[];
   sizes?: string[];
   minPrice?: number;
   maxPrice?: number;
+  campus?: string;
   isBid?: boolean;
   isSwap?: boolean;
   visible?: boolean;

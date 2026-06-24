@@ -29,6 +29,7 @@ import generalAuthRoutes from "./routes/auth.routes";
 import storeProductsRoutes from "./routes/store/product.routes";
 import storeCheckOutRoutes from "./routes/store/checkout.routes";
 import storeCommentRoutes from "./routes/store/comment.routes";
+import storeCategoriesRoutes from "./routes/store/categories.routes";
 
 // shipping imports
 import shippingRoutes from "./routes/shipping/shipping.routes";
@@ -80,6 +81,7 @@ app.use("/api/v1/auth", generalAuthRoutes);
 app.use("/api/v1/store/products", storeProductsRoutes);
 app.use("/api/v1/store/checkout", storeCheckOutRoutes);
 app.use("/api/v1/store/comment", storeCommentRoutes);
+app.use("/api/v1/store/categories", storeCategoriesRoutes);
 
 // Shipping Endpoints
 app.use("/api/v1/shipping", shippingRoutes);

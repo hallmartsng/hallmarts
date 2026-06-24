@@ -1,66 +1,36 @@
 "use client";
 import React from "react";
-import {
-  StoreCategoryIcons,
-  StoreCategoryIconsTypes,
-} from "./StoreCategoryIcons";
+import { StoreCategoryIcons } from "./StoreCategoryIcons";
 import Link from "next/link";
 
-type CategoriesType = {
-  title: string;
-  title_id: StoreCategoryIconsTypes;
-  id: string;
-};
+import {
+  useGetCategoriesQuery,
+  useGetCategorySummaryQuery,
+} from "@/lib/services/store/categories.api";
+import { Spinner } from "@heroui/react";
+
 const StoreCategories = () => {
-  const [categories, setCategories] = React.useState<CategoriesType[]>();
-  const CATEGORIES: CategoriesType[] = [
-    {
-      title: "phones & tablets",
-      title_id: "phones",
-      id: "77486554849933773",
-    },
-    {
-      title: "Health & beauty",
-      title_id: "health",
-      id: "77555554849933773",
-    },
-    {
-      title: "electronics",
-      title_id: "electronics",
-      id: "775599854849933773",
-    },
-    {
-      title: "fashion",
-      title_id: "fashion",
-      id: "775599854800933773",
-    },
-    {
-      title: "gaming",
-      title_id: "gaming",
-      id: "775539354800933773",
-    },
-    {
-      title: "academics",
-      title_id: "academics",
-      id: "775590954800933773",
-    },
-  ];
+  const { data, isLoading } = useGetCategorySummaryQuery();
   return (
     <div className="bg-white rounded-md py-4 flex flex-col text-sm  gap-4 font-semibold sm:h-[350px] capitalize sm:w-[250px] w-full">
       <ul className="flex flex-col text-sm  gap-4">
-        {CATEGORIES.map((category) => {
-          return (
-            <li key={category.id}>
-              <Link
-                href={`/store/product-list/${category.id}`}
-                className="flex hover:text-primary items-center gap-1 px-4"
-              >
-                <StoreCategoryIcons value={category.title_id} />
-                {category.title}{" "}
-              </Link>
-            </li>
-          );
-        })}
+        {isLoading ? (
+          <Spinner size="sm" variant="spinner" color="primary" />
+        ) : (
+          data?.data.map((category) => {
+            return (
+              <li key={category._id}>
+                <Link
+                  href={`/store/category/${category.title}`}
+                  className="flex hover:text-primary items-center gap-1 px-4"
+                >
+                  <StoreCategoryIcons value={category.icon} />
+                  {category.title} [{category.productCount}]
+                </Link>
+              </li>
+            );
+          })
+        )}
       </ul>
 
       <Link href={"/store"} className="px-4 flex items-center gap-1">

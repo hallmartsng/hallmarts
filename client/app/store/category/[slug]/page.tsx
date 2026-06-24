@@ -1,4 +1,4 @@
-import StoreProductsPage from "@/components/store/StoreProductsPage/StoreProductsPage";
+import StoreCategory from "@/components/store/StorecategoryPage/StoreCategory";
 
 interface PageProps {
   params: Promise<{
@@ -10,7 +10,7 @@ export default async function StoreSearchPage({ params }: PageProps) {
 
   return (
     <section className="flex items-center flex-col gap-6 sm:pt-0 pt-8 w-full px-2">
-      <StoreProductsPage slug={decodeURIComponent(slug)} />
+      <StoreCategory slug={decodeURIComponent(slug)} />
     </section>
   );
 }

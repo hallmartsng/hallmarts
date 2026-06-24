@@ -1,28 +1,14 @@
 "use client";
 import React from "react";
 import StoreCategories from "../StoreCategories";
-import { Form, Input, NumberInput, Spinner } from "@heroui/react";
-import FilterCampuses from "@/components/FilterCampus";
-import StoreFilterForm from "../forms/StoreFilterForm";
-import useDebounce from "@/hooks/useDebounceHook";
+import { Spinner } from "@heroui/react";
 import { useFilterProductsQuery } from "@/lib/services/store/product.api";
 import StoreProductLists from "../StoreProductLists";
+import StoreFilterForm from "../forms/StoreFilterForm";
 
-const StoreProductsPage = ({ slug }: { slug: string }) => {
-  const [search, setSearch] = React.useState<string>(slug);
-  const [vendor, setVendor] = React.useState("");
-  const [campus, setCampus] = React.useState("");
-  const [category, setCategory] = React.useState("");
-  const [minPrice, setMinPrice] = React.useState<number | undefined>();
-  const [maxPrice, setMaxPrice] = React.useState<number | undefined>();
-  const debouncedSearch = useDebounce(search, 900);
+const StoreCategory = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useFilterProductsQuery({
-    search: debouncedSearch,
-    campus,
-    categories: category ? [category] : [],
-    minPrice,
-    maxPrice,
-    limit: 10,
+    categories: slug ? [slug] : [],
   });
 
   return (
@@ -30,52 +16,6 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
       <div className="flex sm:gap-14">
         <div className="sm:flex flex-col gap-5 hidden">
           <StoreCategories />
-
-          <Form
-            className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white sm:p-6 px-4 py-6 rounded-2xl shadow"
-            onReset={() => console.log("Form reset")}
-            onSubmit={() => {
-              console.log("form submitted");
-            }}
-          >
-            {/* Vendor */}
-            <div className="bg-white rounded-md shadow p-4 w-[250px]">
-              {/* Vendor */}
-              <Input
-                label="Vendor"
-                labelPlacement="outside"
-                name="vendor"
-                placeholder="Enter vendor name"
-                value={vendor}
-                onValueChange={setVendor}
-              />
-            </div>
-            {/* campus */}
-            <div className="bg-white rounded-md shadow p-4 w-[250px]">
-              <FilterCampuses isRequired={false} code={"NG"} name={"campus"} />
-            </div>
-
-            {/* Budget */}
-            <div className="bg-white rounded-md shadow p-4 w-[250px]">
-              <NumberInput
-                hideStepper
-                label="Min Price"
-                labelPlacement="outside"
-                placeholder="Min price"
-                onValueChange={(val) => setMinPrice(Number(val))}
-              />
-            </div>
-
-            <div className="bg-white rounded-md shadow p-4 w-[250px]">
-              <NumberInput
-                hideStepper
-                label="Max Price"
-                labelPlacement="outside"
-                placeholder="Max price"
-                onValueChange={(val) => setMaxPrice(Number(val))}
-              />
-            </div>
-          </Form>
         </div>
 
         {/* Products list  */}
@@ -142,4 +82,4 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
   );
 };
 
-export default StoreProductsPage;
+export default StoreCategory;
