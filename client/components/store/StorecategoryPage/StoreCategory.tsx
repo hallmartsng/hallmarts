@@ -10,6 +10,7 @@ const StoreCategory = ({ slug }: { slug: string }) => {
   const { data, isLoading } = useFilterProductsQuery({
     categories: slug ? [slug] : [],
   });
+  console.log("data: ", data?.data);
 
   return (
     <div className="flex items-center flex-col gap-6">

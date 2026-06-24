@@ -16,7 +16,7 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
   const [minPrice, setMinPrice] = React.useState<number | undefined>();
   const [maxPrice, setMaxPrice] = React.useState<number | undefined>();
   const debouncedSearch = useDebounce(search, 900);
-  const { data, isLoading } = useFilterProductsQuery({
+  const { data, isLoading, isFetching } = useFilterProductsQuery({
     search: debouncedSearch,
     campus,
     categories: category ? [category] : [],
@@ -32,7 +32,7 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
           <StoreCategories />
 
           <Form
-            className="w-full sm:w-[380px] justify-center items-center space-y-4 bg-white sm:p-6 px-4 py-6 rounded-2xl shadow"
+            className=""
             onReset={() => console.log("Form reset")}
             onSubmit={() => {
               console.log("form submitted");
@@ -80,7 +80,7 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
 
         {/* Products list  */}
         <div className="w-full sm:w-[920px]">
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <div className="w-full h-1/2 mt-10 flex flex-col gap-3 items-center justify-center">
               <Spinner size="sm" variant="spinner" color="primary" />
               <small>Loading search results for {slug}</small>

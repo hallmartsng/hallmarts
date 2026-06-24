@@ -1,4 +1,3 @@
-import { Category } from "../models/category.model";
 import Product from "../models/products.models";
 import { ProductFiltersTypes } from "../types/products.types";
 
@@ -62,22 +61,17 @@ import { ProductFiltersTypes } from "../types/products.types";
 export const filteredProducts = async (filters: ProductFiltersTypes) => {
   // const query: any = {};
   const query: any = {
-    visible: true,
+    // visible: true,
     // isVerified: true,
-    stock: { $gt: 0 },
+    // stock: { $gt: 0 },
   };
 
   // Category filters
   if (filters.categories?.length) {
-    const categories = await Category.find({
-      title: {
-        $in: filters.categories.map((c) => new RegExp(`^${c}$`, "i")),
-      },
-    });
-
     query.categories = {
-      $in: categories.map((c) => c._id),
+      $in: filters.categories.map((c) => new RegExp(`^${c.trim()}$`, "i")),
     };
+    console.log("query.categories: ", query.categories);
   }
 
   // Basic filters
@@ -114,6 +108,11 @@ export const filteredProducts = async (filters: ProductFiltersTypes) => {
     query.$or = [
       { title: searchRegex },
       { description: searchRegex },
+      {
+        categories: {
+          $in: [searchRegex],
+        },
+      },
       { metaData: searchRegex },
       { productType: searchRegex },
     ];
