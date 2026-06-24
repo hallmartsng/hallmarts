@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "pre-commit": "npm run type-check && npm run lint && npm run format:check",
     "clean": "rm -rf dist",
-    "seed:users": "ts-node src/scripts/seedUsers.ts"
+    "seed:categories": "ts-node src/scripts/seedCategory.ts"
   },
   "keywords": [],
   "author": "",

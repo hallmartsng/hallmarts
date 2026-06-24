@@ -10,7 +10,6 @@ export interface IProduct extends Document {
   price: number;
   discount?: number;
   productType?: string;
-  //   categories: mongoose.Types.ObjectId[];
   categories: string[];
   images?: { url: string; public_id: string; coverImage: boolean }[];
   isVerified?: boolean;
@@ -136,7 +135,12 @@ const productSchema = new Schema<IProduct>(
 // Optimized common storefront queries
 productSchema.index({ isVerified: 1, productType: 1 });
 productSchema.index({ categories: 1, isVerified: 1 });
-productSchema.index({ title: "text", description: "text", metaData: "text" });
+productSchema.index({
+  title: "text",
+  description: "text",
+  metaData: "text",
+  categories: "text",
+});
 productSchema.index({ status: 1, createdAt: -1 });
 productSchema.index({ vendor: 1, createdAt: -1 });
 productSchema.index({ status: 1, visible: 1 });

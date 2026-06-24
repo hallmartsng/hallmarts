@@ -59,14 +59,30 @@ import { ProductFiltersTypes } from "../types/products.types";
 // };
 
 export const filteredProducts = async (filters: ProductFiltersTypes) => {
-  const query: any = {};
+  // const query: any = {};
+  const query: any = {
+    // visible: true,
+    // isVerified: true,
+    // stock: { $gt: 0 },
+  };
+
+  // Category filters
+  if (filters.categories?.length) {
+    query.categories = {
+      $in: filters.categories.map((c) => new RegExp(`^${c.trim()}$`, "i")),
+    };
+    console.log("query.categories: ", query.categories);
+  }
 
   // Basic filters
   if (filters.visible !== undefined) query.visible = filters.visible;
   if (filters.isVerified !== undefined) query.isVerified = filters.isVerified;
   if (filters.productType) query.productType = filters.productType;
-  if (filters.categories?.length)
-    query.categories = { $in: filters.categories };
+
+  if (filters.campus) {
+    query.campus = filters.campus;
+  }
+
   if (filters.colors?.length) query.colors = { $in: filters.colors };
   if (filters.sizes?.length) query.sizes = { $in: filters.sizes };
   if (filters.isBid !== undefined) query.isBid = filters.isBid;
@@ -74,14 +90,14 @@ export const filteredProducts = async (filters: ProductFiltersTypes) => {
 
   // Price filters
   if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-    query.sellingPrice = {};
+    query.price = {};
 
     if (filters.minPrice !== undefined) {
-      query.sellingPrice.$gte = filters.minPrice;
+      query.price.$gte = filters.minPrice;
     }
 
     if (filters.maxPrice !== undefined) {
-      query.sellingPrice.$lte = filters.maxPrice;
+      query.price.$lte = filters.maxPrice;
     }
   }
 
@@ -92,7 +108,13 @@ export const filteredProducts = async (filters: ProductFiltersTypes) => {
     query.$or = [
       { title: searchRegex },
       { description: searchRegex },
+      {
+        categories: {
+          $in: [searchRegex],
+        },
+      },
       { metaData: searchRegex },
+      { productType: searchRegex },
     ];
   }
 
@@ -110,11 +132,21 @@ export const filteredProducts = async (filters: ProductFiltersTypes) => {
     sort.createdAt = -1;
   }
 
-  return Product.find(query)
-    .sort(sort)
-    .skip(filters.skip || 0)
-    .limit(filters.limit || 20)
-    .lean();
+  const [products, total] = await Promise.all([
+    Product.find(query)
+      .populate("categories", "title icon")
+      .sort(sort)
+      .skip(filters.skip || 0)
+      .limit(filters.limit || 20)
+      .lean(),
+
+    Product.countDocuments(query),
+  ]);
+
+  return {
+    products,
+    total,
+  };
 };
 
 export const homePageProducts = async () => {

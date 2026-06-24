@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import StoreCategories from "../StoreCategories";
-import { Input, NumberInput, Spinner } from "@heroui/react";
+import { Form, Input, NumberInput, Spinner } from "@heroui/react";
 import FilterCampuses from "@/components/FilterCampus";
 import StoreFilterForm from "../forms/StoreFilterForm";
 import useDebounce from "@/hooks/useDebounceHook";
@@ -16,9 +16,8 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
   const [minPrice, setMinPrice] = React.useState<number | undefined>();
   const [maxPrice, setMaxPrice] = React.useState<number | undefined>();
   const debouncedSearch = useDebounce(search, 900);
-  const { data, isLoading } = useFilterProductsQuery({
+  const { data, isLoading, isFetching } = useFilterProductsQuery({
     search: debouncedSearch,
-
     campus,
     categories: category ? [category] : [],
     minPrice,
@@ -31,48 +30,57 @@ const StoreProductsPage = ({ slug }: { slug: string }) => {
       <div className="flex sm:gap-14">
         <div className="sm:flex flex-col gap-5 hidden">
           <StoreCategories />
-          {/* Vendor */}
-          <div className="bg-white rounded-md shadow p-4 w-[250px]">
+
+          <Form
+            className=""
+            onReset={() => console.log("Form reset")}
+            onSubmit={() => {
+              console.log("form submitted");
+            }}
+          >
             {/* Vendor */}
-            <Input
-              label="Vendor"
-              labelPlacement="outside"
-              name="vendor"
-              placeholder="Enter vendor name"
-              value={vendor}
-              onValueChange={setVendor}
-            />
-          </div>
-          {/* campus */}
-          <div className="bg-white rounded-md shadow p-4 w-[250px]">
-            <FilterCampuses isRequired={false} code={"NG"} name={"campus"} />
-          </div>
+            <div className="bg-white rounded-md shadow p-4 w-[250px]">
+              {/* Vendor */}
+              <Input
+                label="Vendor"
+                labelPlacement="outside"
+                name="vendor"
+                placeholder="Enter vendor name"
+                value={vendor}
+                onValueChange={setVendor}
+              />
+            </div>
+            {/* campus */}
+            <div className="bg-white rounded-md shadow p-4 w-[250px]">
+              <FilterCampuses isRequired={false} code={"NG"} name={"campus"} />
+            </div>
 
-          {/* Budget */}
-          <div className="bg-white rounded-md shadow p-4 w-[250px]">
-            <NumberInput
-              hideStepper
-              label="Min Price"
-              labelPlacement="outside"
-              placeholder="Min price"
-              onValueChange={(val) => setMinPrice(Number(val))}
-            />
-          </div>
+            {/* Budget */}
+            <div className="bg-white rounded-md shadow p-4 w-[250px]">
+              <NumberInput
+                hideStepper
+                label="Min Price"
+                labelPlacement="outside"
+                placeholder="Min price"
+                onValueChange={(val) => setMinPrice(Number(val))}
+              />
+            </div>
 
-          <div className="bg-white rounded-md shadow p-4 w-[250px]">
-            <NumberInput
-              hideStepper
-              label="Max Price"
-              labelPlacement="outside"
-              placeholder="Max price"
-              onValueChange={(val) => setMaxPrice(Number(val))}
-            />
-          </div>
+            <div className="bg-white rounded-md shadow p-4 w-[250px]">
+              <NumberInput
+                hideStepper
+                label="Max Price"
+                labelPlacement="outside"
+                placeholder="Max price"
+                onValueChange={(val) => setMaxPrice(Number(val))}
+              />
+            </div>
+          </Form>
         </div>
 
         {/* Products list  */}
         <div className="w-full sm:w-[920px]">
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <div className="w-full h-1/2 mt-10 flex flex-col gap-3 items-center justify-center">
               <Spinner size="sm" variant="spinner" color="primary" />
               <small>Loading search results for {slug}</small>

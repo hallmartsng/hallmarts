@@ -1,9 +1,11 @@
 import {
   ArrowsRightLeftIcon,
   BookOpenIcon,
+  CakeIcon,
   ComputerDesktopIcon,
   DevicePhoneMobileIcon,
   HeartIcon,
+  TvIcon,
 } from "@heroicons/react/24/outline";
 import { PiTShirtLight } from "react-icons/pi";
 import { IoGameControllerOutline } from "react-icons/io5";
@@ -12,12 +14,14 @@ export type StoreCategoryIconsTypes =
   | "phones"
   | "health"
   | "electronics"
+  | "gadget"
   | "gaming"
   | "academics"
   | "fashion"
-  | "bid";
+  | "bid"
+  | "cake";
 
-type Type = {
+export type Type = {
   value: StoreCategoryIconsTypes;
 };
 export const StoreCategoryIcons = ({ value }: Type) => {
@@ -26,6 +30,12 @@ export const StoreCategoryIcons = ({ value }: Type) => {
   }
   if (value === "health") {
     return <HeartIcon className="size-5" />;
+  }
+  if (value === "gadget") {
+    return <TvIcon className="size-5" />;
+  }
+  if (value === "cake") {
+    return <CakeIcon className="size-5" />;
   }
   if (value === "electronics") {
     return <ComputerDesktopIcon className="size-5" />;
